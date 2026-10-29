@@ -3500,7 +3500,7 @@
         const query = (sidebarSearchInput?.value || '').trim().toLowerCase();
         [...convoRooms].sort((a,b) => Number(!!b.isPinned)-Number(!!a.isPinned) || ((b.lastActivity||0)-(a.lastActivity||0))).forEach(room => {
             const localHistory = readStoredHistory(room.id, false);
-            const matchingMessage = query ? [...localHistory].reverse().find(m => (m.text || m.fileName || '').toLowerCase().includes(query)) : null;
+            const matchingMessage = query ? [...localHistory].reverse().find(m => !(window.__convoHiddenFor && window.__convoHiddenFor(room.id, m.sender)) && (m.text || m.fileName || '').toLowerCase().includes(query)) : null;
             const haystack = `${room.name || ''} ${room.lastMessage || ''}`.toLowerCase();
             if (query && !haystack.includes(query) && !matchingMessage) return;
             const item = document.createElement('div');
@@ -5278,14 +5278,14 @@
             const room = convoRooms.find(r => r.id === activeRoomId);
             detailsInviteCode.textContent = room?.type === 'private' ? (room.code || 'Unavailable') : 'Public room';
             pinnedMessagesContainer.innerHTML = '';
-            (room?.pinned || []).forEach(m => {
+            (room?.pinned || []).filter(m => !(window.__convoHidden && window.__convoHidden(m.sender))).forEach(m => {
                 const row = document.createElement('div'); row.className = 'detail-list-item';
                 row.textContent = `${m.sender?.displayName || 'Someone'}: ${m.text || m.fileName || 'Attachment'}`;
                 pinnedMessagesContainer.appendChild(row);
             });
             if (!pinnedMessagesContainer.children.length) pinnedMessagesContainer.textContent = 'No pinned messages yet.';
             sharedFilesContainer.innerHTML = '';
-            messageLog.filter(m => m.type === 'FILE').slice(-20).forEach(m => {
+            messageLog.filter(m => m.type === 'FILE' && !(window.__convoHidden && window.__convoHidden(m.sender))).slice(-20).forEach(m => {
                 const row = document.createElement('div'); row.className = 'detail-list-item';
                 row.textContent = `${m.fileName || 'Shared file'} · ${m.sender?.displayName || 'Someone'}`;
                 sharedFilesContainer.appendChild(row);
@@ -6496,7 +6496,7 @@
     const pinBar = el('div', { id: 'pinBar', className: 'hidden' }); byId('chatSearchBar').before(pinBar);
     let lastPin = null;
     setInterval(() => {
-        const r = roomOf(visibleRoomId), p = r?.pinned?.length ? r.pinned[r.pinned.length - 1] : null, key = p ? p.id + (p.text || '') : '';
+        const r = roomOf(visibleRoomId), p = (r?.pinned || []).filter(x => !(window.__convoHidden && window.__convoHidden(x.sender))).slice(-1)[0] || null, key = p ? p.id + (p.text || '') : '';
         if (key === lastPin) return; lastPin = key; pinBar.classList.toggle('hidden', !p);
         if (p) { pinBar.textContent = '📌 ' + (p.sender?.displayName || '') + ': ' + (p.text || p.fileName || 'Attachment'); pinBar.onclick = () => wrapOf(p.id)?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
     }, 700);
@@ -7153,12 +7153,14 @@
     function fixLastMessage(roomId) {   // the app's own save shows a bare file name; show 📎 name / 🎤 Voice message instead
         const room = roomOf(roomId);
         if (!room) return;
-        const hist = (messageLog || []).filter(function (m) { return m && (m.type === 'CHAT' || m.type === 'FILE' || m.type === 'SYSTEM'); });
-        const last = hist[hist.length - 1];
-        if (last && last.type === 'FILE') {
-            const t = last.voice ? '🎤 Voice message' : '📎 ' + (last.fileName || 'File');
-            if (room.lastMessage !== t) { room.lastMessage = t; if (typeof persistConversationList === 'function') persistConversationList(); }
-        }
+        const hide = window.__convoHiddenFor;
+        const all = (messageLog || []).filter(function (m) { return m && (m.type === 'CHAT' || m.type === 'FILE' || m.type === 'SYSTEM'); });
+        const vis = hide ? all.filter(function (m) { return !hide(roomId, m.sender); }) : all;   // people muted on this screen never show up in previews
+        const last = vis[vis.length - 1];
+        let text = null;
+        if (last && last.type === 'FILE') text = last.voice ? '🎤 Voice message' : '📎 ' + (last.fileName || 'File');
+        else if (vis.length !== all.length) text = last ? (last.text || '') : '';
+        if (text !== null && room.lastMessage !== text) { room.lastMessage = text; if (typeof persistConversationList === 'function') persistConversationList(); }
     }
     if (typeof persistRoomHistory === 'function') {
         const basePersist = persistRoomHistory;
@@ -7233,7 +7235,6 @@
     }
     const fmtTime = function (ts) { try { return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } };
     function rcptText(m) {
-        if (m.muted) return 'Muted by host';
         if (m.pending) return 'Sending…';
         if (m.undelivered) return 'Not delivered';
         const r = m.rcpt || {}, users = Object.keys(r);
@@ -7323,11 +7324,6 @@
 
     window.convoDeliver = function (packet) {
         const rid = activeRoomId;
-        if (window.__convoIsMuted && window.__convoIsMuted(rid)) {   // the host muted us: keep it on this screen only
-            packet.pending = false; packet.muted = true;
-            refreshReceipt(packet.id); persistRoomHistory(rid, isHost);
-            return;
-        }
         if (isHost) { try { broadcastPacket(wire(packet), null); } catch (e) {} packet.pending = false; }
         else if (hostConnection && hostConnection.open) {
             try { hostConnection.send(wire(packet)); } catch (e) {}
@@ -7362,7 +7358,7 @@
     /* ================= linked / hosting hooks ================= */
     function sendHist() {
         if (!(hostConnection && hostConnection.open)) return;
-        const all = (messageLog || []).filter(function (m) { return m && m.type === 'CHAT' && m.id && !m.pending && !m.muted; }).slice(-200).map(wire);
+        const all = (messageLog || []).filter(function (m) { return m && m.type === 'CHAT' && m.id && !m.pending; }).slice(-200).map(wire);
         let total = 0; const out = [];
         for (let i = all.length - 1; i >= 0; i--) { const sz = JSON.stringify(all[i]).length; if (total + sz > 250000) break; total += sz; out.unshift(all[i]); }
         try { hostConnection.send({ type: 'Z_HIST', messages: out }); } catch (e) {}
@@ -7594,7 +7590,6 @@
     }
 
     window.__convoFileHandler = function (file, extra) {
-        if (window.__convoIsMuted && window.__convoIsMuted(activeRoomId)) { if (window.__convoToast) window.__convoToast('You’re muted in this chat, so files and voice messages can’t be sent.', 4500); return; }
         if (file.size > MAX_FILE) { alert('Files must be smaller than 25 MB.'); return; }
         const rid = activeRoomId, fid = 'f_' + rand();
         const m = {
@@ -7873,7 +7868,7 @@
         const q = (input.value || '').trim().toLowerCase(), seq = ++searchSeq;
         if (q.length < 2) { panel.classList.remove('show'); return; }
         const found = new Map(), ids = new Set(convoRooms.map(function (r) { return r.id; }));
-        const add = function (rid, m) { if (!m || !ids.has(rid) || txt(m).toLowerCase().indexOf(q) < 0) return; const k = rid + '|' + (m.id || m.timestamp); if (!found.has(k)) found.set(k, { rid: rid, m: m }); };
+        const add = function (rid, m) { if (!m || !ids.has(rid) || (window.__convoHiddenFor && m.sender && window.__convoHiddenFor(rid, m.sender)) || txt(m).toLowerCase().indexOf(q) < 0) return; const k = rid + '|' + (m.id || m.timestamp); if (!found.has(k)) found.set(k, { rid: rid, m: m }); };
         convoRooms.forEach(function (r) {
             readStoredHistory(r.id, false).forEach(function (m) { if (m && (m.type === 'CHAT' || m.type === 'FILE')) add(r.id, m); });
             const s = sess(r.id); if (s && s.messageLog) s.messageLog.forEach(function (m) { if (m && (m.type === 'CHAT' || m.type === 'FILE')) add(r.id, m); });
@@ -7941,7 +7936,8 @@
   #convoRec button.send { background: #34c759; color: #fff; }
   @keyframes convoRecPulse { 50% { opacity: .3; } }
   @media (prefers-reduced-motion: reduce) { #convoRec .rec-dot { animation: none; } }
-  .convo-kick.convo-unmute { background: rgba(127,127,127,.22) !important; color: inherit !important; }
+  .convo-kick.convo-mute { background: rgba(127,127,127,.22) !important; color: inherit !important; }
+  .message-wrapper.convo-hidden { display: none !important; }
   .convo-kick { width: auto !important; padding: 6px 10px !important; font-size: .75rem !important; margin-left: 6px; background: rgba(255,59,48,.14) !important; color: #ff3b30 !important; }
   .convo-bans { margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(127,127,127,.3); font-size: .78rem; }
   .convo-bans h5 { margin: 0 0 6px; font-size: .74rem; opacity: .7; font-weight: 700; }
@@ -8031,51 +8027,38 @@
         if (changed) persistRoomHistory(rid, isHost);
     }
 
-    /* ================= ban (private chats) and mute (public lobby) ================= */
-    // Each device gets a random hidden ID, so changing your name does not get around a ban or a mute.
+    /* ================= ban (private chats) ================= */
+    // Each device gets a random hidden ID, so changing your name does not get around a ban.
     function makeDeviceId() {
         let d = '';
         try { d = localStorage.getItem('xchat_device_id') || ''; if (!d) { d = 'dv_' + rand() + rand() + rand(); localStorage.setItem('xchat_device_id', d); } } catch (e) {}
         return d || 'dv_session_' + rand();
     }
     window.__convoDeviceId = makeDeviceId();
+    try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf('xchat_mute_') === 0) localStorage.removeItem(k); }); } catch (e) {}   // host-enforced mutes no longer exist
     const banKey = function (rid) { return 'xchat_ban_' + rid; };
-    const muteKey = function (rid) { return 'xchat_mute_' + rid; };
     const loadList = function (key) { try { const v = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
     const saveList = function (key, list) { try { if (list.length) localStorage.setItem(key, JSON.stringify(list.slice(-200))); else localStorage.removeItem(key); } catch (e) {} };
     const clean = function (e) { return e && typeof e === 'object' ? { u: String(e.u || '').slice(0, 60), n: String(e.n || e.u || '').slice(0, 60), d: String(e.d || '').slice(0, 80) } : null; };
     const listHas = function (list, prof) { return !!prof && list.some(function (b) { return (b.u && b.u === prof.username) || (b.d && prof.deviceId && b.d === prof.deviceId); }); };
     const entryOf = function (prof) { return { u: prof.username || '', n: prof.displayName || prof.username || '', d: prof.deviceId || '' }; };
     const withoutEntry = function (list, e) { return list.filter(function (b) { return !((b.u && b.u === e.u) || (b.d && e.d && b.d === e.d)); }); };
-    const myProfile = function () { return { username: U(), deviceId: window.__convoDeviceId }; };
-    window.__convoIsMuted = function (rid) {
-        const s = sess(rid);
-        if (!s || s.isHost) return false;
-        return listHas(loadList(muteKey(rid)), myProfile());
-    };
-    function profOf(conn) { const e = conn && onlineUsersMap.get(conn.peer); return e && (e.profile || e); }
-    function listsPacket() { return { type: 'Z_LISTS', bans: loadList(banKey(activeRoomId)), mutes: loadList(muteKey(activeRoomId)) }; }
-    function broadcastLists() {   // host: members keep a copy, so a new host keeps enforcing it
+    const isPrivate = function () { const r = roomOf(activeRoomId); return !!r && r.type === 'private'; };
+    function listsPacket() { return { type: 'Z_LISTS', bans: loadList(banKey(activeRoomId)) }; }
+    function broadcastLists() {   // host: members keep a copy, so a new host keeps enforcing the ban list
         const pkt = listsPacket();
         (connections || []).forEach(function (c) { if (c && c.open) { try { c.send(pkt); } catch (e) {} } });
     }
-    function applyLists(p) {   // member: copy of the host's lists
-        const rid = activeRoomId, wasMuted = window.__convoIsMuted(rid);
-        saveList(banKey(rid), (Array.isArray(p.bans) ? p.bans : []).map(clean).filter(Boolean));
-        saveList(muteKey(rid), (Array.isArray(p.mutes) ? p.mutes : []).map(clean).filter(Boolean));
-        const nowMuted = window.__convoIsMuted(rid);
-        if (nowMuted === wasMuted) return;
-        if (activeRoomId === visibleRoomId) appendSystemMessage(nowMuted ? 'The host muted you in this chat. Your messages aren’t being shared.' : 'You can chat again.');
-        toast(nowMuted ? 'You were muted by the host.' : 'You can chat again.', 4500);
+    function applyLists(p) {   // member: copy of the host's ban list
+        if (!isPrivate()) return;
+        saveList(banKey(activeRoomId), (Array.isArray(p.bans) ? p.bans : []).map(clean).filter(Boolean));
     }
     function deny(conn) {
         try { conn.send({ type: 'Z_KICK', by: (currentUser && currentUser.displayName) || 'the host' }); } catch (e) {}
         setTimeout(function () { try { conn.close(); } catch (e) {} }, 250);
     }
     function banUser(pid) {
-        if (!isHost) return;
-        const room = roomOf(activeRoomId);
-        if (!room || room.type !== 'private') return;
+        if (!isHost || !isPrivate()) return;
         const entry = onlineUsersMap.get(pid);
         if (!entry || (peer && pid === peer.id)) return;
         const prof = entry.profile || entry, rid = activeRoomId;
@@ -8091,16 +8074,8 @@
         appendSystemMessage(text);
         renderParticipantsUI();
     }
-    function setMuted(prof, muted) {
-        if (!isHost) return;
-        const rid = activeRoomId, e = entryOf(prof);
-        const base = withoutEntry(loadList(muteKey(rid)), e);
-        saveList(muteKey(rid), muted ? base.concat([e]) : base);
-        broadcastLists();
-        toast((e.n || 'They') + (muted ? ' was muted. Their messages are no longer shared.' : ' was unmuted.'), 3800);
-        renderParticipantsUI();
-    }
     function onKicked(p) {
+        if (!isPrivate()) return;   // only private chats have bans; nobody can remove you from the public chat
         const rid = activeRoomId, st = net.S(rid);
         st.kicked = true; clearTimeout(st.timer); st.timer = null;
         const by = typeof p.by === 'string' ? p.by.slice(0, 60) : 'the host';
@@ -8117,6 +8092,66 @@
             if (st && st.kicked && !/^Banned/.test(t)) t = 'Banned by host';
             return baseSet(t);
         };
+    }
+
+    /* ================= mute a person on your own screen ================= */
+    // Purely personal and per device: their messages stay stored (so unmuting brings them back) but are never shown,
+    // never notify you and never show in previews, search or lists. Nobody else is affected and nobody is told.
+    const hideKey = function (rid) { return 'xchat_hide_' + rid; };
+    const hideCache = new Map();
+    function hideList(rid) {
+        const raw = localStorage.getItem(hideKey(rid)) || '';
+        let c = hideCache.get(rid);
+        if (!c || c.raw !== raw) { c = { raw: raw, list: loadList(hideKey(rid)) }; hideCache.set(rid, c); }
+        return c.list;
+    }
+    function hiddenFor(rid, sender) {
+        if (!sender || !sender.username || sender.username === U()) return false;
+        const list = hideList(rid);
+        if (!list.length) return false;
+        if (list.some(function (e) { return e.u === sender.username; })) return true;
+        const s = sess(rid), map = s && s.onlineUsersMap;   // same device under another name
+        if (map) {
+            const devs = new Set(list.map(function (e) { return e.d; }).filter(Boolean));
+            if (devs.size) { let hit = false; map.forEach(function (v) { const p = v && (v.profile || v); if (p && p.username === sender.username && p.deviceId && devs.has(p.deviceId)) hit = true; }); if (hit) return true; }
+        }
+        return false;
+    }
+    window.__convoHiddenFor = hiddenFor;
+    window.__convoHidden = function (sender) { return hiddenFor(activeRoomId, sender); };
+    function wrapperById(id) {
+        const ws = messagesBox.querySelectorAll('.message-wrapper');
+        for (let i = ws.length - 1; i >= 0; i--) if (ws[i].dataset.msgId === id) return ws[i];
+        return null;
+    }
+    function hideIfNeeded(msg) {
+        if (!msg || !msg.sender || !hiddenFor(activeRoomId, msg.sender)) return;
+        const w = msg.id ? wrapperById(msg.id) : messagesBox.lastElementChild;
+        if (w) w.classList.add('convo-hidden');
+    }
+    ['appendMessage', 'appendFileMessage'].forEach(function (name) {
+        const base = window[name];
+        if (typeof base !== 'function') return;
+        window[name] = function (msg) { const r = base.apply(this, arguments); try { hideIfNeeded(msg); } catch (e) {} return r; };
+    });
+    function applyHiddenView() {
+        const rid = visibleRoomId, s = sess(rid), byMsg = new Map();
+        ((s && s.messageLog) || []).forEach(function (m) { if (m && m.id) byMsg.set(m.id, m); });
+        messagesBox.querySelectorAll('.message-wrapper').forEach(function (w) { const m = byMsg.get(w.dataset.msgId); w.classList.toggle('convo-hidden', !!(m && hiddenFor(rid, m.sender))); });
+    }
+    if (typeof notifyNewMessage === 'function') {
+        const baseNotify = notifyNewMessage;
+        notifyNewMessage = function (packet) { if (packet && packet.sender && hiddenFor(activeRoomId, packet.sender)) return; return baseNotify.apply(this, arguments); };
+    }
+    function toggleHidden(prof, hide) {
+        const rid = activeRoomId, e = entryOf(prof);
+        const base = withoutEntry(loadList(hideKey(rid)), e);
+        saveList(hideKey(rid), hide ? base.concat([e]) : base);
+        applyHiddenView();
+        persistRoomHistory(rid, isHost);   // refreshes the chat-list preview
+        renderConversationList();
+        toast(hide ? (e.n || 'They') + ' is muted on your screen. Only you can tell.' : (e.n || 'They') + ' is unmuted.', 3800);
+        renderParticipantsUI();
     }
     if (typeof renderParticipantsUI === 'function') {
         const baseRPU = renderParticipantsUI;
@@ -8139,59 +8174,53 @@
     }
     function decorateParticipants() {
         const room = roomOf(activeRoomId);
-        if (!isHost || !room) return;
-        const priv = room.type === 'private', pub = room.type === 'public';
-        if (!priv && !pub) return;
+        if (!room) return;
         const rows = participantsListContainer.querySelectorAll('.user-list-item');
         if (rows.length !== onlineUsersMap.size) return;
-        const mutes = loadList(muteKey(activeRoomId));
+        const canBan = isHost && room.type === 'private';
+        const hidden = hideList(activeRoomId);
         let i = 0;
         onlineUsersMap.forEach(function (u, pid) {
             const row = rows[i++];
-            if (!row || (peer && pid === peer.id)) return;
-            const prof = u.profile || u, b = document.createElement('button');
-            b.type = 'button'; b.className = 'ios-btn convo-kick';
-            if (priv) {
-                b.textContent = 'Ban'; b.dataset.action = 'ban';
+            const prof = u.profile || u;
+            if (!row || (peer && pid === peer.id) || prof.username === U()) return;
+            const isMuted = hiddenFor(activeRoomId, { username: prof.username }) || listHas(hidden, prof);
+            const m = document.createElement('button');
+            m.type = 'button'; m.className = 'ios-btn convo-kick convo-mute'; m.dataset.action = isMuted ? 'unmute' : 'mute';
+            m.textContent = isMuted ? 'Unmute' : 'Mute';
+            m.title = isMuted ? 'Show this person’s messages again' : 'Hide this person’s messages on your screen only';
+            m.addEventListener('click', function (ev) { ev.stopPropagation(); toggleHidden(prof, !isMuted); });
+            row.appendChild(m);
+            if (canBan) {
+                const b = document.createElement('button');
+                b.type = 'button'; b.className = 'ios-btn convo-kick'; b.textContent = 'Ban'; b.dataset.action = 'ban';
                 b.addEventListener('click', function (ev) {
                     ev.stopPropagation();
                     if (confirm('Ban ' + (prof.displayName || 'this person') + ' from this chat? They’ll be removed and won’t be able to rejoin, even under another name, unless you unban them.')) banUser(pid);
                 });
-            } else {
-                const muted = listHas(mutes, prof);
-                b.textContent = muted ? 'Unmute' : 'Mute'; b.dataset.action = muted ? 'unmute' : 'mute';
-                if (muted) b.classList.add('convo-unmute');
-                b.addEventListener('click', function (ev) { ev.stopPropagation(); setMuted(prof, !muted); });
+                row.appendChild(b);
             }
-            row.appendChild(b);
         });
-        if (priv) {
+        if (canBan) {
             const bans = loadList(banKey(activeRoomId));
             if (bans.length) participantsListContainer.appendChild(listBox('Banned', bans, 'Unban', function (e) {
                 saveList(banKey(activeRoomId), withoutEntry(loadList(banKey(activeRoomId)), e)); broadcastLists(); renderParticipantsUI();
             }));
-        } else if (mutes.length) {
-            participantsListContainer.appendChild(listBox('Muted', mutes, 'Unmute', function (e) { setMuted({ username: e.u, displayName: e.n, deviceId: e.d }, false); }));
         }
+        if (hidden.length) participantsListContainer.appendChild(listBox('Muted on your screen', hidden, 'Unmute', function (e) { toggleHidden({ username: e.u, displayName: e.n, deviceId: e.d }, false); }));
     }
-
-    /* mute: the host drops what a muted person sends and tells them */
-    const MUTE_TYPES = { CHAT: 1, FILE: 1, EDIT: 1, Z_FBEGIN: 1 };
-    const mutedFids = new Set();
-    function muteReply(src, packet) {
-        const id = packet.id || packet.mid;
-        try {
-            if (packet.type === 'Z_FBEGIN') { mutedFids.add(packet.fid); src.send({ type: 'Z_FNEED', fid: packet.fid, have: 'all' }); }
-            src.send({ type: 'Z_MUTED', id: id });
-        } catch (e) {}
-    }
-
-    function onMutedReply(p) {
-        const m = (messageLog || []).find(function (x) { return x && x.id === p.id && x.sender && x.sender.username === U(); });
-        if (!m) return;
-        m.pending = false; m.muted = true;
-        persistRoomHistory(activeRoomId, isHost);
-        if (upg.refreshReceipt) upg.refreshReceipt(m.id);
+    // the public chat's host has no special powers: no "clear everyone's chat" button (it can still clear its own screen)
+    const infoModalEl = byId('infoModal');
+    if (infoModalEl) {
+        new MutationObserver(function () {
+            if (infoModalEl.classList.contains('hidden')) return;
+            const room = roomOf(visibleRoomId);
+            if (!room || room.type !== 'public') return;
+            infoModalEl.querySelectorAll('button').forEach(function (b) {
+                if (b.textContent === 'Clear all messages') b.style.display = 'none';
+                else if (b.textContent === 'Clear my screen') b.style.display = '';
+            });
+        }).observe(infoModalEl, { attributes: true, attributeFilter: ['class'] });
     }
 
     /* ================= takeover notice ================= */
@@ -8227,15 +8256,19 @@
             if (t === 'Z_TOMBS') { if (!isHost) applyTombs(packet.ids); return; }
             if (t === 'Z_KICK') { if (!isHost) onKicked(packet); return; }
             if (t === 'Z_LISTS') { if (!isHost) applyLists(packet); return; }
-            if (t === 'Z_MUTED') { if (!isHost) onMutedReply(packet); return; }
-            if (isHost && src && (t === 'Z_FCHUNK' || t === 'Z_FEND') && mutedFids.has(packet.fid)) { if (t === 'Z_FEND') mutedFids.delete(packet.fid); return; }
-            if (isHost && src && MUTE_TYPES[t] && listHas(loadList(muteKey(activeRoomId)), profOf(src))) { muteReply(src, packet); return; }
-            if (t === 'Z_NOTE') { if (!isHost && typeof packet.text === 'string' && activeRoomId === visibleRoomId) appendSystemMessage(packet.text.slice(0, 200)); return; }
-            if (t === 'JOIN' && isHost && src && listHas(loadList(banKey(activeRoomId)), packet.profile)) { deny(src); return; }
+            if (t === 'CLEAR_CHAT' && !isHost && !isPrivate()) return;   // nobody can wipe everyone's public chat
+            if (t === 'Z_NOTE') { if (!isHost && isPrivate() && typeof packet.text === 'string' && activeRoomId === visibleRoomId) appendSystemMessage(packet.text.slice(0, 200)); return; }
+            if (t === 'JOIN' && isHost && src && isPrivate() && listHas(loadList(banKey(activeRoomId)), packet.profile)) { deny(src); return; }
         }
+        const who = (t === 'CHAT' || t === 'FILE') ? packet.sender : (t === 'Z_FEND' ? (function () { const x = upg.incoming.get(packet.fid), m = x && messageLog.find(function (y) { return y && y.id === x.mid; }); return m && m.sender; })() : null);
+        const quiet = !!who && hiddenFor(activeRoomId, who), rm = quiet ? roomOf(activeRoomId) : null, snap = rm && { u: rm.unread, l: rm.lastMessage };
         baseHandle(packet, src);
+        if (quiet && rm) {   // a muted person's message must not bump the unread count or the preview
+            rm.unread = snap.u; rm.lastMessage = snap.l;
+            try { if (activeRoomId === visibleRoomId && typeof sidebarLastMsg !== 'undefined') sidebarLastMsg.innerText = snap.l || ''; persistConversationList(); renderConversationList(); } catch (e) {}
+        }
         if (isHost && src && packet && packet.op && (t === 'EDIT' || t === 'DELETE')) { try { src.send({ type: 'Z_OPACK', op: packet.op }); } catch (e) {} }
-        else if (t === 'JOIN' && isHost && src) { try { src.send(listsPacket()); } catch (e) {} }
+        else if (t === 'JOIN' && isHost && src && isPrivate()) { try { src.send(listsPacket()); } catch (e) {} }
         else if (t === 'Z_HIST' && isHost && src) {
             try { src.send({ type: 'Z_TOMBS', ids: Array.from(upg.tombSet(activeRoomId)).slice(-300) }); } catch (e) {}
         } else if (t === 'USER_LIST' && !isHost) hostNameCheck();
@@ -8459,7 +8492,7 @@
         rowEl.append(left, btn); anchor.before(rowEl);
     }
 
-    window.__convoUpg5 = { toast: toast, loadOps: loadOps, loadList: loadList, banUser: banUser, setMuted: setMuted, quality: quality, measure: measure, deleteFiles: deleteFiles, exportFull: exportFull };
+    window.__convoUpg5 = { toast: toast, loadOps: loadOps, loadList: loadList, banUser: banUser, hiddenFor: hiddenFor, quality: quality, measure: measure, deleteFiles: deleteFiles, exportFull: exportFull };
 })();
 </script>
 
