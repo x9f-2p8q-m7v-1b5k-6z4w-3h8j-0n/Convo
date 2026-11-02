@@ -872,7 +872,7 @@
             flex: 1;
         }
 
-        .input-wrapper input {
+        .input-wrapper input, .input-wrapper textarea {
             width: 100%;
             padding: 9px 14px;
             border: 1px solid var(--input-border);
@@ -1180,8 +1180,8 @@
         .input-bar { padding: 6px 0 0; gap: 10px; }
         .plus-btn { width: 38px; height: 38px; border-radius: 13px; background: var(--input-bg); border-color: var(--input-border); transition: all .18s ease; }
         .plus-btn:hover { transform: translateY(-1px); }
-        .input-wrapper input { padding: 13px 17px; min-height: 44px; border-radius: 15px; border-color: var(--input-border); background: var(--input-bg); font-size: .91rem; transition: border-color .18s ease, box-shadow .18s ease; }
-        .input-wrapper input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(120,103,245,.12); }
+        .input-wrapper input, .input-wrapper textarea { padding: 13px 17px; min-height: 44px; border-radius: 15px; border-color: var(--input-border); background: var(--input-bg); font-size: .91rem; transition: border-color .18s ease, box-shadow .18s ease; }
+        .input-wrapper input:focus, .input-wrapper textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(120,103,245,.12); }
         .send-arrow-btn { width: 40px; height: 40px; border-radius: 14px; box-shadow: 0 5px 13px rgba(120,103,245,.25); transition: transform .15s ease; }
         .send-arrow-btn:hover { transform: translateY(-2px); }
         .ios-btn { border-radius: 12px; background: linear-gradient(135deg,#0a84ff,#007aff); box-shadow: 0 7px 17px rgba(120,103,245,.16); transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease; }
@@ -1215,7 +1215,7 @@
             .input-bar-container { padding: 8px 10px 12px; }
             .input-bar { gap: 7px; }
             .plus-btn { width: 34px; height: 34px; }
-            .input-wrapper input { padding: 11px 13px; }
+            .input-wrapper input, .input-wrapper textarea { padding: 11px 13px; }
         }
         @media (max-width: 520px) {
             .sidebar { display: none; }
@@ -1303,10 +1303,10 @@
         .message-wrapper.sent .bubble { background:linear-gradient(135deg,#1684ff,#0066dd); border-bottom-right-radius:6px; box-shadow:0 5px 15px #1677ff1d; }
         .message-wrapper.received .bubble { border:1px solid #eaf3ff; background:#fff; border-bottom-left-radius:6px; }
         .chat-pane.convo-drop-active { outline:3px dashed #1684ff; outline-offset:-12px; background:#f0f7ff; }
-        .chat-pane.convo-drop-active::after { content:"Drop a file to share it"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:20; padding:14px 20px; border-radius:14px; background:#0066dd; color:#fff; font-weight:750; box-shadow:0 12px 30px #005ac144; pointer-events:none; }
+        .chat-pane.convo-drop-active::after { content:"Drop files to share them"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:20; padding:14px 20px; border-radius:14px; background:#0066dd; color:#fff; font-weight:750; box-shadow:0 12px 30px #005ac144; pointer-events:none; }
         .input-bar-container { border-top:1px solid #eaf3ff; background:rgba(255,255,255,.92); padding:14px 18px 17px; }
         .input-bar { padding:5px; gap:9px; border:1px solid #e9e5f2; background:#fff; border-radius:18px; box-shadow:0 5px 20px #2c1b5108; }
-        .input-wrapper input { border:0!important; background:transparent!important; box-shadow:none!important; }
+        .input-wrapper input, .input-wrapper textarea { border:0!important; background:transparent!important; box-shadow:none!important; }
         .plus-btn { border-radius:12px; transition:transform .15s,background .15s; }
         .plus-btn:hover { transform:translateY(-1px); background:#eaf3ff; }
         .send-arrow-btn { border-radius:13px; background:linear-gradient(135deg,#1684ff,#005ac1); box-shadow:0 4px 10px #087cff35; }
@@ -1410,7 +1410,7 @@
         .send-arrow-btn { background:linear-gradient(135deg,#1684ff,#005ac1); box-shadow:0 4px 10px #1677ff35; }
         .ios-btn { background:linear-gradient(135deg,#1684ff,#005ac1); box-shadow:0 7px 17px #1677ff22; }
         .ios-btn:hover { box-shadow:0 10px 22px #1677ff2b; }
-        .sidebar-search:focus,.input-wrapper input:focus,.convo-dialog input:focus { border-color:#78b5ff; box-shadow:0 0 0 4px #1677ff18; }
+        .sidebar-search:focus,.input-wrapper input:focus, .input-wrapper textarea:focus,.convo-dialog input:focus { border-color:#78b5ff; box-shadow:0 0 0 4px #1677ff18; }
         .convo-dialog input:not([type=checkbox]) { border-color:#d9e8fb; }
         .dialog-kicker { color:#1677d8; }
         .settings-check input { accent-color:#007aff; }
@@ -1494,7 +1494,7 @@
       #setupScreen { background:radial-gradient(ellipse at 50% 10%,#e1efff 0%,#f7faff 48%,#edf5ff 100%); }
       #setupScreen h1 { background:linear-gradient(120deg,#1684ff,#005ac1); -webkit-background-clip:text; background-clip:text; }
       .message-wrapper.sent .bubble { background:linear-gradient(135deg,#1684ff,#0066dd); box-shadow:0 5px 15px #1677ff22; }
-      .input-wrapper input:focus,.sidebar-search:focus { border-color:#78b5ff; box-shadow:0 0 0 4px #1677ff18; }
+      .input-wrapper input:focus, .input-wrapper textarea:focus,.sidebar-search:focus { border-color:#78b5ff; box-shadow:0 0 0 4px #1677ff18; }
       [data-theme="dark"] .chat-list-item.active { background:linear-gradient(110deg,#123b67,#183354); border-color:#28568a; color:#eaf4ff; }
       [data-theme="dark"] .chat-list-item.active .chat-preview,[data-theme="dark"] .chat-list-item.active .chat-time { color:#a7d0ff; }
     </style>
@@ -1591,7 +1591,7 @@
       .input-bar-container { position: relative; flex-shrink: 0; padding-bottom: max(14px, env(safe-area-inset-bottom)); }
       .input-bar { min-width: 0; }
       .input-wrapper { flex: 1 1 0; min-width: 0; }
-      .input-wrapper input { min-width: 0; }
+      .input-wrapper input, .input-wrapper textarea { min-width: 0; }
       .plus-btn, .send-arrow-btn { flex-shrink: 0; }
       #replyBanner { gap: 8px; }
       #replyBannerText { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1707,7 +1707,7 @@
         .account-menu-button { padding: 5px 9px; }
 
         /* 16px inputs stop iOS Safari zooming the page when a field is focused */
-        .input-wrapper input, .sidebar-search, .auth-box input, .modal input, .modal select { font-size: 16px; }
+        .input-wrapper input, .input-wrapper textarea, .sidebar-search, .auth-box input, .modal input, .modal select { font-size: 16px; }
       }
 
       /* --- Phones --------------------------------------------------------- */
@@ -2115,6 +2115,7 @@
                     <input
                         type="file"
                         id="fileInput"
+                        multiple
                     >
 
                     <button
@@ -2135,12 +2136,13 @@
 
                     <div class="input-wrapper">
 
-                        <input
-                            type="text"
+                        <textarea
                             id="messageInput"
+                            rows="1"
                             placeholder="Write a message…"
                             autocomplete="off"
-                        >
+                            enterkeyhint="send"
+                        ></textarea>
 
                     </div>
 
@@ -3898,7 +3900,7 @@
                 );
 
                 hostConnection.send({
-                    type: 'JOIN', profile: Object.assign({}, currentUser, { deviceId: window.__convoDeviceId }),
+                    type: 'JOIN', profile: Object.assign({}, currentUser, { deviceId: window.__convoDeviceId }, window.__convoJoinExtra ? window.__convoJoinExtra(activeRoomId) : null),
 
                     peerId:
                         peer.id
@@ -4667,9 +4669,9 @@
             e.preventDefault(); chatDropTarget.classList.remove('convo-drop-active');
         }));
         chatDropTarget.addEventListener('drop', e => {
-            const file = e.dataTransfer?.files?.[0];
-            if (!file) return;
-            const transfer = new DataTransfer(); transfer.items.add(file); fileInput.files = transfer.files;
+            const dropped = Array.from(e.dataTransfer?.files || []);
+            if (!dropped.length) return;
+            const transfer = new DataTransfer(); dropped.forEach(f => transfer.items.add(f)); fileInput.files = transfer.files;
             fileInput.dispatchEvent(new Event('change', {bubbles:true}));
         });
     }
@@ -4682,6 +4684,7 @@
                 e.target.files[0];
 
             if (!file) return;
+            if (window.__convoAddFiles) { const picked = Array.from(e.target.files); fileInput.value = ''; window.__convoAddFiles(picked); return; }
             if (window.__convoFileHandler) { window.__convoFileHandler(file); fileInput.value = ''; return; }
             if (file.size > 8 * 1024 * 1024) { alert('Files must be smaller than 8 MB.'); fileInput.value = ''; return; }
 
@@ -5822,23 +5825,60 @@
     'use strict';
     const byId = id => document.getElementById(id);
 
-    /* 1. Rich text: `code`, **bold**, _italic_, ~strike~, links, @mentions */
-    const RICH = /(`[^`\n]+`)|(\*\*[^*\n]+\*\*)|((?<!\w)_(?=\w)[^_\n]*\w_(?!\w))|((?<!\w)~(?=\w)[^~\n]*\w~(?!\w))|(https?:\/\/[^\s<]+)|(@[\w.-]+)/g;
+    /* 1. Rich text: ```code blocks```, `code`, **bold**, _italic_ / *italic*, ~strike~, tappable links, @mentions */
+    const RICH = /(```[\s\S]+?```)|(`[^`\n]+`)|(\*\*[^*\n]+\*\*)|((?<!\w)_(?=\w)[^_\n]*\w_(?!\w))|((?<!\w)~(?=\w)[^~\n]*\w~(?!\w))|((?<![\w*])\*(?=[^\s*])[^*\n]*[^\s*]\*(?![\w*]))|((?:https?:\/\/|www\.)[^\s<]+)|(@[\w.-]+)/g;
+    function splitUrl(u) {   // keeps trailing punctuation ("see https://x.com.") out of the link
+        let tail = '';
+        while (u.length > 1) {
+            const c = u[u.length - 1];
+            const unbalanced = (open, close) => (u.match(new RegExp('\\' + open, 'g')) || []).length < (u.match(new RegExp('\\' + close, 'g')) || []).length;
+            if (/[.,!?;:'"»”’*_~]/.test(c) || (c === ')' && unbalanced('(', ')')) || (c === ']' && unbalanced('[', ']'))) { tail = c + tail; u = u.slice(0, -1); } else break;
+        }
+        return [u, tail];
+    }
+    function codeBlock(body) {
+        let lang = '', code = body;
+        const nl = body.indexOf('\n'), first = nl > -1 ? body.slice(0, nl).trim() : '';
+        if (first && /^[\w+#.-]{1,20}$/.test(first)) { lang = first; code = body.slice(nl + 1); }
+        code = code.replace(/^\n/, '').replace(/\n$/, '');
+        const pre = document.createElement('pre'), c = document.createElement('code'), copy = document.createElement('button');
+        pre.className = 'convo-code'; c.textContent = code;
+        copy.type = 'button'; copy.className = 'cc-copy'; copy.textContent = lang ? lang + ' · Copy' : 'Copy';
+        copy.addEventListener('click', ev => {
+            ev.stopPropagation(); ev.preventDefault();
+            const done = () => { copy.textContent = 'Copied ✓'; setTimeout(() => { copy.textContent = lang ? lang + ' · Copy' : 'Copy'; }, 1400); };
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, () => {});
+            else { const ta = document.createElement('textarea'); ta.value = code; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove(); }
+        });
+        pre.append(copy, c);
+        return pre;
+    }
     function richText(el, raw) {
-        el.textContent = ''; RICH.lastIndex = 0; let i = 0, m;
+        el.textContent = ''; RICH.lastIndex = 0; let i = 0, m, afterBlock = false;
+        const addText = t => { if (afterBlock) { t = t.replace(/^\n/, ''); afterBlock = false; } if (t) el.append(t); };
         while ((m = RICH.exec(raw))) {
-            if (m.index > i) el.append(raw.slice(i, m.index));
+            let pre = raw.slice(i, m.index);
+            if (m[1]) pre = pre.replace(/\n$/, '');
+            if (pre) addText(pre);
             const t = m[0]; let n;
-            if (m[1]) { n = document.createElement('code'); n.textContent = t.slice(1, -1); }
-            else if (m[2]) { n = document.createElement('b'); n.textContent = t.slice(2, -2); }
-            else if (m[3]) { n = document.createElement('i'); n.textContent = t.slice(1, -1); }
-            else if (m[4]) { n = document.createElement('s'); n.textContent = t.slice(1, -1); }
-            else if (m[5]) { n = document.createElement('a'); n.href = t; n.target = '_blank'; n.rel = 'noopener noreferrer'; n.textContent = t; }
-            else { n = document.createElement('span'); n.className = 'mention' + (t.slice(1).toLowerCase() === (currentUser.username || '').toLowerCase() ? ' me' : ''); n.textContent = t; }
+            if (m[1]) { n = codeBlock(t.slice(3, -3)); afterBlock = true; }
+            else if (m[2]) { afterBlock = false; n = document.createElement('code'); n.textContent = t.slice(1, -1); }
+            else if (m[3]) { afterBlock = false; n = document.createElement('b'); n.textContent = t.slice(2, -2); }
+            else if (m[4]) { afterBlock = false; n = document.createElement('i'); n.textContent = t.slice(1, -1); }
+            else if (m[5]) { afterBlock = false; n = document.createElement('s'); n.textContent = t.slice(1, -1); }
+            else if (m[6]) { afterBlock = false; n = document.createElement('i'); n.textContent = t.slice(1, -1); }
+            else if (m[7]) {
+                afterBlock = false;
+                const [u, tail] = splitUrl(t);
+                n = document.createElement('a'); n.href = /^www\./i.test(u) ? 'https://' + u : u; n.target = '_blank'; n.rel = 'noopener noreferrer'; n.textContent = u;
+                el.append(n); if (tail) el.append(tail); i = m.index + t.length; continue;
+            }
+            else { afterBlock = false; n = document.createElement('span'); n.className = 'mention' + (t.slice(1).toLowerCase() === (currentUser.username || '').toLowerCase() ? ' me' : ''); n.textContent = t; }
             el.append(n); i = m.index + t.length;
         }
-        if (i < raw.length) el.append(raw.slice(i));
+        if (i < raw.length) addText(raw.slice(i));
     }
+    window.__convoRichText = richText;
 
     /* 2. Don't yank the reader to the bottom while they scroll history; show a jump pill instead */
     const pill = document.createElement('button');
@@ -5870,10 +5910,14 @@
 
     /* 4. Paste an image straight into the chat */
     messageInput.addEventListener('paste', e => {
-        const f = [...(e.clipboardData?.files || [])].find(x => x.type.startsWith('image/'));
-        if (!f) return;
+        const fs = [...(e.clipboardData?.files || [])];
+        if (!fs.length) return;
+        if ((e.clipboardData.getData('text/plain') || '').trim() && fs.every(x => x.type.startsWith('image/'))) return;   // text copied from Word/Excel etc. also carries a picture: paste the text
         e.preventDefault();
-        const dt = new DataTransfer(); dt.items.add(new File([f], 'pasted-' + Date.now() + '.png', { type: f.type }));
+        const dt = new DataTransfer();
+        fs.forEach((f, i) => dt.items.add(f.type.startsWith('image/') && (!f.name || /^image\.\w+$/i.test(f.name))
+            ? new File([f], 'pasted-' + Date.now() + (fs.length > 1 ? '-' + (i + 1) : '') + '.' + ((f.type.split('/')[1] || 'png').replace('jpeg', 'jpg')), { type: f.type })
+            : f));
         fileInput.files = dt.files; fileInput.dispatchEvent(new Event('change', { bubbles: true }));
     });
 
@@ -6080,7 +6124,7 @@
         const text = extra.text;
         const pkt = { type: 'CHAT', id: 'msg_' + Math.random().toString(36).slice(2, 9), sender: currentUser, text, timestamp: Date.now(),
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), replyTo: activeReplyingMessage ? activeReplyingMessage.text : null, ...extra };
-        messageLog.push(pkt); persistRoomHistory(activeRoomId, isHost); appendMessage(pkt, 'sent'); xsend(pkt);
+        messageLog.push(pkt); persistRoomHistory(activeRoomId, isHost); appendMessage(pkt, 'sent'); if (window.__convoSignThen) window.__convoSignThen(pkt, () => xsend(pkt)); else xsend(pkt);
         sidebarLastMsg.innerText = text;
         const r = convoRooms.find(x => x.id === activeRoomId); if (r) { r.lastMessage = text; r.lastActivity = Date.now(); }
         persistConversationList(); renderConversationList();
@@ -6450,9 +6494,9 @@
             if (!peer?.open) { alert('That chat is not connected right now.'); return; }
             msgs.forEach(m => {
                 const p = { ...m, id: rid8(), sender: currentUser, timestamp: Date.now(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), replyTo: null };
-                ['reactions', 'history', 'expires', 'poll', 'readBy', 'edited'].forEach(k => delete p[k]);
+                ['reactions', 'history', 'expires', 'poll', 'readBy', 'edited', 'auth'].forEach(k => delete p[k]);
                 if (p.type === 'CHAT') p.text = '↪ ' + p.text;
-                messageLog.push(p); xsend(p); if (room.id === visibleRoomId) (p.type === 'FILE' ? appendFileMessage : appendMessage)(p, 'sent');
+                messageLog.push(p); if (window.__convoSignThen) window.__convoSignThen(p, () => xsend(p)); else xsend(p); if (room.id === visibleRoomId) (p.type === 'FILE' ? appendFileMessage : appendMessage)(p, 'sent');
             });
             persistRoomHistory(room.id, isHost); const r = roomOf(room.id); if (r) { r.lastActivity = Date.now(); persistConversationList(); }
         });
@@ -7523,7 +7567,8 @@
         const send = function (o) { conns.forEach(function (c) { try { if (c.open) c.send(o); } catch (e) {} }); };
         const single = conns.length === 1;
         const begin = { type: 'Z_FBEGIN', mid: m.id, fid: m.fileId, n: n, name: m.fileName, size: m.fileSize, ftype: m.fileType, sender: stripSecret(m.sender), timestamp: m.timestamp, time: m.time };
-        if (m.voice) { begin.voice = 1; begin.dur = m.dur || 0; }
+        if (m.voice) { begin.voice = 1; begin.dur = m.dur || 0; if (m.peaks) begin.peaks = m.peaks; if (m.from) begin.from = m.from; }
+        if (m.auth) begin.auth = m.auth;
         if (!single) begin.nr = 1;
         let have = null;
         if (single) { const waiter = waitNeed(m.fileId, 1500); send(begin); have = await waiter; }
@@ -7597,6 +7642,10 @@
             fileType: file.type || 'application/octet-stream', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), pending: true
         };
         if (extra && extra.voice) { m.voice = true; m.dur = Math.max(0, Math.min(3600, Number(extra.dur) || 0)); }
+        if (extra && extra.voice) {   // waveform + "sent from" label travel with the voice message
+            if (Array.isArray(extra.peaks)) m.peaks = extra.peaks.slice(0, 80).map(function (v) { return Math.max(0, Math.min(100, Math.round(Number(v) || 0))); });
+            if (typeof extra.from === 'string' && extra.from) m.from = extra.from.slice(0, 60);
+        }
         memFiles.set(fid, file);
         putFile(fid, file, { name: file.name, type: m.fileType, size: file.size }).catch(function () {});
         messageLog.push(m);
@@ -7605,7 +7654,8 @@
         const room = roomOf(rid);
         if (room) { room.lastMessage = m.voice ? '🎤 Voice message' : '📎 ' + file.name; room.lastActivity = Date.now(); }
         renderConversationList();
-        startUpload(rid, m.id);
+        const goUpload = function () { startUpload(rid, m.id); };
+        if (window.__convoSignFile) window.__convoSignFile(m).then(goUpload, goUpload); else goUpload();
     };
 
     const relay = function (obj, except) { (connections || []).forEach(function (c) { if (c !== except && c.open) { try { c.send(obj); } catch (e) {} } }); };
@@ -7652,6 +7702,9 @@
             m = { type: 'FILE', id: p.mid, timestamp: p.timestamp || Date.now(), time: p.time || '', sender: sender, fileId: p.fid,
                   fileName: String(p.name || 'file').slice(0, 200), fileSize: p.size, fileType: String(p.ftype || 'application/octet-stream').slice(0, 100), incomplete: true };
             if (p.voice) { m.voice = true; m.dur = Math.max(0, Math.min(3600, Number(p.dur) || 0)); }
+            if (p.voice && Array.isArray(p.peaks)) m.peaks = p.peaks.slice(0, 80).map(function (v) { return Math.max(0, Math.min(100, Math.round(Number(v) || 0))); });
+            if (p.voice && typeof p.from === 'string' && p.from) m.from = p.from.slice(0, 60);
+            if (p.auth && typeof p.auth === 'object' && typeof p.auth.k === 'string' && typeof p.auth.s === 'string') m.auth = { k: p.auth.k.slice(0, 200), s: p.auth.s.slice(0, 200) };
             messageLog.push(m);
             if (activeRoomId === visibleRoomId) appendFileMessage(m, sender.username === U() ? 'sent' : 'received');
         } else { m.incomplete = true; m.failed = false; }
@@ -8039,10 +8092,10 @@
     const banKey = function (rid) { return 'xchat_ban_' + rid; };
     const loadList = function (key) { try { const v = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
     const saveList = function (key, list) { try { if (list.length) localStorage.setItem(key, JSON.stringify(list.slice(-200))); else localStorage.removeItem(key); } catch (e) {} };
-    const clean = function (e) { return e && typeof e === 'object' ? { u: String(e.u || '').slice(0, 60), n: String(e.n || e.u || '').slice(0, 60), d: String(e.d || '').slice(0, 80) } : null; };
-    const listHas = function (list, prof) { return !!prof && list.some(function (b) { return (b.u && b.u === prof.username) || (b.d && prof.deviceId && b.d === prof.deviceId); }); };
-    const entryOf = function (prof) { return { u: prof.username || '', n: prof.displayName || prof.username || '', d: prof.deviceId || '' }; };
-    const withoutEntry = function (list, e) { return list.filter(function (b) { return !((b.u && b.u === e.u) || (b.d && e.d && b.d === e.d)); }); };
+    const clean = function (e) { return e && typeof e === 'object' ? { u: String(e.u || '').slice(0, 60), n: String(e.n || e.u || '').slice(0, 60), d: String(e.d || '').slice(0, 80), k: String(e.k || '').slice(0, 40) } : null; };
+    const listHas = function (list, prof) { return !!prof && list.some(function (b) { return (b.u && b.u === prof.username) || (b.d && prof.deviceId && b.d === prof.deviceId) || (b.k && prof.idFp && b.k === prof.idFp); }); };
+    const entryOf = function (prof) { return { u: prof.username || '', n: prof.displayName || prof.username || '', d: prof.deviceId || '', k: prof.idFp || '' }; };
+    const withoutEntry = function (list, e) { return list.filter(function (b) { return !((b.u && b.u === e.u) || (b.d && e.d && b.d === e.d) || (b.k && e.k && b.k === e.k)); }); };
     const isPrivate = function () { const r = roomOf(activeRoomId); return !!r && r.type === 'private'; };
     function listsPacket() { return { type: 'Z_LISTS', bans: loadList(banKey(activeRoomId)) }; }
     function broadcastLists() {   // host: members keep a copy, so a new host keeps enforcing the ban list
@@ -8051,6 +8104,7 @@
     }
     function applyLists(p) {   // member: copy of the host's ban list
         if (!isPrivate()) return;
+        if (window.__convoOwnerKnown && window.__convoOwnerKnown()) return;   // this chat has an owner: only the owner's signed list counts
         saveList(banKey(activeRoomId), (Array.isArray(p.bans) ? p.bans : []).map(clean).filter(Boolean));
     }
     function deny(conn) {
@@ -8058,7 +8112,9 @@
         setTimeout(function () { try { conn.close(); } catch (e) {} }, 250);
     }
     function banUser(pid) {
+        if (isPrivate() && !isHost) { if (window.__convoOwnerBan) window.__convoOwnerBan(pid); return; }   // the owner can ban even while someone else hosts
         if (!isHost || !isPrivate()) return;
+        if (window.__convoOwnerBlocks && window.__convoOwnerBlocks()) { toast('Only this chat’s owner can ban people.', 4000); return; }
         const entry = onlineUsersMap.get(pid);
         if (!entry || (peer && pid === peer.id)) return;
         const prof = entry.profile || entry, rid = activeRoomId;
@@ -8071,6 +8127,7 @@
         const text = (prof.displayName || prof.username) + ' was banned from this chat by the host.';
         (connections || []).forEach(function (c) { if (c !== conn && c.open) { try { c.send({ type: 'Z_NOTE', text: text }); } catch (er) {} } });
         broadcastLists();
+        if (window.__convoOwnerPublish) window.__convoOwnerPublish();   // owner-signed copy that survives a change of host
         appendSystemMessage(text);
         renderParticipantsUI();
     }
@@ -8110,10 +8167,11 @@
         const list = hideList(rid);
         if (!list.length) return false;
         if (list.some(function (e) { return e.u === sender.username; })) return true;
+        if (sender.idFp && list.some(function (e) { return e.k && e.k === sender.idFp; })) return true;   // same identity key under another name
         const s = sess(rid), map = s && s.onlineUsersMap;   // same device under another name
         if (map) {
-            const devs = new Set(list.map(function (e) { return e.d; }).filter(Boolean));
-            if (devs.size) { let hit = false; map.forEach(function (v) { const p = v && (v.profile || v); if (p && p.username === sender.username && p.deviceId && devs.has(p.deviceId)) hit = true; }); if (hit) return true; }
+            const devs = new Set(list.map(function (e) { return e.d; }).filter(Boolean)), keys = new Set(list.map(function (e) { return e.k; }).filter(Boolean));
+            if (devs.size || keys.size) { let hit = false; map.forEach(function (v) { const p = v && (v.profile || v); if (p && p.username === sender.username && ((p.deviceId && devs.has(p.deviceId)) || (p.idFp && keys.has(p.idFp)))) hit = true; }); if (hit) return true; }
         }
         return false;
     }
@@ -8177,7 +8235,7 @@
         if (!room) return;
         const rows = participantsListContainer.querySelectorAll('.user-list-item');
         if (rows.length !== onlineUsersMap.size) return;
-        const canBan = isHost && room.type === 'private';
+        const canBan = room.type === 'private' && (isHost ? !(window.__convoOwnerBlocks && window.__convoOwnerBlocks()) : !!(window.__convoIsOwner && window.__convoIsOwner()));
         const hidden = hideList(activeRoomId);
         let i = 0;
         onlineUsersMap.forEach(function (u, pid) {
@@ -8204,10 +8262,12 @@
         if (canBan) {
             const bans = loadList(banKey(activeRoomId));
             if (bans.length) participantsListContainer.appendChild(listBox('Banned', bans, 'Unban', function (e) {
-                saveList(banKey(activeRoomId), withoutEntry(loadList(banKey(activeRoomId)), e)); broadcastLists(); renderParticipantsUI();
+                if (!isHost) { if (window.__convoOwnerUnban) window.__convoOwnerUnban(e); return; }
+                if (window.__convoOwnerBlocks && window.__convoOwnerBlocks()) { toast('Only this chat’s owner can unban people.', 4000); return; }
+                saveList(banKey(activeRoomId), withoutEntry(loadList(banKey(activeRoomId)), e)); broadcastLists(); if (window.__convoOwnerPublish) window.__convoOwnerPublish(); renderParticipantsUI();
             }));
         }
-        if (hidden.length) participantsListContainer.appendChild(listBox('Muted on your screen', hidden, 'Unmute', function (e) { toggleHidden({ username: e.u, displayName: e.n, deviceId: e.d }, false); }));
+        if (hidden.length) participantsListContainer.appendChild(listBox('Muted on your screen', hidden, 'Unmute', function (e) { toggleHidden({ username: e.u, displayName: e.n, deviceId: e.d, idFp: e.k }, false); }));
     }
     // the public chat's host has no special powers: no "clear everyone's chat" button (it can still clear its own screen)
     const infoModalEl = byId('infoModal');
@@ -8492,7 +8552,981 @@
         rowEl.append(left, btn); anchor.before(rowEl);
     }
 
-    window.__convoUpg5 = { toast: toast, loadOps: loadOps, loadList: loadList, banUser: banUser, hiddenFor: hiddenFor, quality: quality, measure: measure, deleteFiles: deleteFiles, exportFull: exportFull };
+    window.__convoUpg5 = { saveList: saveList, banKey: banKey, deny: deny, listHas: listHas, entryOf: entryOf, clean: clean, withoutEntry: withoutEntry, broadcastLists: broadcastLists, listsPacket: listsPacket, isPrivate: isPrivate, toast: toast, loadOps: loadOps, loadList: loadList, banUser: banUser, hiddenFor: hiddenFor, quality: quality, measure: measure, deleteFiles: deleteFiles, exportFull: exportFull };
+})();
+</script>
+
+
+<style id="convo-upgrades6-css">
+  /* message box is now a textarea (Shift+Enter = new line) */
+  .input-wrapper textarea#messageInput { display: block; resize: none; font-family: inherit; line-height: 1.4; max-height: 160px; overflow-y: hidden; min-height: 44px; }
+  .bubble > span { white-space: pre-wrap; }
+  #messagesBox { scroll-behavior: auto !important; }
+  .bubble code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .86em; padding: 1px 5px; border-radius: 5px; background: rgba(127,127,127,.22); }
+  pre.convo-code { position: relative; margin: 6px 0; padding: 26px 10px 9px; border-radius: 10px; background: rgba(0,0,0,.82); color: #f2f2f7; font-size: .8rem; line-height: 1.4; overflow-x: auto; white-space: pre; max-width: 100%; }
+  pre.convo-code code { background: transparent; padding: 0; color: inherit; font-size: inherit; }
+  pre.convo-code .cc-copy { position: absolute; top: 4px; right: 6px; border: 0; border-radius: 6px; padding: 2px 8px; font-size: .68rem; cursor: pointer; background: rgba(255,255,255,.16); color: #fff; }
+  .bubble a { text-decoration: underline; word-break: break-all; }
+  .message-wrapper.sent .bubble a { color: #fff; }
+  .message-wrapper.received .bubble a { color: var(--primary); }
+
+  /* identity badges */
+  .cv-id { display: inline-flex; align-items: center; justify-content: center; margin-left: 5px; min-width: 15px; height: 15px; padding: 0 3px; border-radius: 99px; font-size: .62rem; font-weight: 800; cursor: pointer; vertical-align: middle; line-height: 1; }
+  .cv-id.ok { background: #34c759; color: #fff; }
+  .cv-id.changed, .cv-id.unsigned { background: #ff9f0a; color: #fff; }
+  .cv-id.bad { background: #ff3b30; color: #fff; }
+  .cv-id.you { background: var(--primary); color: #fff; }
+  .cv-owner { margin: 0 0 8px; padding: 8px 10px; border-radius: 10px; font-size: .8rem; background: rgba(127,127,127,.14); }
+  #cvDialog .cv-fp { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .84rem; word-break: break-all; }
+  #cvDialog p { margin: 8px 0; font-size: .88rem; line-height: 1.4; }
+
+  /* attachment tray */
+  #attachTray { display: none; flex-direction: column; gap: 6px; padding: 8px 14px 4px; }
+  #attachTray.show { display: flex; }
+  #attachTray .cv-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+  #attachTray .cv-chip { position: relative; flex: 0 0 auto; width: 64px; height: 64px; border-radius: 10px; overflow: hidden; background: rgba(127,127,127,.18); display: flex; align-items: center; justify-content: center; font-size: .6rem; text-align: center; padding: 3px; word-break: break-all; }
+  #attachTray .cv-chip img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  #attachTray .cv-chip button { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border: 0; border-radius: 50%; background: rgba(0,0,0,.65); color: #fff; font-size: .7rem; cursor: pointer; line-height: 1; }
+  #attachTray .cv-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: .78rem; }
+  #attachTray .cv-row label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+  #attachTray .cv-row button { border: 0; border-radius: 99px; padding: 5px 13px; font-size: .78rem; font-weight: 700; cursor: pointer; background: rgba(127,127,127,.2); color: var(--text-color); }
+  #attachTray .cv-row button.go { background: var(--primary); color: #fff; margin-left: auto; }
+  #attachTray .cv-row button:disabled { opacity: .55; cursor: default; }
+
+  /* voice player */
+  .cvp { display: flex; align-items: center; gap: 8px; min-width: 210px; max-width: 100%; }
+  .cvp button { border: 0; cursor: pointer; border-radius: 50%; width: 32px; height: 32px; flex: 0 0 auto; background: var(--primary); color: #fff; font-size: .85rem; }
+  .message-wrapper.sent .cvp button { background: rgba(255,255,255,.9); color: #0066dd; }
+  .cvp .cvp-speed { width: auto; min-width: 38px; height: 24px; border-radius: 99px; font-size: .7rem; font-weight: 800; padding: 0 7px; background: rgba(127,127,127,.28); color: inherit; }
+  .message-wrapper.sent .cvp .cvp-speed { background: rgba(255,255,255,.25); color: #fff; }
+  .cvp-wave { flex: 1 1 auto; display: flex; align-items: center; gap: 2px; height: 32px; cursor: pointer; touch-action: none; min-width: 90px; }
+  .cvp-wave i { flex: 1 1 0; min-width: 2px; border-radius: 2px; background: currentColor; opacity: .35; }
+  .cvp-wave i.on { opacity: 1; }
+  .cvp-time { font-size: .7rem; font-variant-numeric: tabular-nums; min-width: 34px; text-align: right; opacity: .85; }
+  .cvp-from { font-size: .66rem; opacity: .7; margin-top: 3px; }
+
+  /* connection check */
+  #convoQ { cursor: pointer; padding: 6px 8px; margin: -6px -4px -6px 4px; }
+  #cvNet .cv-sum { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; margin: 8px 0; background: rgba(127,127,127,.14); }
+  #cvNet .cv-sum.good { background: rgba(52,199,89,.16); } #cvNet .cv-sum.warn { background: rgba(255,159,10,.18); } #cvNet .cv-sum.bad { background: rgba(255,59,48,.16); }
+  #cvNet .cv-sum b { display: block; margin-bottom: 2px; }
+  #cvNet .cv-row { display: flex; gap: 8px; padding: 5px 0; font-size: .85rem; border-bottom: 1px solid rgba(127,127,127,.18); }
+  #cvNet .cv-row span:first-child { flex: 0 0 22px; text-align: center; }
+  #cvNet .cv-row span:last-child { flex: 1; word-break: break-word; }
+  #cvNet h4 { margin: 12px 0 4px; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; opacity: .7; }
+  #cvNet .cv-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  #cvNet details { margin-top: 10px; font-size: .84rem; }
+  #cvNet details input[type=text] { width: 100%; margin: 3px 0; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--input-text); }
+  #convoDisc #convoDiag { margin-left: 6px; }
+</style>
+<script id="convo-upgrades6">
+/*
+ * Upgrades 6: shift+enter / multi-line box, open chats at the bottom, several files (paste, drag, shrink),
+ * voice waveform + speed + "sent from", signed identities with chat owners, connection check,
+ * and every chat staying connected from the moment you sign in.
+ */
+const CV = { U: function () { return currentUser && currentUser.username; }, byId: function (id) { return document.getElementById(id); },
+    roomOf: function (rid) { return convoRooms.find(function (r) { return r.id === rid; }); },
+    sleep: function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); },
+    toast: function (t, ms) { if (window.__convoToast) window.__convoToast(t, ms); },
+    withTimeout: function (p, ms, v) { return Promise.race([p, new Promise(function (r) { setTimeout(function () { r(v); }, ms); })]); } };
+
+/* ================= 1. multi-line message box ================= */
+(function () {
+    'use strict';
+    const ta = messageInput;
+    if (!ta || ta.tagName !== 'TEXTAREA') return;
+    const desc = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value');
+    function autosize() {
+        ta.style.height = 'auto';
+        const h = Math.min(ta.scrollHeight, 160);
+        ta.style.height = h + 'px';
+        ta.style.overflowY = ta.scrollHeight > 160 ? 'auto' : 'hidden';
+    }
+    // programmatic changes (clearing after send, restoring a draft, emoji picker) resize the box too
+    Object.defineProperty(ta, 'value', { configurable: true, get: function () { return desc.get.call(this); }, set: function (v) { desc.set.call(this, v); requestAnimationFrame(autosize); } });
+    ta.addEventListener('input', autosize);
+    ta.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' || e.shiftKey || e.isComposing || e.keyCode === 229 || e.defaultPrevented) return;
+        e.preventDefault();
+        if (window.__convoStagedCount && window.__convoStagedCount() && !ta.value.trim()) { window.__convoSendStaged(); return; }
+        if (chatForm.requestSubmit) chatForm.requestSubmit();
+        else chatForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    });
+    window.addEventListener('resize', autosize);
+    autosize();
+    // code-block button next to B / I / S / code
+    const fb = CV.byId('fmtBar');
+    if (fb) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = '{ }'; b.title = 'Code block'; b.setAttribute('aria-label', 'Code block');
+        b.addEventListener('click', function () {
+            const s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e);
+            ta.value = ta.value.slice(0, s) + '```\n' + sel + '\n```' + ta.value.slice(e);
+            ta.focus(); const c = s + 4 + sel.length; ta.setSelectionRange(s + 4, c);
+            ta.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        fb.appendChild(b);
+    }
+})();
+
+/* ================= 2. open every chat at the newest message ================= */
+(function () {
+    'use strict';
+    let pinUntil = 0, moved = false;
+    const down = function () { messagesBox.scrollTop = messagesBox.scrollHeight; };
+    function pin(ms) {
+        pinUntil = Date.now() + (ms || 3000); moved = false; down();
+        [0, 60, 160, 360, 700, 1200, 2000, 2800].forEach(function (t) { setTimeout(function () { if (!moved && Date.now() <= pinUntil + 60) down(); }, t); });
+    }
+    ['wheel', 'touchmove', 'keydown'].forEach(function (ev) { messagesBox.addEventListener(ev, function () { moved = true; }, { passive: true }); });
+    messagesBox.addEventListener('load', function () { if (!moved && Date.now() < pinUntil) down(); }, true);   // pictures that finish loading must not push the view up
+    new MutationObserver(function () { if (!moved && Date.now() < pinUntil) down(); }).observe(messagesBox, { childList: true, subtree: true });
+    const baseActivate = activateConversation;
+    activateConversation = function () { const r = baseActivate.apply(this, arguments); pin(3000); return r; };
+    window.__convoPinBottom = pin;
+})();
+
+/* ================= 3. several files: paste, drag, pick, shrink big photos ================= */
+(function () {
+    'use strict';
+    const MAXN = 12, MAXB = 25 * 1024 * 1024;
+    const staged = new Map();   // room id -> [{ file, url }]
+    let busy = false, shrinkOn = true;
+    try { shrinkOn = localStorage.getItem('convo_shrink') !== '0'; } catch (e) {}
+    const tray = document.createElement('div');
+    tray.id = 'attachTray';
+    tray.innerHTML = '<div class="cv-chips"></div><div class="cv-row"><label><input type="checkbox" id="cvShrink"> Shrink big photos</label><span class="cv-info"></span><button type="button" class="clear">Clear</button><button type="button" class="go">Send</button></div>';
+    chatForm.parentNode.insertBefore(tray, chatForm);
+    const chips = tray.querySelector('.cv-chips'), info = tray.querySelector('.cv-info'), goBtn = tray.querySelector('.go'), shrinkBox = tray.querySelector('#cvShrink');
+    shrinkBox.checked = shrinkOn;
+    shrinkBox.addEventListener('change', function () { shrinkOn = shrinkBox.checked; try { localStorage.setItem('convo_shrink', shrinkOn ? '1' : '0'); } catch (e) {} });
+    const list = function () { return staged.get(visibleRoomId) || []; };
+    const size = function (n) { return n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; };
+    const isImg = function (f) { return /^image\//.test(f.type || ''); };
+    function render() {
+        const l = list();
+        tray.classList.toggle('show', l.length > 0);
+        chips.textContent = '';
+        l.forEach(function (it, i) {
+            const c = document.createElement('div'); c.className = 'cv-chip'; c.title = it.file.name + ' · ' + size(it.file.size);
+            if (isImg(it.file) && it.url) { const im = document.createElement('img'); im.src = it.url; im.alt = ''; c.appendChild(im); } else c.appendChild(document.createTextNode('📄 ' + it.file.name.slice(0, 22)));
+            const x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Remove');
+            x.addEventListener('click', function () { if (busy) return; const a = list(); URL.revokeObjectURL(it.url || ''); a.splice(i, 1); render(); });
+            c.appendChild(x); chips.appendChild(c);
+        });
+        const total = l.reduce(function (n, it) { return n + it.file.size; }, 0);
+        info.textContent = l.length ? l.length + (l.length === 1 ? ' file · ' : ' files · ') + size(total) : '';
+        goBtn.textContent = l.length > 1 ? 'Send ' + l.length : 'Send';
+        goBtn.disabled = busy;
+        shrinkBox.parentNode.style.display = l.some(function (it) { return isImg(it.file); }) ? '' : 'none';
+    }
+    function clearAll() { list().forEach(function (it) { URL.revokeObjectURL(it.url || ''); }); staged.set(visibleRoomId, []); render(); }
+    tray.querySelector('.clear').addEventListener('click', function () { if (!busy) clearAll(); });
+    goBtn.addEventListener('click', function () { sendStaged(); });
+
+    window.__convoAddFiles = function (files) {
+        files = Array.from(files || []).filter(Boolean);
+        if (!files.length) return;
+        const l = staged.get(visibleRoomId) || []; staged.set(visibleRoomId, l);
+        files.forEach(function (f) {
+            if (/^voice-/i.test(f.name || '') && /^audio\//.test(f.type || '')) { window.__convoFileHandler(f); return; }   // recorded voice notes go out straight away
+            if (f.size > MAXB) { CV.toast('“' + f.name + '” is over 25 MB, so it was skipped.', 4500); return; }
+            if (l.length >= MAXN) { CV.toast('You can send up to ' + MAXN + ' files at once.', 3500); return; }
+            l.push({ file: f, url: isImg(f) ? URL.createObjectURL(f) : '' });
+        });
+        render();
+        messageInput.focus();
+    };
+    window.__convoStagedCount = function () { return list().length; };
+
+    async function shrink(file) {
+        if (!/^image\/(jpeg|png|webp|bmp)$/.test(file.type || '') || !window.createImageBitmap) return file;
+        if (file.size < 700 * 1024) return file;
+        let bmp;
+        try { bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch (e) { try { bmp = await createImageBitmap(file); } catch (e2) { return file; } }
+        const MAXD = 1600, sc = Math.min(1, MAXD / Math.max(bmp.width, bmp.height));
+        if (sc === 1 && file.size < 1.5 * 1048576) { if (bmp.close) bmp.close(); return file; }
+        const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(bmp.width * sc)); c.height = Math.max(1, Math.round(bmp.height * sc));
+        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(bmp, 0, 0, c.width, c.height);
+        if (bmp.close) bmp.close();
+        const blob = await new Promise(function (r) { c.toBlob(r, 'image/jpeg', 0.82); });
+        if (!blob || blob.size >= file.size) return file;
+        return new File([blob], (file.name || 'photo').replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg', lastModified: Date.now() });
+    }
+    async function sendStaged() {
+        if (busy) return;
+        const rid = visibleRoomId, l = (staged.get(rid) || []).slice();
+        if (!l.length) return;
+        busy = true; render();
+        let saved = 0, shrunk = 0;
+        try {
+            for (let i = 0; i < l.length; i++) {
+                if (activeRoomId !== rid) break;
+                let f = l[i].file;
+                if (shrinkOn && isImg(f)) { try { const n = await shrink(f); if (n !== f) { saved += f.size - n.size; shrunk++; f = n; } } catch (e) {} }
+                window.__convoFileHandler(f);
+                await CV.sleep(180);
+            }
+        } finally {
+            l.forEach(function (it) { URL.revokeObjectURL(it.url || ''); });
+            staged.set(rid, []); busy = false; render();
+        }
+        if (shrunk) CV.toast('Shrunk ' + shrunk + (shrunk === 1 ? ' photo' : ' photos') + ', saving ' + size(saved) + '.', 3500);
+    }
+    window.__convoSendStaged = sendStaged;
+    const baseAct = activateConversation;
+    activateConversation = function () { const r = baseAct.apply(this, arguments); render(); return r; };
+
+    // a file dropped anywhere else in the window must not make the browser navigate away
+    const hasFiles = function (e) { return e.dataTransfer && Array.from(e.dataTransfer.types || []).indexOf('Files') > -1; };
+    document.addEventListener('dragover', function (e) { if (hasFiles(e)) e.preventDefault(); });
+    document.addEventListener('drop', function (e) {
+        if (!hasFiles(e)) return;
+        e.preventDefault();
+        if (e.target.closest && e.target.closest('.chat-pane')) return;   // the chat pane already handled it
+        if (setupScreen.style.display === 'none' && e.dataTransfer.files.length) window.__convoAddFiles(e.dataTransfer.files);
+    });
+    render();
+})();
+
+/* ================= 4. voice messages: waveform, speed, "sent from" ================= */
+(function () {
+    'use strict';
+    function deviceLabel() {
+        const ua = navigator.userAgent || '';
+        let os = 'Unknown device';
+        if (/iPhone/.test(ua)) os = 'iPhone';
+        else if (/iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) os = 'iPad';
+        else if (/Android/.test(ua)) os = /Mobile/.test(ua) ? 'Android phone' : 'Android tablet';
+        else if (/Windows/.test(ua)) os = 'Windows PC';
+        else if (/CrOS/.test(ua)) os = 'Chromebook';
+        else if (/Mac OS X|Macintosh/.test(ua)) os = 'Mac';
+        else if (/Linux/.test(ua)) os = 'Linux PC';
+        let br = '';
+        if (/Edg\//.test(ua)) br = 'Edge'; else if (/OPR\/|Opera/.test(ua)) br = 'Opera'; else if (/SamsungBrowser/.test(ua)) br = 'Samsung Internet';
+        else if (/Firefox\/|FxiOS/.test(ua)) br = 'Firefox'; else if (/Chrome\/|CriOS/.test(ua)) br = 'Chrome'; else if (/Safari\//.test(ua)) br = 'Safari';
+        return br ? os + ' · ' + br : os;
+    }
+    window.__convoDeviceLabel = deviceLabel;
+    let octx = null;
+    function decode(buf) {
+        const C = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+        if (!C) return Promise.reject(new Error('no audio'));
+        if (!octx) octx = new C(1, 1, 44100);
+        return new Promise(function (res, rej) { const p = octx.decodeAudioData(buf, res, rej); if (p && p.then) p.then(res, rej); });
+    }
+    function peaksOf(audio, n) {
+        const ch = audio.getChannelData(0), step = Math.max(1, Math.floor(ch.length / n)), out = [];
+        let mx = 0;
+        for (let i = 0; i < n; i++) {
+            let sum = 0, cnt = 0;
+            for (let j = i * step; j < Math.min(ch.length, (i + 1) * step); j += Math.max(1, Math.floor(step / 200))) { sum += ch[j] * ch[j]; cnt++; }
+            const v = Math.sqrt(sum / Math.max(1, cnt)); out.push(v); if (v > mx) mx = v;
+        }
+        return out.map(function (v) { return Math.round(Math.pow(mx ? v / mx : 0, 0.7) * 100); });
+    }
+    function analyseBuf(buf) { return decode(buf).then(function (a) { return { dur: a.duration, peaks: peaksOf(a, 48) }; }); }
+    const baseFH = window.__convoFileHandler;
+    if (typeof baseFH === 'function') window.__convoFileHandler = function (file, extra) {
+        const voice = (extra && extra.voice) || (/^voice-/i.test(file.name || '') && /^audio\//.test(file.type || ''));
+        if (!voice) return baseFH.call(this, file, extra);
+        const ex = Object.assign({}, extra || {}, { voice: true, from: deviceLabel() }), rid = activeRoomId;
+        return CV.withTimeout(file.arrayBuffer().then(analyseBuf), 4500, null).catch(function () { return null; }).then(function (info) {
+            if (info) { ex.peaks = info.peaks; if (!ex.dur) ex.dur = Math.round(info.dur * 10) / 10; }
+            runInRoomSession(rid, function () { baseFH.call(null, file, ex); });
+        });
+    };
+
+    const SPEEDS = [1, 1.5, 2, 0.75];
+    let speed = 1; try { speed = Number(localStorage.getItem('convo_vspeed')) || 1; } catch (e) {}
+    const mmss = function (s) { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+    function enhance(au) {
+        if (au.dataset.cv) return;
+        const w = au.closest('.message-wrapper'), bubble = au.closest('.bubble');
+        if (!w || !bubble) return;
+        au.dataset.cv = '1';
+        const m = (messageLog || []).find(function (x) { return x && x.id === w.dataset.msgId; }) || {};
+        au.controls = false; au.style.display = 'none';
+        const ui = document.createElement('div'); ui.className = 'cvp';
+        const play = document.createElement('button'); play.type = 'button'; play.textContent = '▶'; play.setAttribute('aria-label', 'Play voice message');
+        const wave = document.createElement('div'); wave.className = 'cvp-wave'; wave.setAttribute('role', 'slider'); wave.setAttribute('aria-label', 'Seek');
+        const time = document.createElement('span'); time.className = 'cvp-time';
+        const sp = document.createElement('button'); sp.type = 'button'; sp.className = 'cvp-speed'; sp.title = 'Playback speed';
+        let bars = [];
+        function drawBars(p) {
+            wave.textContent = ''; bars = [];
+            (p && p.length ? p : new Array(48).fill(28)).forEach(function (v) { const i = document.createElement('i'); i.style.height = Math.max(12, v) + '%'; wave.appendChild(i); bars.push(i); });
+        }
+        drawBars(m.peaks);
+        if (!(m.peaks && m.peaks.length)) {   // older voice messages: draw the waveform from the audio itself
+            fetch(au.currentSrc || au.src).then(function (r) { return r.arrayBuffer(); }).then(analyseBuf).then(function (info) { drawBars(info.peaks); paint(); }).catch(function () {});
+        }
+        const D = function () { return isFinite(au.duration) && au.duration > 0 ? au.duration : (m.dur || 0); };
+        function paint() {
+            const d = D(), r = d ? Math.min(1, au.currentTime / d) : 0, on = Math.round(r * bars.length);
+            bars.forEach(function (b, i) { b.classList.toggle('on', i < on); });
+            time.textContent = (au.paused && !au.currentTime) ? mmss(d) : mmss(au.currentTime);
+        }
+        function setSpeed(v) { speed = v; au.playbackRate = v; sp.textContent = (v === 0.75 ? '0.75' : v) + '×'; try { localStorage.setItem('convo_vspeed', String(v)); } catch (e) {} }
+        setSpeed(speed);
+        try { au.preservesPitch = true; } catch (e) {}
+        sp.addEventListener('click', function () { setSpeed(SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length]); });
+        play.addEventListener('click', function () {
+            if (au.paused) { document.querySelectorAll('audio').forEach(function (a) { if (a !== au) a.pause(); }); au.playbackRate = speed; au.play().catch(function () {}); } else au.pause();
+        });
+        function seek(ev) { const rc = wave.getBoundingClientRect(), r = Math.max(0, Math.min(1, (ev.clientX - rc.left) / rc.width)), d = D(); if (d) { try { au.currentTime = r * d; } catch (e) {} paint(); } }
+        let drag = false;
+        wave.addEventListener('pointerdown', function (ev) { drag = true; try { wave.setPointerCapture(ev.pointerId); } catch (e) {} seek(ev); });
+        wave.addEventListener('pointermove', function (ev) { if (drag) seek(ev); });
+        ['pointerup', 'pointercancel'].forEach(function (n) { wave.addEventListener(n, function () { drag = false; }); });
+        ['timeupdate', 'pause', 'ended', 'seeked'].forEach(function (n) { au.addEventListener(n, paint); });
+        au.addEventListener('play', function () { play.textContent = '⏸'; au.playbackRate = speed; });
+        ['pause', 'ended'].forEach(function (n) { au.addEventListener(n, function () { play.textContent = '▶'; if (n === 'ended') { au.currentTime = 0; paint(); } }); });
+        au.addEventListener('loadedmetadata', function () {   // recordings often report an infinite length until they are scanned once
+            if (au.duration === Infinity) { au.currentTime = 1e7; au.addEventListener('timeupdate', function f() { au.removeEventListener('timeupdate', f); au.currentTime = 0; paint(); }); }
+            paint();
+        });
+        ui.append(play, wave, time, sp);
+        au.before(ui);
+        if (m.from) { const f = document.createElement('div'); f.className = 'cvp-from'; f.textContent = 'Sent from ' + m.from; ui.after(f); }
+        paint();
+    }
+    new MutationObserver(function (muts) {
+        muts.forEach(function (mu) { mu.addedNodes.forEach(function (n) {
+            if (n.nodeType !== 1) return;
+            if (n.matches && n.matches('audio')) enhance(n); else if (n.querySelectorAll) n.querySelectorAll('audio').forEach(enhance);
+        }); });
+    }).observe(messagesBox, { childList: true, subtree: true });
+    messagesBox.querySelectorAll('audio').forEach(enhance);
+})();
+
+/* ================= 5. signed identities + chat owners ================= */
+(function () {
+    'use strict';
+    const U = CV.U, subtle = window.crypto && window.crypto.subtle, te = new TextEncoder();
+    const U5 = window.__convoUpg5, net = window.__convoNet;
+    const b64u = {
+        enc: function (buf) { const b = new Uint8Array(buf); let s = ''; for (let i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); },
+        dec: function (str) { str = String(str).replace(/-/g, '+').replace(/_/g, '/'); while (str.length % 4) str += '='; const s = atob(str), b = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return b; }
+    };
+    const fpOf = function (k) {
+        try { const x = b64u.dec(String(k).split('.')[0]); return Array.from(x.slice(0, 10)).map(function (v) { return v.toString(16).padStart(2, '0'); }).join('').toUpperCase().replace(/(.{4})(?=.)/g, '$1-'); } catch (e) { return ''; }
+    };
+    window.__convoFp = fpOf;
+    const KEYSTORE = 'xchat_idkey_v1';
+    let ID = null;
+    async function buildId(privJwk, pubJwk) {
+        const priv = await subtle.importKey('jwk', privJwk, { name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign']);
+        const k = pubJwk.x + '.' + pubJwk.y;
+        return { priv: priv, k: k, fp: fpOf(k), privJwk: privJwk, pubJwk: pubJwk };
+    }
+    async function loadId() {
+        if (!subtle) return null;
+        let saved = null; try { saved = JSON.parse(localStorage.getItem(KEYSTORE) || 'null'); } catch (e) {}
+        if (saved && saved.priv && saved.pub) { try { return await buildId(saved.priv, saved.pub); } catch (e) {} }
+        const kp = await subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+        const priv = await subtle.exportKey('jwk', kp.privateKey), pub = await subtle.exportKey('jwk', kp.publicKey);
+        try { localStorage.setItem(KEYSTORE, JSON.stringify({ priv: priv, pub: pub })); } catch (e) {}
+        return buildId(priv, pub);
+    }
+    const ready = loadId().then(function (v) { ID = v; return v; }).catch(function (e) { console.warn('identity key unavailable', e); return null; });
+    async function signStr(str) {
+        await ready; if (!ID) return null;
+        const sig = await subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, ID.priv, te.encode(str));
+        return { k: ID.k, s: b64u.enc(sig) };
+    }
+    const keyCache = new Map();
+    function pubKey(k) {
+        let p = keyCache.get(k);
+        if (!p) { const parts = String(k).split('.'); p = subtle.importKey('jwk', { kty: 'EC', crv: 'P-256', x: parts[0], y: parts[1], ext: true }, { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']); keyCache.set(k, p); }
+        return p;
+    }
+    async function verifyStr(str, auth) {
+        try {
+            if (!subtle || !auth || typeof auth.k !== 'string' || typeof auth.s !== 'string' || auth.k.length > 200 || auth.s.length > 200) return false;
+            return await subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, await pubKey(auth.k), b64u.dec(auth.s), te.encode(str));
+        } catch (e) { return false; }
+    }
+    const canon = {
+        chat: function (m) { return ['convo1', 'CHAT', m.id, m.sender && m.sender.username, m.timestamp, m.text, m.replyTo || ''].join('|'); },
+        edit: function (id, u, text) { return ['convo1', 'EDIT', id, u, text].join('|'); },
+        file: function (m) { return ['convo1', 'FILE', m.id, m.sender && m.sender.username, m.timestamp, m.fileId, String(m.fileName || '').slice(0, 200), m.fileSize, String(m.fileType || '').slice(0, 100)].join('|'); },
+        join: function (rid, u, ts) { return ['convo1', 'JOIN', rid, u, ts].join('|'); },
+        bans: function (rid, seq, list) { return ['convo1', 'BANS', rid, seq, list.map(function (e) { return [e.u, e.n, e.d, e.k].join('\t'); }).join('\n')].join('|'); },
+        owner: function (rid, k) { return ['convo1', 'OWNER', rid, k].join('|'); }
+    };
+    let signQ = Promise.resolve();
+
+    /* ---- signing what we send ---- */
+    window.__convoSignThen = function (packet, fn) {
+        if (!packet || packet.type !== 'CHAT' || packet.auth) return fn();
+        const rid = activeRoomId, run = function () { runInRoomSession(rid, fn); };
+        signQ = signQ.then(async function () { const a = await signStr(canon.chat(packet)); if (a) packet.auth = a; }).catch(function () {}).then(run, run);
+    };
+    window.__convoSignFile = async function (m) { try { const a = await signStr(canon.file(m)); if (a) m.auth = a; } catch (e) {} };
+    const baseDeliver = window.convoDeliver;
+    if (typeof baseDeliver === 'function') window.convoDeliver = function (packet) { const self = this, args = arguments; return window.__convoSignThen(packet, function () { return baseDeliver.apply(self, args); }); };
+    const baseOp = window.convoSendOp;
+    if (typeof baseOp === 'function') window.convoSendOp = function (packet) {
+        if (!(packet && packet.type === 'EDIT' && !packet.auth)) return baseOp.apply(this, arguments);
+        const rid = activeRoomId;
+        signQ = signQ.then(async function () {
+            const a = await signStr(canon.edit(packet.id, packet.sender && packet.sender.username, packet.text));
+            if (a) { a.e = 1; packet.auth = a; runInRoomSession(rid, function () { const m = messageLog.find(function (x) { return x && x.id === packet.id; }); if (m) m.auth = a; try { persistRoomHistory(rid, isHost); } catch (e) {} }); }
+        }).catch(function () {}).then(function () { runInRoomSession(rid, function () { baseOp(packet); }); });
+    };
+
+    /* ---- remembering who is who (first key seen for a name in a chat is the one we trust) ---- */
+    const pinCache = new Map();
+    const pinKey = function (rid) { return 'xchat_pins_' + U() + '_' + rid; };
+    function pinsOf(rid) {
+        const key = pinKey(rid); let o = pinCache.get(key);
+        if (!o) { try { o = JSON.parse(localStorage.getItem(key) || '{}') || {}; } catch (e) { o = {}; } pinCache.set(key, o); }
+        return o;
+    }
+    const savePins = function (rid) { try { localStorage.setItem(pinKey(rid), JSON.stringify(pinsOf(rid))); } catch (e) {} };
+    // returns ok | changed | unsigned | bad | none | self
+    function judge(rid, username, auth, valid, ts, signed) {
+        if (!username || username === U()) return 'self';
+        const pins = pinsOf(rid), pin = pins[username];
+        if (!signed) return (pin && (ts || 0) >= (pin.since || Infinity)) ? 'unsigned' : 'none';
+        if (!valid) return 'bad';
+        if (!pin) { pins[username] = { k: auth.k, all: [auth.k], since: ts || Date.now() }; savePins(rid); return 'ok'; }
+        if (pin.all.indexOf(auth.k) > -1) { if (ts && ts < pin.since) { pin.since = ts; savePins(rid); } return 'ok'; }
+        return 'changed';
+    }
+    function trustKey(rid, username, k) {
+        const pin = pinsOf(rid)[username] || (pinsOf(rid)[username] = { k: k, all: [], since: Date.now() });
+        if (pin.all.indexOf(k) < 0) pin.all.push(k);
+        pin.k = k; savePins(rid); refreshBadges();
+        if (typeof renderParticipantsUI === 'function') renderParticipantsUI();
+    }
+    const vCache = new Map();
+    function verifyCached(str, auth) {
+        const key = auth.s + '\u0001' + str; let p = vCache.get(key);
+        if (!p) { if (vCache.size > 3000) vCache.clear(); p = verifyStr(str, auth); vCache.set(key, p); }
+        return p;
+    }
+    const warned = new Set();
+    function warnOnce(rid, username, k, text) {
+        const key = rid + '|' + username + '|' + k; if (warned.has(key)) return; warned.add(key);
+        if (rid === visibleRoomId) { try { appendSystemMessage(text); } catch (e) {} }
+        CV.toast(text, 6500);
+    }
+    const titles = {
+        ok: function (n, fp) { return 'Verified: signed by the same identity key as before (' + fp + ')'; },
+        changed: function (n, fp) { return n + ' is using a different identity key than before (' + fp + '). Tap to review.'; },
+        unsigned: function () { return 'Not signed. This person normally signs their messages, so this could be someone else using the name.'; },
+        bad: function () { return 'The signature does not match. This message may have been forged or altered.'; }
+    };
+    const marks = { ok: '✓', changed: '⚠', unsigned: '?', bad: '✕', you: '✓' };
+    function paintBadge(w, msg, st, rid) {
+        const tag = w && w.querySelector('.sender-tag'); if (!tag) return;
+        const old = tag.querySelector('.cv-id'); if (old) old.remove();
+        if (!marks[st]) return;
+        const u = msg.sender.username, k = msg.auth && msg.auth.k, b = document.createElement('span');
+        b.className = 'cv-id ' + st; b.textContent = marks[st]; b.title = titles[st](msg.sender.displayName || u, k ? fpOf(k) : '');
+        b.addEventListener('click', function (ev) { ev.stopPropagation(); openIdentity(rid, u, k, msg.sender.displayName); });
+        tag.appendChild(b);
+        if (st === 'changed') warnOnce(rid, u, k, '⚠ ' + (msg.sender.displayName || u) + ' is now using a different identity key. If you didn’t expect that, someone else may be using this name.');
+        else if (st === 'bad') warnOnce(rid, u, k + '|bad', '✕ A message from ' + (msg.sender.displayName || u) + ' failed its signature check.');
+    }
+    function strFor(msg) {
+        if (!msg.auth) return null;
+        if (msg.auth.e) return canon.edit(msg.id, msg.sender.username, msg.text);
+        return msg.type === 'FILE' ? canon.file(msg) : canon.chat(msg);
+    }
+    function decorate(w, msg, rid) {
+        if (!w || !msg || !msg.sender || !msg.sender.username || msg.sender.username === U()) return;
+        const str = strFor(msg), run = function (valid) { paintBadge(w, msg, judge(rid, msg.sender.username, msg.auth, valid, msg.timestamp, !!msg.auth), rid); };
+        if (!str) { run(false); return; }
+        verifyCached(str, msg.auth).then(run);
+    }
+    function lastWrapper(id) { const c = messagesBox.children; for (let i = c.length - 1; i >= 0; i--) if (c[i].dataset && c[i].dataset.msgId === id) return c[i]; return null; }
+    ['appendMessage', 'appendFileMessage'].forEach(function (name) {
+        const base = window[name]; if (typeof base !== 'function') return;
+        window[name] = function (msg) { const r = base.apply(this, arguments); try { decorate(msg && msg.id ? lastWrapper(msg.id) : messagesBox.lastElementChild, msg, visibleRoomId); } catch (e) {} return r; };
+    });
+    function refreshBadges() {
+        const rid = visibleRoomId;
+        messagesBox.querySelectorAll('.message-wrapper').forEach(function (w) { const m = (messageLog || []).find(function (x) { return x && x.id === w.dataset.msgId; }); if (m) decorate(w, m, rid); });
+    }
+
+    /* ---- proof of identity when joining ---- */
+    const joinCache = new Map();
+    async function prepJoin(rid) {
+        await ready; if (!ID || !U()) return;
+        const ts = Date.now(), a = await signStr(canon.join(rid, U(), ts));
+        if (a) joinCache.set(rid + '|' + U(), { idPub: ID.k, idFp: ID.fp, idSig: a.s, idTs: ts });
+    }
+    window.__convoPrepJoins = function () { convoRooms.forEach(function (r) { prepJoin(r.id); }); };
+    window.__convoJoinExtra = function (rid) {
+        const c = joinCache.get(rid + '|' + U());
+        if (c) return c;
+        prepJoin(rid);
+        return ID ? { idPub: ID.k, idFp: ID.fp } : null;
+    };
+    async function verifyProfile(rid, p) {
+        if (!p || !p.idPub || !p.idSig || !p.idTs || !p.username) return false;
+        if (fpOf(p.idPub) !== p.idFp) return false;
+        return verifyStr(canon.join(rid, p.username, p.idTs), { k: p.idPub, s: p.idSig });
+    }
+    function profJudge(rid, p, valid) {
+        if (p.username === U()) return 'self';
+        return judge(rid, p.username, { k: p.idPub }, valid, Date.now(), !!p.idPub);
+    }
+    function checkProfiles(rid, users) {
+        (users || []).forEach(function (u) {
+            const p = u && (u.profile || u); if (!p || !p.username || p.username === U() || !p.idPub) return;
+            verifyProfile(rid, p).then(function (valid) {
+                const st = profJudge(rid, p, valid);
+                if (st === 'changed') warnOnce(rid, p.username, p.idPub, '⚠ ' + (p.displayName || p.username) + ' joined with a different identity key than before.');
+            });
+        });
+    }
+
+    /* ---- chat owner (private chats): a key that signs the ban list ---- */
+    const ownKey = function (rid) { return 'xchat_owner_' + U() + '_' + rid; };
+    const ownerRec = function (rid) { try { return JSON.parse(localStorage.getItem(ownKey(rid)) || 'null'); } catch (e) { return null; } };
+    const saveOwner = function (rid, r) { try { localStorage.setItem(ownKey(rid), JSON.stringify(r)); } catch (e) {} };
+    const isPriv = function (rid) { const r = CV.roomOf(rid); return !!r && r.type === 'private'; };
+    const iAmOwner = function (rid) { const r = ownerRec(rid); return !!(r && ID && r.k === ID.k); };
+    async function ensureOwner(rid) {   // the device that created a private chat owns it
+        const room = CV.roomOf(rid); await ready;
+        if (!room || room.type !== 'private' || !room.creator || !ID || ownerRec(rid)) return;
+        const a = await signStr(canon.owner(rid, ID.k)); if (!a || ownerRec(rid)) return;
+        saveOwner(rid, { k: ID.k, osig: a.s, seq: 0, bans: [], bsig: null });
+    }
+    window.__convoEnsureOwners = function () { convoRooms.forEach(function (r) { ensureOwner(r.id); }); };
+    const ownerPacket = function (rid) { const r = ownerRec(rid); return r && r.osig ? { type: 'Z_OWNER', k: r.k, osig: r.osig, seq: r.seq || 0, bans: r.bans || [], bsig: r.bsig || null } : null; };
+    window.__convoOwnerKnown = function () { return isPriv(activeRoomId) && !!ownerRec(activeRoomId); };
+    window.__convoIsOwner = function () { return isPriv(activeRoomId) && iAmOwner(activeRoomId); };
+    window.__convoOwnerBlocks = function () { return isPriv(activeRoomId) && !!ownerRec(activeRoomId) && !iAmOwner(activeRoomId); };
+    function sendOwnerTo(rid, conn) { const p = ownerPacket(rid); if (p && conn && conn.open) { try { conn.send(p); } catch (e) {} } }
+    function broadcastOwner(rid) { const p = ownerPacket(rid); if (!p) return; runInRoomSession(rid, function () { (connections || []).forEach(function (c) { if (c && c.open) { try { c.send(p); } catch (e) {} } }); }); }
+    async function publishOwnerList(rid, list) {
+        const rec = ownerRec(rid); if (!rec || !iAmOwner(rid)) return;
+        const seq = (rec.seq || 0) + 1, clean = list.map(U5.clean).filter(Boolean), a = await signStr(canon.bans(rid, seq, clean));
+        if (!a) return;
+        rec.seq = seq; rec.bans = clean; rec.bsig = a.s; saveOwner(rid, rec);
+        runInRoomSession(rid, function () {
+            U5.saveList(U5.banKey(rid), clean);
+            if (isHost) broadcastOwner(rid); else if (hostConnection && hostConnection.open) sendOwnerTo(rid, hostConnection);
+            if (typeof renderParticipantsUI === 'function') renderParticipantsUI();
+        });
+    }
+    window.__convoOwnerPublish = function () { if (isPriv(activeRoomId) && iAmOwner(activeRoomId)) publishOwnerList(activeRoomId, U5.loadList(U5.banKey(activeRoomId))); };
+    window.__convoOwnerBan = function (pid) {
+        const rid = activeRoomId; if (!iAmOwner(rid)) { CV.toast('Only this chat’s owner can ban people.', 4000); return; }
+        const entry = onlineUsersMap.get(pid), prof = entry && (entry.profile || entry);
+        if (!prof || !prof.username || prof.username === U()) return;
+        const e = U5.entryOf(prof);
+        publishOwnerList(rid, U5.withoutEntry(U5.loadList(U5.banKey(rid)), e).concat([e]));
+        CV.toast((prof.displayName || prof.username) + ' was banned. The current host will apply it.', 4500);
+    };
+    window.__convoOwnerUnban = function (e) {
+        const rid = activeRoomId; if (!iAmOwner(rid)) return;
+        publishOwnerList(rid, U5.withoutEntry(U5.loadList(U5.banKey(rid)), e));
+    };
+    async function onOwner(rid, p) {
+        if (!isPriv(rid) || typeof p.k !== 'string' || typeof p.osig !== 'string') return;
+        if (!(await verifyStr(canon.owner(rid, p.k), { k: p.k, s: p.osig }))) return;
+        let rec = ownerRec(rid);
+        if (!rec) { rec = { k: p.k, osig: p.osig, seq: 0, bans: [], bsig: null }; saveOwner(rid, rec); }
+        else if (rec.k !== p.k) { warnOnce(rid, '_owner', p.k, '⚠ Someone is claiming to own this chat with a different key. It was ignored.'); return; }
+        const seq = parseInt(p.seq, 10) || 0;
+        if (seq > (rec.seq || 0) && typeof p.bsig === 'string' && Array.isArray(p.bans) && p.bans.length <= 200) {
+            const bans = p.bans.map(U5.clean).filter(Boolean);
+            if (await verifyStr(canon.bans(rid, seq, bans), { k: p.k, s: p.bsig })) {
+                rec.seq = seq; rec.bans = bans; rec.bsig = p.bsig; saveOwner(rid, rec);
+                runInRoomSession(rid, function () {
+                    U5.saveList(U5.banKey(rid), bans);
+                    if (isHost) {
+                        onlineUsersMap.forEach(function (v, pid) {
+                            const pr = v && (v.profile || v);
+                            if (!pr || (peer && pid === peer.id) || !U5.listHas(bans, pr)) return;
+                            const conn = (connections || []).find(function (c) { return c.peer === pid; }) || v.conn;
+                            if (conn) U5.deny(conn); onlineUsersMap.delete(pid);
+                        });
+                        try { broadcastUserList(); } catch (e) {}
+                        broadcastOwner(rid);
+                    }
+                    if (typeof renderParticipantsUI === 'function') renderParticipantsUI();
+                });
+            }
+        }
+    }
+
+    /* ---- incoming packets ---- */
+    const baseHandle = handleIncomingPacket;
+    handleIncomingPacket = function (packet, src) {
+        const t = packet && packet.type, rid = activeRoomId;
+        try {
+            if (packet && typeof packet === 'object') {
+                if (packet.auth && !(typeof packet.auth === 'object' && typeof packet.auth.k === 'string' && typeof packet.auth.s === 'string')) delete packet.auth;
+                if ((t === 'CHAT' || t === 'FILE' || t === 'Z_FBEGIN') && packet.auth && packet.sender && typeof packet.sender === 'object') packet.sender.idFp = fpOf(packet.auth.k);
+                else if ((t === 'CHAT' || t === 'FILE' || t === 'Z_FBEGIN') && packet.sender && typeof packet.sender === 'object') delete packet.sender.idFp;
+                if (t === 'Z_OWNER') { onOwner(rid, packet); return; }
+                if (t === 'JOIN' && packet.profile && typeof packet.profile === 'object') {   // only keep the identity claim if the proof checks out
+                    const prof = packet.profile, hadClaim = !!(prof.idPub || prof.idFp);
+                    if (hadClaim && isHost) {
+                        const pid = packet.peerId;
+                        verifyProfile(rid, prof).then(function (ok) {
+                            runInRoomSession(rid, function () {
+                                const e = onlineUsersMap.get(pid); if (!e) return; const p = e.profile || e;
+                                if (!ok) { delete p.idPub; delete p.idSig; delete p.idTs; p.idFp = ''; }
+                                else if (isPriv(rid) && U5.listHas(U5.loadList(U5.banKey(rid)), p)) { if (src) U5.deny(src); onlineUsersMap.delete(pid); }
+                                else checkProfiles(rid, [p]);
+                                try { broadcastUserList(); } catch (er) {}
+                            });
+                        });
+                    }
+                }
+            }
+        } catch (e) { console.warn(e); }
+        const r = baseHandle.apply(this, arguments);
+        try {
+            if (t === 'EDIT') {
+                const m = messageLog.find(function (x) { return x && x.id === packet.id; });
+                if (m && m.sender && packet.sender && m.sender.username === packet.sender.username) {
+                    if (packet.auth) m.auth = { k: packet.auth.k.slice(0, 200), s: packet.auth.s.slice(0, 200), e: 1 }; else delete m.auth;
+                    if (rid === visibleRoomId) { const w = lastWrapper(m.id), sp = w && w.querySelector('.bubble > span'); if (sp && window.__convoRichText) window.__convoRichText(sp, m.text || ''); decorate(w, m, rid); }
+                    persistRoomHistory(rid, isHost);
+                }
+            } else if (t === 'USER_LIST' && !isHost) checkProfiles(rid, packet.users);
+            else if (t === 'JOIN' && isHost && src && isPriv(rid)) sendOwnerTo(rid, src);
+        } catch (e) { console.warn(e); }
+        return r;
+    };
+    const prevLinked = window.__convoOnLinked;
+    window.__convoOnLinked = function (rid) {
+        if (prevLinked) prevLinked(rid);
+        if (isPriv(rid) && iAmOwner(rid) && !isHost && hostConnection && hostConnection.open) sendOwnerTo(rid, hostConnection);   // hand the host our latest signed ban list
+    };
+
+    /* ---- participants: badges + owner line ---- */
+    function ownerLine(rid) {
+        const rec = ownerRec(rid); if (!rec || !isPriv(rid)) return null;
+        const d = document.createElement('div'); d.className = 'cv-owner';
+        let who = '';
+        onlineUsersMap.forEach(function (v) { const p = v && (v.profile || v); if (p && p.idPub === rec.k) who = p.displayName || p.username; });
+        d.textContent = iAmOwner(rid) ? '👑 You own this chat. Only you can ban or unban people, even when someone else is hosting. Your key: ' + fpOf(rec.k)
+            : '👑 Owner' + (who ? ': ' + who : '') + ' · key ' + fpOf(rec.k) + '. Only the owner can ban or unban people.';
+        return d;
+    }
+    function decorateIdentity() {
+        const rid = activeRoomId, ol = ownerLine(rid);
+        if (ol) participantsListContainer.prepend(ol);
+        const rows = participantsListContainer.querySelectorAll('.user-list-item');
+        if (rows.length !== onlineUsersMap.size) return;
+        let i = 0;
+        onlineUsersMap.forEach(function (u) {
+            const row = rows[i++], p = u && (u.profile || u); if (!row || !p) return;
+            const b = document.createElement('span'); b.className = 'cv-id'; row.appendChild(b);
+            const set = function (st, title, fn) { b.className = 'cv-id ' + st; b.textContent = marks[st] || ''; b.title = title; b.style.display = marks[st] ? '' : 'none'; b.onclick = fn || null; };
+            if (p.username === U()) { if (ID) set('you', 'This is you. Your identity key: ' + ID.fp, function (ev) { ev.stopPropagation(); openIdentity(rid, p.username, ID.k, 'You'); }); else b.style.display = 'none'; return; }
+            b.style.display = 'none';
+            if (!p.idPub) return;
+            verifyProfile(rid, p).then(function (valid) {
+                const st = profJudge(rid, p, valid);
+                if (st === 'ok') set('ok', 'Verified identity key ' + fpOf(p.idPub), function (ev) { ev.stopPropagation(); openIdentity(rid, p.username, p.idPub, p.displayName); });
+                else if (st === 'changed') set('changed', 'Different identity key than before. Tap to review.', function (ev) { ev.stopPropagation(); openIdentity(rid, p.username, p.idPub, p.displayName); });
+                else if (st === 'bad') set('bad', 'Identity proof failed.', null);
+            });
+        });
+    }
+    const baseRPU = renderParticipantsUI;
+    renderParticipantsUI = function () { baseRPU.apply(this, arguments); try { decorateIdentity(); } catch (e) { console.warn(e); } };
+
+    /* ---- identity dialog ---- */
+    function openIdentity(rid, username, k, display) {
+        let ov = CV.byId('cvDialog'); if (ov) ov.remove();
+        ov = document.createElement('div'); ov.id = 'cvDialog'; ov.className = 'modal-overlay';
+        const box = document.createElement('div'); box.className = 'modal convo-dialog'; ov.appendChild(box);
+        const add = function (tag, text, cls) { const e = document.createElement(tag); e.textContent = text; if (cls) e.className = cls; box.appendChild(e); return e; };
+        const pin = pinsOf(rid)[username], me = username === U(), name = display || username;
+        add('h3', me ? 'Your identity' : name + '’s identity');
+        if (!k && !me) add('p', 'This person has not shared an identity key, so their name can’t be verified.');
+        else {
+            add('p', me ? 'Your messages are signed with this key, so others can tell they really come from you.' : 'Key used by ' + name + ' just now:');
+            add('div', fpOf(k || (ID && ID.k)), 'cv-fp');
+            if (!me && pin && pin.all.indexOf(k) < 0) {
+                add('p', '⚠ Earlier, ' + name + ' used a different key (' + fpOf(pin.k) + '). That happens when someone signs in on a new device or clears their data, but it could also be a different person using the name. Check with them another way before trusting it.');
+                const tb = add('button', 'Trust this new key', 'ios-btn'); tb.type = 'button';
+                tb.addEventListener('click', function () { trustKey(rid, username, k); ov.remove(); });
+            } else if (!me) add('p', pin ? '✓ Matches the key seen earlier in this chat.' : 'First key seen for this name in this chat.');
+        }
+        const cb = add('button', 'Close', 'ios-btn ios-btn-secondary'); cb.type = 'button'; cb.addEventListener('click', function () { ov.remove(); });
+        ov.addEventListener('click', function (e) { if (e.target === ov) ov.remove(); });
+        document.body.appendChild(ov);
+    }
+
+    /* ---- settings: identity key ---- */
+    function settingsRow() {
+        const dlg = CV.byId('settingsModal') && CV.byId('settingsModal').querySelector('.dialog-actions'); if (!dlg || CV.byId('cvIdRow')) return;
+        const row = document.createElement('div'); row.className = 'settings-option'; row.id = 'cvIdRow';
+        const left = document.createElement('div'); const s = document.createElement('strong'); s.textContent = 'Identity key';
+        const sp = document.createElement('span'); sp.id = 'cvIdFp'; left.append(s, sp);
+        const btns = document.createElement('div'); btns.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap';
+        const mk = function (t, fn) { const b = document.createElement('button'); b.type = 'button'; b.className = 'ios-btn ios-btn-secondary'; b.textContent = t; b.addEventListener('click', fn); btns.appendChild(b); };
+        const file = document.createElement('input'); file.type = 'file'; file.accept = '.json,application/json'; file.hidden = true; btns.appendChild(file);
+        mk('Export', function () {
+            if (!ID) return;
+            if (!confirm('This file contains your private identity key. Anyone who has it can pose as you. Keep it somewhere safe. Export it?')) return;
+            const blob = new Blob([JSON.stringify({ format: 'ConvoIdentity', version: 1, priv: ID.privJwk, pub: ID.pubJwk })], { type: 'application/json' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'convo-identity-' + ID.fp.slice(0, 9) + '.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 3000);
+        });
+        mk('Import', function () { file.click(); });
+        file.addEventListener('change', async function () {
+            const f = file.files[0]; file.value = ''; if (!f) return;
+            try {
+                const d = JSON.parse(await f.text());
+                if (!d || d.format !== 'ConvoIdentity' || !d.priv || !d.pub || d.priv.crv !== 'P-256' || !d.priv.d) throw new Error('bad');
+                await buildId(d.priv, d.pub);
+                if (!confirm('Replace this device’s identity key with the one in the file? Others who know your current key will see a “key changed” warning.')) return;
+                localStorage.setItem(KEYSTORE, JSON.stringify({ priv: d.priv, pub: d.pub }));
+                alert('Identity key imported. Convo will reload now.'); location.reload();
+            } catch (e) { alert('That is not a valid Convo identity file.'); }
+        });
+        row.append(left, btns); dlg.before(row);
+        ready.then(function () { sp.textContent = ID ? 'Fingerprint ' + ID.fp + '. Used to sign your messages so nobody can pose as you.' : 'Not available: this page needs a secure context (https or a file) for signing.'; });
+    }
+    settingsRow();
+    window.__convoIdentity = { get: function () { return ID; }, fpOf: fpOf, verifyStr: verifyStr, signStr: signStr, canon: canon, judge: judge, pinsOf: pinsOf };
+})();
+
+/* ================= 6. every chat connected from sign-in, and a sturdier link ================= */
+(function () {
+    'use strict';
+    const net = window.__convoNet; if (!net) return;
+    const sess = net.sess, quietHost = new Set();
+    const loggedIn = function () { return !!(CV.U()) && setupScreen.style.display === 'none'; };
+
+    // extra public STUN servers, plus an optional relay (TURN) server the user can add
+    ['stun:global.stun.twilio.com:3478', 'stun:stun.stunprotocol.org:3478', 'stun:stun.nextcloud.com:443'].forEach(function (u) { peerConfig.config.iceServers.push({ urls: u }); });
+    try {
+        const c = JSON.parse(localStorage.getItem('xchat_turn_custom') || 'null');
+        if (c && c.urls) peerConfig.config.iceServers.unshift({ urls: String(c.urls).split(/[\s,]+/).filter(Boolean), username: c.username || '', credential: c.credential || '' });
+    } catch (e) {}
+
+    function startRoom(room) {
+        if (!room || !loggedIn()) return;
+        const rid = room.id, st = net.states.get(rid);
+        if (st && st.kicked) return;
+        if (room.type !== 'public' && !room.code) return;
+        const s = sess(rid); if (s && s.peer) return;
+        const S = net.S(rid), bg = rid !== activeRoomId;
+        if (bg && S.seen && room.creator && room.type === 'private') { S.everLinked = true; quietHost.add(rid); }   // no "room created" notice every time you sign in
+        runInRoomSession(rid, function () {
+            if (peer) return;
+            if (bg) messageLog = readStoredHistory(rid, false);   // background chats must start from their saved history, not an empty one
+            if (room.type === 'public') initPublicPeerConnection(); else initPeerConnection(room.code, !!room.creator, !!room.creator);
+            saveRoomSession(rid);
+        });
+    }
+    const prevHosting = window.__convoOnHosting;
+    window.__convoOnHosting = function (rid, wasLinked) {
+        if (quietHost.delete(rid)) wasLinked = false;
+        return prevHosting ? prevHosting.call(this, rid, wasLinked) : undefined;
+    };
+    function connectAll() {
+        if (!loggedIn()) return;
+        convoRooms.forEach(function (room, i) { setTimeout(function () { try { startRoom(room); } catch (e) { console.warn(e); } }, 120 * i); });
+    }
+    const baseEnter = enterLoggedInState;
+    enterLoggedInState = function () {
+        const r = baseEnter.apply(this, arguments);
+        try { if (window.__convoPrepJoins) window.__convoPrepJoins(); if (window.__convoEnsureOwners) window.__convoEnsureOwners(); } catch (e) {}
+        setTimeout(connectAll, 50);
+        return r;
+    };
+
+    function keepAlive() {
+        if (!loggedIn() || navigator.onLine === false) return;
+        const now = Date.now();
+        convoRooms.forEach(function (room) {
+            const st = net.states.get(room.id); if (st && st.kicked) return;
+            const s = sess(room.id), p = s && s.peer;
+            if (!p) { if (!(st && (st.timer || st.connecting || st.waitOnline))) startRoom(room); return; }
+            if (p.destroyed || p.__convoDead) return;
+            // a host that lost the chat server can't be found by newcomers until it re-registers
+            if (p.disconnected && now - (p.__cvRe || 0) > 3000) { p.__cvRe = now; try { p.reconnect(); } catch (e) {} }
+        });
+    }
+    setInterval(keepAlive, 3000);
+    setInterval(function () { if (loggedIn() && window.__convoEnsureOwners) window.__convoEnsureOwners(); }, 15000);
+    ['online', 'focus', 'pageshow'].forEach(function (ev) { window.addEventListener(ev, function () { setTimeout(function () { connectAll(); keepAlive(); }, 200); }); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) { connectAll(); keepAlive(); } });
+
+    // optional: keep the screen awake so phones don't sleep the connection
+    let lock = null, wantLock = false; try { wantLock = localStorage.getItem('convo_wakelock') === '1'; } catch (e) {}
+    async function takeLock() { if (!wantLock || !navigator.wakeLock || lock || document.hidden) return; try { lock = await navigator.wakeLock.request('screen'); lock.addEventListener('release', function () { lock = null; }); } catch (e) {} }
+    document.addEventListener('visibilitychange', takeLock);
+    window.__convoSetWakeLock = function (on) { wantLock = !!on; try { localStorage.setItem('convo_wakelock', on ? '1' : '0'); } catch (e) {} if (on) takeLock(); else if (lock) { lock.release().catch(function () {}); lock = null; } };
+    window.__convoWakeLockOn = function () { return wantLock; };
+    takeLock();
+    window.__convoConnectAll = connectAll;
+})();
+
+/* ================= 7. connection check ================= */
+(function () {
+    'use strict';
+    const net = window.__convoNet, upg = window.__convoUpg; if (!net) return;
+    const sess = net.sess, ELT = function (tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    const PEER_HOST = '0.peerjs.com';
+
+    function testHttp() {
+        const t0 = performance.now(), ctl = typeof AbortController === 'function' ? new AbortController() : null, to = setTimeout(function () { if (ctl) ctl.abort(); }, 6500);
+        return fetch('https://' + PEER_HOST + '/peerjs/id?ts=' + Date.now(), { cache: 'no-store', signal: ctl ? ctl.signal : undefined })
+            .then(function (r) { clearTimeout(to); return { ok: r.ok, ms: Math.round(performance.now() - t0) }; }).catch(function () { clearTimeout(to); return { ok: false }; });
+    }
+    function testWs() {
+        return new Promise(function (res) {
+            const t0 = performance.now(); let done = false, ws;
+            const fin = function (v) { if (done) return; done = true; clearTimeout(to); try { if (ws) ws.close(); } catch (e) {} res(v); };
+            const to = setTimeout(function () { fin({ ok: false, err: 'timeout' }); }, 7000);
+            try {
+                ws = new WebSocket('wss://' + PEER_HOST + '/peerjs?key=peerjs&id=cvchk' + Math.random().toString(36).slice(2, 10) + '&token=' + Math.random().toString(36).slice(2, 12));
+                ws.onmessage = function (ev) { try { const m = JSON.parse(ev.data); if (m.type === 'OPEN') fin({ ok: true, ms: Math.round(performance.now() - t0) }); else if (m.type === 'ERROR' || m.type === 'ID-TAKEN') fin({ ok: false, err: m.type }); } catch (e) {} };
+                ws.onerror = function () { fin({ ok: false, err: 'blocked' }); };
+                ws.onclose = function () { fin({ ok: false, err: 'closed' }); };
+            } catch (e) { fin({ ok: false, err: 'blocked' }); }
+        });
+    }
+    function parseCand(c) {
+        const m = String(c.candidate || '').match(/candidate:\S+ \d+ (\w+) \d+ (\S+) (\d+) typ (\w+)(?: raddr (\S+) rport (\d+))?/);
+        return m ? { proto: m[1].toLowerCase(), ip: m[2], port: m[3], type: m[4], raddr: m[5], rport: m[6], relayProto: c.relayProtocol } : { type: '?' };
+    }
+    function gather(config, ms, stopOn) {
+        return new Promise(function (res) {
+            const cands = []; let pc, done = false;
+            const fin = function () { if (done) return; done = true; clearTimeout(to); try { pc.close(); } catch (e) {} res({ cands: cands }); };
+            const to = setTimeout(fin, ms);
+            try { pc = new RTCPeerConnection(config); } catch (e) { clearTimeout(to); done = true; res({ cands: cands, unsupported: true }); return; }
+            try { pc.createDataChannel('cv'); } catch (e) {}
+            pc.onicecandidate = function (ev) { if (!ev.candidate) { fin(); return; } const p = parseCand(ev.candidate); cands.push(p); if (stopOn && stopOn(p)) fin(); };
+            pc.createOffer().then(function (o) { return pc.setLocalDescription(o); }).catch(fin);
+        });
+    }
+    function netKind() {
+        const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (!c) return 'Unknown (this browser doesn’t say)';
+        const t = { wifi: 'Wi-Fi', cellular: 'Mobile data', ethernet: 'Wired', bluetooth: 'Bluetooth', wimax: 'WiMAX', other: 'Other', none: 'None' }[c.type];
+        return (t ? t + ' · ' : '') + (c.effectiveType ? c.effectiveType.toUpperCase() : '') + (c.downlink ? ' · about ' + c.downlink + ' Mbit/s' : '') + (c.saveData ? ' · data saver on' : '');
+    }
+    function roomStatus(r) {
+        const st = net.states.get(r.id); if (st && st.kicked) return { t: 'Banned by the host', l: 0 };
+        const s = sess(r.id); if (!s || !s.peer) return { t: 'Not started yet', l: 1 };
+        const ls = net.linkState(r.id); if (ls === 'down') return { t: 'Reconnecting…', l: 1 };
+        if (s.isHost) { let n = 0; try { n = s.onlineUsersMap ? s.onlineUsersMap.size : 0; } catch (e) {} return { t: 'Hosting' + (n ? ' · ' + n + ' online' : ''), l: 2 }; }
+        const e = upg && upg.hb && upg.hb.get(r.id), rtt = e && e.conn === s.hostConnection && e.rtt != null ? ' · ' + Math.round(e.rtt) + ' ms' : '';
+        return { t: (ls === 'soft' ? 'Unstable' : 'Connected') + rtt, l: ls === 'soft' ? 1 : 2 };
+    }
+
+    let ov, body, running = false;
+    function build() {
+        ov = ELT('div', 'modal-overlay hidden'); ov.id = 'cvNetOv';
+        const box = ELT('div', 'modal convo-dialog'); box.id = 'cvNet'; ov.appendChild(box);
+        box.appendChild(ELT('h3', '', 'Connection check'));
+        body = ELT('div'); box.appendChild(body);
+        ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.add('hidden'); });
+        document.body.appendChild(ov);
+    }
+    const line = function (parent, icon, text) { const r = ELT('div', 'cv-row'); r.append(ELT('span', '', icon), ELT('span', '', text)); parent.appendChild(r); return r; };
+
+    async function run() {
+        if (running) return; running = true;
+        if (!ov) build();
+        ov.classList.remove('hidden'); body.textContent = '';
+        const wait = ELT('div', 'cv-sum', ''); wait.append(ELT('span', '', '⏳'), ELT('div', '', 'Checking your connection. This takes about 10 seconds…')); body.appendChild(wait);
+        const online = navigator.onLine !== false;
+        const stunCfg = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:stun.cloudflare.com:3478' }] };
+        const turn = peerConfig.config.iceServers.filter(function (s) { return [].concat(s.urls).some(function (u) { return /^turns?:/i.test(u); }); });
+        const [http, ws, stun, relay] = await Promise.all([
+            online ? testHttp() : { ok: false }, online ? testWs() : { ok: false },
+            online ? gather(stunCfg, 5500) : { cands: [] },
+            online && turn.length ? gather({ iceServers: turn, iceTransportPolicy: 'relay' }, 8000, function (p) { return p.type === 'relay'; }) : { cands: [] }
+        ]);
+        const srflx = stun.cands.filter(function (c) { return c.type === 'srflx' && c.proto === 'udp'; });
+        const groups = {}; srflx.forEach(function (c) { const k = c.raddr + ':' + c.rport; (groups[k] = groups[k] || new Set()).add(c.ip + ':' + c.port); });
+        const symmetric = Object.keys(groups).some(function (k) { return groups[k].size > 1; });
+        const udpOk = srflx.length > 0, hasRelay = relay.cands.some(function (c) { return c.type === 'relay'; });
+        const relayVia = (relay.cands.find(function (c) { return c.type === 'relay' && c.relayProto; }) || {}).relayProto;
+        const kind = netKind(), cellular = /Mobile data/.test(kind);
+
+        let level = 'good', title = 'Everything looks good', hint = 'Convo can reach its chat server and connect directly to other people.';
+        if (!online) { level = 'bad'; title = 'You’re offline'; hint = 'Your device says it has no internet. Check Wi-Fi or mobile data. Convo reconnects by itself once you’re back.'; }
+        else if (!http.ok && !ws.ok) { level = 'bad'; title = 'Can’t reach the chat server'; hint = 'Your network, a VPN, a firewall or an ad-blocker seems to be blocking Convo’s chat server (' + PEER_HOST + '). Try mobile data or another Wi-Fi, or turn off the VPN or blocker.'; }
+        else if (!ws.ok) { level = 'bad'; title = 'Your network blocks live connections'; hint = 'Web pages load, but the live (WebSocket) connection Convo needs is blocked. That’s common on school or work Wi-Fi, proxies and some VPNs. Try another network.'; }
+        else if (!udpOk && hasRelay) { level = 'warn'; title = 'Your Wi-Fi blocks direct connections'; hint = 'Direct connections are blocked here, so Convo routes through a relay instead. It works, just a little slower.'; }
+        else if (!udpOk) { level = 'bad'; title = 'Your Wi-Fi blocks direct connections'; hint = 'Direct connections are blocked and no relay is reachable, so people on other networks probably can’t connect with you. Try mobile data or another network, or add your own relay under “Advanced”.'; }
+        else if (symmetric && hasRelay) { level = 'warn'; title = 'Your router is strict about connections'; hint = 'Your router uses a strict kind of NAT, so direct connections to some people can fail. The relay should cover those.'; }
+        else if (symmetric) { level = 'bad'; title = 'Your router is strict about connections'; hint = 'Your router uses strict NAT and no relay is reachable, so some people won’t be able to connect with you. Try another network or add your own relay under “Advanced”.'; }
+        else if (!hasRelay && turn.length) { level = 'warn'; title = 'Works, but the backup relay is down'; hint = 'Direct connections work. The backup relay isn’t reachable, so people on very strict networks may have trouble reaching you.'; }
+        else if (cellular) hint += ' You’re on mobile data, which can drop when the signal changes. Convo reconnects automatically.';
+
+        body.textContent = '';
+        const sum = ELT('div', 'cv-sum ' + level); sum.append(ELT('span', '', level === 'good' ? '✅' : level === 'warn' ? '⚠️' : '⛔'));
+        const st = ELT('div'); st.append(ELT('b', '', title), ELT('span', '', hint)); sum.appendChild(st); body.appendChild(sum);
+
+        body.appendChild(ELT('h4', '', 'Tests'));
+        line(body, online ? '✓' : '✕', online ? 'Internet: your device is online' : 'Internet: your device is offline');
+        line(body, http.ok ? '✓' : '✕', 'Chat server reachable' + (http.ok ? ' (' + http.ms + ' ms)' : ' — no answer'));
+        line(body, ws.ok ? '✓' : '✕', 'Live connection to the chat server' + (ws.ok ? ' (' + ws.ms + ' ms)' : ' — ' + (ws.err === 'timeout' ? 'timed out' : 'blocked')));
+        line(body, udpOk ? '✓' : '✕', udpOk ? 'Direct connections (UDP) work' : 'Direct connections (UDP) are blocked');
+        line(body, !udpOk ? '–' : symmetric ? '⚠' : '✓', !udpOk ? 'Router type: unknown' : symmetric ? 'Router type: strict (symmetric NAT)' : 'Router type: friendly (direct connections possible)');
+        line(body, hasRelay ? '✓' : (turn.length ? '✕' : '–'), turn.length ? (hasRelay ? 'Relay available' + (relayVia ? ' (' + relayVia.toUpperCase() + ')' : '') : 'Relay not reachable') : 'No relay configured');
+        line(body, 'ℹ', 'Network: ' + kind);
+
+        body.appendChild(ELT('h4', '', 'Your chats'));
+        convoRooms.forEach(function (r) { const s = roomStatus(r); line(body, s.l === 2 ? '●' : s.l === 1 ? '○' : '✕', (r.name || 'Chat') + ': ' + s.t); });
+
+        const btns = ELT('div', 'cv-btns');
+        const mk = function (t, fn, primary) { const b = ELT('button', 'ios-btn' + (primary ? '' : ' ios-btn-secondary'), t); b.type = 'button'; b.addEventListener('click', fn); btns.appendChild(b); return b; };
+        mk('Run again', function () { running = false; run(); }, true);
+        mk('Reconnect all chats', function () {
+            convoRooms.forEach(function (r) { const s = net.S(r.id); if (s.kicked) return; s.tries = 0; if (sess(r.id) && sess(r.id).peer) net.reconnectNow(r.id); });
+            if (window.__convoConnectAll) window.__convoConnectAll();
+            CV.toast('Reconnecting every chat…', 3000);
+        });
+        mk('Copy report', function () {
+            const txt = ['Convo connection check · ' + new Date().toLocaleString(), title + ' — ' + hint, 'Online: ' + online, 'Chat server: ' + (http.ok ? 'ok ' + http.ms + ' ms' : 'unreachable'), 'WebSocket: ' + (ws.ok ? 'ok' : 'failed'), 'UDP: ' + udpOk, 'NAT: ' + (symmetric ? 'symmetric' : 'ok'), 'Relay: ' + hasRelay, 'Network: ' + kind].join('\n');
+            (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { CV.toast('Report copied.', 2500); }, function () { prompt('Copy this report:', txt); });
+        });
+        mk('Close', function () { ov.classList.add('hidden'); });
+        body.appendChild(btns);
+
+        const det = ELT('details'); det.appendChild(ELT('summary', '', 'Advanced'));
+        const keep = ELT('label'); const kc = document.createElement('input'); kc.type = 'checkbox'; kc.checked = window.__convoWakeLockOn ? window.__convoWakeLockOn() : false;
+        kc.addEventListener('change', function () { if (window.__convoSetWakeLock) window.__convoSetWakeLock(kc.checked); });
+        keep.append(kc, document.createTextNode(' Keep this device awake while Convo is open (helps phones stay connected)')); det.appendChild(keep);
+        det.appendChild(ELT('p', '', 'Your own relay (TURN) server, e.g. from a free Metered or Cloudflare account. Used when direct connections fail.'));
+        let saved = {}; try { saved = JSON.parse(localStorage.getItem('xchat_turn_custom') || '{}') || {}; } catch (e) {}
+        const iu = document.createElement('input'), iun = document.createElement('input'), ic = document.createElement('input');
+        [[iu, 'turn:your.server:443?transport=tcp', saved.urls], [iun, 'Username', saved.username], [ic, 'Password', saved.credential]].forEach(function (x) { x[0].type = 'text'; x[0].placeholder = x[1]; x[0].value = x[2] || ''; det.appendChild(x[0]); });
+        const sv = ELT('button', 'ios-btn ios-btn-secondary', 'Save relay'); sv.type = 'button';
+        sv.addEventListener('click', function () {
+            try { if (iu.value.trim()) localStorage.setItem('xchat_turn_custom', JSON.stringify({ urls: iu.value.trim(), username: iun.value.trim(), credential: ic.value.trim() })); else localStorage.removeItem('xchat_turn_custom'); } catch (e) {}
+            if (confirm('Saved. Reload Convo now to use it?')) location.reload();
+        });
+        det.appendChild(sv); body.appendChild(det);
+        running = false;
+    }
+    window.__convoNetCheck = function () { running = false; run(); };
+
+    // one tap on the signal bars, a button on the “disconnected” pop-up, and a row in settings
+    const q = CV.byId('convoQ');
+    if (q) { q.setAttribute('role', 'button'); q.setAttribute('tabindex', '0'); q.addEventListener('click', window.__convoNetCheck); q.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.__convoNetCheck(); } }); }
+    const retry = CV.byId('convoDiscRetry');
+    if (retry) { const d = ELT('button', '', 'Diagnose'); d.id = 'convoDiag'; d.type = 'button'; if (retry.className) d.className = retry.className; d.addEventListener('click', window.__convoNetCheck); retry.after(d); }
+    const dlg = CV.byId('settingsModal') && CV.byId('settingsModal').querySelector('.dialog-actions');
+    if (dlg) {
+        const row = ELT('div', 'settings-option'), left = ELT('div'), b = ELT('button', 'ios-btn ios-btn-secondary', 'Check');
+        left.append(ELT('strong', '', 'Connection check'), ELT('span', '', 'See if you can reach the chat server and what is blocking a connection')); b.type = 'button';
+        b.addEventListener('click', function () { const m = CV.byId('settingsModal'); if (m) m.classList.add('hidden'); window.__convoNetCheck(); });
+        row.append(left, b); dlg.before(row);
+    }
 })();
 </script>
 
