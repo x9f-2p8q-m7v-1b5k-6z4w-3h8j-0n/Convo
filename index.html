@@ -10332,7 +10332,7 @@ const CV8 = {
 (function () {
     'use strict';
     const upg = window.__convoUpg, ident = window.__convoIdentity; if (!upg) return;
-    const U = CV.U, lkey = function (rid) { return 'xchat_tl_' + U() + '_' + rid; }, cache = new Map();
+    const U = CV.U, lkey = function (rid) { return 'xchat_tl_' + U() + '_' + rid; }, cache = new Map(), pend = new Map();
     const clip = function (s, n) { return typeof s === 'string' ? s.slice(0, n) : ''; };
     const delStr = function (id, u) { return ['convo1', 'DEL', id, u].join('|'); };
     function ledger(rid) {
@@ -10372,6 +10372,7 @@ const CV8 = {
                 const m = await findMsg(rid, rec.id);
                 if (!m) {   // not here (yet): remember a signed one so it can't come back later
                     if (rec.s && ident && await ident.verifyStr(delStr(rec.id, rec.by), { k: rec.k, s: rec.s })) { add(rid, rec); runInRoomSession(rid, function () { if (window.__convoTomb) window.__convoTomb(rec.id); }); }
+                    else { let q = pend.get(rid); if (!q) { q = new Map(); pend.set(rid, q); } if (q.size < 400) q.set(rec.id, rec); }   // unsigned: wait for the message, then apply
                     continue;
                 }
                 if (!(await proves(rec, m))) continue;
@@ -10399,13 +10400,16 @@ const CV8 = {
     const baseH = handleIncomingPacket;
     handleIncomingPacket = function (packet, src) {
         const t = packet && packet.type, rid = activeRoomId;
-        if (t === 'Z_TOMBS') { if (Array.isArray(packet.recs)) applyRecs(rid, packet.recs.slice(0, 800).map(clean).filter(Boolean), src); return; }
+        if (t === 'Z_TOMBS' && Array.isArray(packet.recs)) { applyRecs(rid, packet.recs.slice(0, 800).map(clean).filter(Boolean), src); return; }
         let before = null; if (t === 'DELETE' && packet.id) before = (messageLog || []).find(function (m) { return m && m.id === packet.id; });
         const r = baseH.apply(this, arguments);
         try {
             if (t === 'DELETE' && packet.id && packet.sender && packet.sender.username && (!before || (before.sender && before.sender.username === packet.sender.username)))
                 add(rid, clean({ id: packet.id, by: packet.sender.username, k: packet.auth && packet.auth.k, s: packet.auth && packet.auth.s }));
-            else if (t === 'JOIN' && isHost && src) sendLedger(rid, src);   // someone (re)joined: tell them what was taken down while they were away
+            else if ((t === 'JOIN' || t === 'Z_HIST') && isHost && src) sendLedger(rid, src);   // someone (re)joined: tell them what was taken down while they were away
+            if ((t === 'Z_HIST' || t === 'CHAT' || t === 'FILE') && pend.get(rid) && pend.get(rid).size) {
+                const waiting = Array.from(pend.get(rid).values()); pend.get(rid).clear(); applyRecs(rid, waiting, src);
+            }
         } catch (e) { console.warn(e); }
         return r;
     };
@@ -10415,6 +10419,77 @@ const CV8 = {
         try { runInRoomSession(rid, function () { if (!isHost && hostConnection && hostConnection.open) sendLedger(rid, hostConnection); }); } catch (e) {}   // and tell the host what I know
     };
     window.__convoTombLedger = { get: ledger, add: add };
+})();
+</script>
+
+<script id="convo-upgrades10">
+/*
+ * Upgrades 10: a "Take down" button right next to every picture / file / voice message you sent.
+ * It uses the same take-down as the message menu: gone on your device at once, gone on every
+ * other device that is online, and handed to anyone who was offline the moment they reconnect.
+ */
+(function () {
+    'use strict';
+    const style = document.createElement('style');
+    style.textContent = '.bubble > .cv-td{display:inline-block;margin:6px 0 0;border:0;border-radius:99px;padding:5px 11px;font-size:.74rem;font-weight:700;cursor:pointer;background:rgba(255,59,48,.92);color:#fff;font-family:inherit;line-height:1.2}.bubble > .cv-td:hover{filter:brightness(1.08)}.bubble > .cv-td:disabled{opacity:.5;cursor:default}';
+    document.head.appendChild(style);
+
+    const me = function () { return (currentUser && currentUser.username) || ''; };
+    const logFind = function (id) { return (messageLog || []).find(function (x) { return x && x.id === id; }); };
+
+    function takeDown(rid, id) {
+        runInRoomSession(rid, function () {
+            const live = logFind(id);
+            if (!live) {   // already gone (taken down elsewhere a moment ago): just clear it off the screen
+                Array.from(messagesBox.querySelectorAll('.message-wrapper')).forEach(function (el) { if (el.dataset.msgId === id) el.remove(); });
+                return;
+            }
+            if (!live.sender || live.sender.username !== me()) return;   // only the sender can take a message down
+            if (typeof window.__convoTakeDown === 'function') { window.__convoTakeDown(live); return; }
+            messageLog = messageLog.filter(function (x) { return x.id !== id; });
+            Array.from(messagesBox.querySelectorAll('.message-wrapper')).forEach(function (el) { if (el.dataset.msgId === id) el.remove(); });
+            if (window.__convoTomb) window.__convoTomb(id);
+            if (window.__convoPurgeMsg) window.__convoPurgeMsg(live);
+            const packet = { type: 'DELETE', id: id, sender: currentUser };
+            if (window.convoSendOp) window.convoSendOp(packet); else if (isHost) broadcastPacket(packet, null); else if (hostConnection && hostConnection.open) hostConnection.send(packet);
+            persistRoomHistory(activeRoomId, isHost);
+            try { renderConversationList(); } catch (e) {}
+        });
+    }
+
+    function decorate(w) {
+        const id = w.dataset && w.dataset.msgId; if (!id) return;
+        const bubble = w.querySelector('.bubble'); if (!bubble) return;
+        let btn = null; for (const c of bubble.children) if (c.classList && c.classList.contains('cv-td')) { btn = c; break; }
+        const isFile = !!bubble.querySelector('.convo-fx');
+        const m = logFind(id);
+        const mine = isFile && (m ? !!(m.sender && m.sender.username === me()) : w.classList.contains('sent'));
+        if (!mine) { if (btn) btn.remove(); return; }
+        if (btn) return;
+        btn = document.createElement('button'); btn.type = 'button'; btn.className = 'cv-td'; btn.textContent = 'Take down';
+        btn.title = 'Remove this from every device';
+        btn.addEventListener('click', function (e) {
+            e.preventDefault(); e.stopPropagation();
+            if (btn.disabled) return;
+            if (!confirm('Take this down for everyone, including you? It disappears from every device and can’t be brought back.')) return;
+            btn.disabled = true;
+            takeDown(visibleRoomId, id);
+        });
+        bubble.appendChild(btn);
+    }
+
+    let queued = false;
+    function scan() { queued = false; messagesBox.querySelectorAll('.message-wrapper').forEach(decorate); }
+    function schedule() { if (queued) return; queued = true; (window.requestAnimationFrame || setTimeout)(scan); }
+    new MutationObserver(function (muts) {
+        for (const mu of muts) {
+            const t = mu.target;
+            if (t && t.classList && t.classList.contains('cv-td')) continue;
+            if (mu.addedNodes.length === 1 && mu.addedNodes[0].classList && mu.addedNodes[0].classList.contains('cv-td')) continue;
+            schedule(); return;
+        }
+    }).observe(messagesBox, { childList: true, subtree: true });
+    schedule();
 })();
 </script>
 
