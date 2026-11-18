@@ -1770,6 +1770,29 @@
 </head>
 
 <body>
+<svg id="cvIconSprite" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false"><defs>
+<linearGradient id="cvg-star" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFEE9A"/><stop offset=".55" stop-color="#FFC31F"/><stop offset="1" stop-color="#F59A00"/></linearGradient>
+<linearGradient id="cvg-blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6BC0FF"/><stop offset="1" stop-color="#1F63F5"/></linearGradient>
+<radialGradient id="cvg-glass" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#F4FCFF"/><stop offset="1" stop-color="#7CC9FF"/></radialGradient>
+<linearGradient id="cvg-ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9A8BFF"/><stop offset="1" stop-color="#5233C9"/></linearGradient>
+<linearGradient id="cvg-phone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF86BE"/><stop offset="1" stop-color="#D81B72"/></linearGradient>
+<linearGradient id="cvg-cam" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A99CFF"/><stop offset="1" stop-color="#5236D0"/></linearGradient>
+<linearGradient id="cvg-night" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6C6CE5"/><stop offset="1" stop-color="#1B1D48"/></linearGradient>
+<linearGradient id="cvg-day" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFEB8A"/><stop offset="1" stop-color="#FFA21A"/></linearGradient>
+<linearGradient id="cvg-bell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFDF7A"/><stop offset="1" stop-color="#F29B00"/></linearGradient>
+<linearGradient id="cvg-bell0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D3D8E2"/><stop offset="1" stop-color="#8C95A6"/></linearGradient>
+<symbol id="cvi-star" viewBox="0 0 24 24"><path d="M12.00 3.00 L14.65 8.96 L21.13 9.63 L16.28 13.99 L17.64 20.37 L12.00 17.10 L6.36 20.37 L7.72 13.99 L2.87 9.63 L9.35 8.96Z" fill="url(#cvg-star)" stroke="#E58A00" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 5.2l1.4 3.3" stroke="#fff" stroke-opacity=".7" stroke-width="1.4" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="cvi-select" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="url(#cvg-blue)"/><path d="M3.6 9.5C3.6 6 6 3.6 9.5 3.6h5C18 3.6 20.4 6 20.4 9.5" stroke="#fff" stroke-opacity=".3" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M7.6 12.6l3.1 3.1 5.9-6.4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="cvi-search" viewBox="0 0 24 24"><path d="M15.2 15.2l5.2 5.2" stroke="url(#cvg-ring)" stroke-width="3.2" stroke-linecap="round"/><circle cx="10" cy="10" r="6.4" fill="url(#cvg-glass)" stroke="url(#cvg-ring)" stroke-width="2.4"/><path d="M6.9 8.9a3.7 3.7 0 0 1 3-2.2" stroke="#fff" stroke-opacity=".95" stroke-width="1.5" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="cvi-phone" viewBox="0 0 24 24"><path d="M21.6 16.9v2.7a2 2 0 0 1-2.2 2 19.4 19.4 0 0 1-8.4-3 19 19 0 0 1-5.9-5.9 19.4 19.4 0 0 1-3-8.5A2 2 0 0 1 4.1 2.1h2.7a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L7.9 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.6 1.9z" fill="url(#cvg-phone)" stroke="#BE1763" stroke-width=".9" stroke-linejoin="round"/><path d="M5.2 4.2c-.5.1-1.2.8-1.2 2" stroke="#fff" stroke-opacity=".55" stroke-width="1.3" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="cvi-video" viewBox="0 0 24 24"><rect x="2" y="6" width="14.2" height="12" rx="3.4" fill="url(#cvg-cam)"/><path d="M17.4 10.4l3.7-2.3c.8-.5 1.6.1 1.6 1v7.8c0 .9-.8 1.5-1.6 1l-3.7-2.3z" fill="url(#cvg-cam)"/><path d="M3.2 9.6c0-1.6 1.1-2.4 2.6-2.4h5" stroke="#fff" stroke-opacity=".4" stroke-width="1.2" stroke-linecap="round" fill="none"/><circle cx="9.1" cy="12" r="2.3" fill="#fff" fill-opacity=".92"/><circle cx="9.1" cy="12" r="1" fill="#5236D0"/></symbol>
+<symbol id="cvi-theme" viewBox="0 0 24 24"><path d="M12 2.6a9.4 9.4 0 0 0 0 18.8z" fill="url(#cvg-night)"/><path d="M12 2.6a9.4 9.4 0 0 1 0 18.8z" fill="url(#cvg-day)"/><circle cx="7.4" cy="8.6" r=".9" fill="#fff" fill-opacity=".9"/><circle cx="9.2" cy="14.8" r=".6" fill="#fff" fill-opacity=".8"/><circle cx="5.9" cy="12.3" r=".5" fill="#fff" fill-opacity=".7"/><circle cx="16.4" cy="12" r="2.3" fill="#FFF7CC" fill-opacity=".85"/><circle cx="12" cy="12" r="9.4" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="1"/></symbol>
+<symbol id="cvi-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.6" fill="url(#cvg-blue)" stroke="#1B55D6" stroke-width=".8"/><path d="M5.2 9.4A7.2 7.2 0 0 1 12 4.6" stroke="#fff" stroke-opacity=".45" stroke-width="1.3" stroke-linecap="round" fill="none"/><circle cx="12" cy="7.9" r="1.45" fill="#fff"/><rect x="10.75" y="10.7" width="2.5" height="6.9" rx="1.25" fill="#fff"/></symbol>
+<symbol id="cvi-bell" viewBox="0 0 24 24"><path d="M12 3.4c-3.3 0-5.8 2.5-5.8 5.8v3c0 .9-.4 1.8-1.1 2.5l-.7.8c-.5.6-.1 1.5.7 1.5h13.8c.8 0 1.2-.9.7-1.5l-.7-.8c-.7-.7-1.1-1.6-1.1-2.5v-3c0-3.3-2.5-5.8-5.8-5.8z" fill="url(#cvg-bell)" stroke="#D98200" stroke-width=".9" stroke-linejoin="round"/><circle cx="12" cy="3.1" r="1.2" fill="#F29B00"/><path d="M9.5 19.2a2.5 2.5 0 0 0 5 0z" fill="#F29B00"/><path d="M8.2 9.4c.2-1.7 1.3-2.9 2.8-3.3" stroke="#fff" stroke-opacity=".6" stroke-width="1.3" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="cvi-bellOff" viewBox="0 0 24 24"><path d="M12 3.4c-3.3 0-5.8 2.5-5.8 5.8v3c0 .9-.4 1.8-1.1 2.5l-.7.8c-.5.6-.1 1.5.7 1.5h13.8c.8 0 1.2-.9.7-1.5l-.7-.8c-.7-.7-1.1-1.6-1.1-2.5v-3c0-3.3-2.5-5.8-5.8-5.8z" fill="url(#cvg-bell0)" stroke="#7B8496" stroke-width=".9" stroke-linejoin="round"/><circle cx="12" cy="3.1" r="1.2" fill="#8C95A6"/><path d="M9.5 19.2a2.5 2.5 0 0 0 5 0z" fill="#8C95A6"/><path d="M4.4 4.6l15.2 15.2" stroke="#fff" stroke-opacity=".9" stroke-width="4" stroke-linecap="round"/><path d="M4.4 4.6l15.2 15.2" stroke="#FF453A" stroke-width="2.2" stroke-linecap="round"/></symbol>
+</defs></svg>
+<style id="cvIconCss">.cvi{width:22px;height:22px;display:block;margin:auto;filter:drop-shadow(0 1px 1.4px rgba(0,0,0,.28));transition:transform .15s ease}.icon-button:hover .cvi,.chat-mute-btn:hover .cvi{transform:scale(1.1)}.icon-button:active .cvi{transform:scale(.94)}.chat-mute-btn .cvi{width:17px;height:17px}.context-menu-item .cvi,.chat-context-menu .cvi{display:inline-block;width:16px;height:16px;vertical-align:-3px}</style>
+<script>window.__cvIcon=function(n){return '<svg class="cvi" viewBox="0 0 24 24" aria-hidden="true"><use href="#cvi-'+n+'"/></svg>';};</script>
 
 <div class="mac-window">
 
@@ -2008,8 +2031,8 @@
 
                 <div class="chat-header-actions">
 
-                    <button class="icon-button" id="voiceCallBtn" type="button" title="Voice call everyone in this chat" aria-label="Voice call this chat">📞</button>
-                    <button class="icon-button" id="videoCallBtn" type="button" title="Video call everyone in this chat" aria-label="Video call this chat">🎥</button>
+                    <button class="icon-button" id="voiceCallBtn" type="button" title="Voice call everyone in this chat" aria-label="Voice call this chat"><svg class="cvi" viewBox="0 0 24 24" aria-hidden="true"><use href="#cvi-phone"/></svg></button>
+                    <button class="icon-button" id="videoCallBtn" type="button" title="Video call everyone in this chat" aria-label="Video call this chat"><svg class="cvi" viewBox="0 0 24 24" aria-hidden="true"><use href="#cvi-video"/></svg></button>
                     <button
                         class="icon-button hidden"
                         id="hangUpBtn"
@@ -2021,15 +2044,19 @@
                     <button
                         class="icon-button"
                         id="themeToggleBtn"
+                        title="Light / dark"
+                        aria-label="Switch light or dark mode"
                     >
-                        🌓
+                        <svg class="cvi" viewBox="0 0 24 24" aria-hidden="true"><use href="#cvi-theme"/></svg>
                     </button>
 
                     <button
                         class="icon-button"
                         id="infoBtn"
+                        title="Chat details"
+                        aria-label="Chat details"
                     >
-                        ℹ
+                        <svg class="cvi" viewBox="0 0 24 24" aria-hidden="true"><use href="#cvi-info"/></svg>
                     </button>
 
                 </div>
@@ -3301,8 +3328,8 @@
     });
     copyInviteCodeBtn?.addEventListener('click', async () => {
         const room = convoRooms.find(r => r.id === activeRoomId); if (!room || room.type !== 'private') return;
-        try { await navigator.clipboard.writeText(room.code); copyInviteCodeBtn.textContent = 'Copied'; setTimeout(() => copyInviteCodeBtn.textContent = 'Copy', 1200); }
-        catch { prompt('Copy this invitation code:', room.code); }
+        try { await navigator.clipboard.writeText(window.__convoInviteFor ? window.__convoInviteFor(room) : room.code); copyInviteCodeBtn.textContent = 'Copied'; setTimeout(() => copyInviteCodeBtn.textContent = 'Copy', 1200); }
+        catch { prompt('Copy this invitation code:', window.__convoInviteFor ? window.__convoInviteFor(room) : room.code); }
     });
 
     /*
@@ -3463,7 +3490,7 @@
     chatContextMenu.innerHTML = `
         <button type="button" data-action="open" role="menuitem">💬 Open chat</button>
         <button type="button" data-action="pin" role="menuitem">☆ Pin chat</button>
-        <button type="button" data-action="mute" role="menuitem">🔔 Mute chat</button>
+        <button type="button" data-action="mute" role="menuitem"><svg class="cvi" viewBox="0 0 24 24" aria-hidden="true"><use href="#cvi-bellOff"/></svg> Mute chat</button>
         <div class="menu-divider" data-private-only="true"></div>
         <button type="button" class="danger" data-action="delete" data-private-only="true" role="menuitem">🗑 Delete chat</button>`;
     document.body.appendChild(chatContextMenu);
@@ -3474,7 +3501,7 @@
         const pin = chatContextMenu.querySelector('[data-action="pin"]');
         const mute = chatContextMenu.querySelector('[data-action="mute"]');
         pin.textContent = room.isPinned ? '☆ Unpin chat' : '★ Pin chat';
-        mute.textContent = room.muted ? '🔔 Unmute chat' : '🔕 Mute chat';
+        mute.innerHTML = window.__cvIcon(room.muted ? 'bell' : 'bellOff') + (room.muted ? ' Unmute chat' : ' Mute chat');
         chatContextMenu.classList.remove('hidden');
         const width = chatContextMenu.offsetWidth || 200, height = chatContextMenu.offsetHeight || 150;
         chatContextMenu.style.left = Math.max(8, Math.min(x, window.innerWidth - width - 8)) + 'px';
@@ -3518,7 +3545,7 @@
             const tools = document.createElement('span'); tools.className = 'chat-row-tools';
             const pinBtn = document.createElement('button'); pinBtn.type='button'; pinBtn.className='chat-pin-btn'; pinBtn.title=room.isPinned?'Unpin chat':'Pin chat'; pinBtn.setAttribute('aria-label',pinBtn.title); pinBtn.textContent=room.isPinned?'★':'☆';
             pinBtn.addEventListener('click', e => { e.stopPropagation(); room.isPinned=!room.isPinned; room.lastActivity=room.lastActivity||Date.now(); persistConversationList(); renderConversationList(); });
-            const muteBtn = document.createElement('button'); muteBtn.type='button'; muteBtn.className='chat-mute-btn'; muteBtn.title=room.muted?'Unmute chat':'Mute chat'; muteBtn.setAttribute('aria-label',muteBtn.title); muteBtn.textContent=room.muted?'🔕':'🔔';
+            const muteBtn = document.createElement('button'); muteBtn.type='button'; muteBtn.className='chat-mute-btn'; muteBtn.title=room.muted?'Unmute chat':'Mute chat'; muteBtn.setAttribute('aria-label',muteBtn.title); muteBtn.innerHTML=window.__cvIcon(room.muted?'bellOff':'bell');
             muteBtn.addEventListener('click', e => { e.stopPropagation(); room.muted=!room.muted; persistConversationList(); renderConversationList(); });
             tools.append(pinBtn,muteBtn); top.append(name,tools,time); const preview = document.createElement('div'); preview.className = 'chat-preview'; preview.textContent = matchingMessage ? `Match: ${matchingMessage.text || matchingMessage.fileName}` : (room.lastMessage || (room.type === 'public' ? 'Public conversation' : `Private · ${room.code || ''}`));
             info.append(top,preview); item.append(avatar,info);
@@ -4562,7 +4589,7 @@
                 replyTo:
                     activeReplyingMessage
                         ? activeReplyingMessage.text
-                        : null
+                        : null, replyId: activeReplyingMessage ? (activeReplyingMessage.id || null) : null
 
             };
 
@@ -6123,7 +6150,7 @@
     function sendCustom(extra) {
         const text = extra.text;
         const pkt = { type: 'CHAT', id: 'msg_' + Math.random().toString(36).slice(2, 9), sender: currentUser, text, timestamp: Date.now(),
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), replyTo: activeReplyingMessage ? activeReplyingMessage.text : null, ...extra };
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), replyTo: activeReplyingMessage ? activeReplyingMessage.text : null, replyId: activeReplyingMessage ? (activeReplyingMessage.id || null) : null, ...extra };
         messageLog.push(pkt); persistRoomHistory(activeRoomId, isHost); appendMessage(pkt, 'sent'); if (window.__convoSignThen) window.__convoSignThen(pkt, () => xsend(pkt)); else xsend(pkt);
         sidebarLastMsg.innerText = text;
         const r = convoRooms.find(x => x.id === activeRoomId); if (r) { r.lastMessage = text; r.lastActivity = Date.now(); }
@@ -6260,7 +6287,7 @@
     function toggleSearch(on) { sBar.classList.toggle('hidden', !on); if (on) { sIn.focus(); sIn.select(); } else { sIn.value = ''; hits = []; window.CSS?.highlights?.delete('convo-search'); cnt.textContent = ''; } }
     sIn.addEventListener('input', runSearch);
     sIn.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); step(e.shiftKey ? 1 : -1); } if (e.key === 'Escape') toggleSearch(false); });
-    byId('voiceCallBtn').before(el('button', { id: 'searchBtn', type: 'button', className: 'icon-button', title: 'Search this chat', textContent: '🔍', onclick: () => toggleSearch(sBar.classList.contains('hidden')) }));
+    byId('voiceCallBtn').before(el('button', { id: 'searchBtn', type: 'button', className: 'icon-button', title: 'Search this chat', innerHTML: window.__cvIcon('search'), onclick: () => toggleSearch(sBar.classList.contains('hidden')) }));
 
     /* ---- @mention autocomplete ---- */
     const mBox = el('div', { id: 'mentionBox', className: 'hidden' }); messageInput.parentNode.appendChild(mBox);
@@ -6528,8 +6555,8 @@
             persistRoomHistory(activeRoomId, isHost); setSel(false);
         }, ''), btn('✕', () => setSel(false), ''));
     messagesBox.parentNode.appendChild(selBar);
-    byId('searchBtn').before(el('button', { id: 'starsBtn', type: 'button', className: 'icon-button', title: 'Starred messages', textContent: '⭐', onclick: showStars }),
-        el('button', { id: 'selBtn', type: 'button', className: 'icon-button', title: 'Select messages', textContent: '☑', onclick: () => setSel(!selMode) }));
+    byId('searchBtn').before(el('button', { id: 'starsBtn', type: 'button', className: 'icon-button', title: 'Starred messages', innerHTML: window.__cvIcon('star'), onclick: showStars }),
+        el('button', { id: 'selBtn', type: 'button', className: 'icon-button', title: 'Select messages', innerHTML: window.__cvIcon('select'), onclick: () => setSel(!selMode) }));
 
     /* ---- sticker look, pinned banner, edit history ---- */
     const _am = appendMessage;
@@ -8414,7 +8441,7 @@
     }
 
     /* ================= full backup (archive + files) ================= */
-    const PREFIXES = ['xchat_rooms_', 'xchat_history_', 'xchat_host_', 'xchat_desktop_notifications', 'xchat_message_sound', 'xchat_accent_color', 'xchat_compact_mode'];
+    const PREFIXES = ['xchat_rooms_', 'xchat_history_', 'xchat_host_', 'xchat_desktop_notifications', 'xchat_message_sound', 'xchat_accent_color', 'xchat_compact_mode', 'xchat_rkey_', 'xchat_rkmode_', 'xchat_chattheme_'];
     const MAGIC = 'CONVOBK1\n';
     const allFiles = function () {
         return db.tx('files', 'readonly', function (s) {
@@ -9527,6 +9554,485 @@ const CV = { U: function () { return currentUser && currentUser.username; }, byI
         b.addEventListener('click', function () { const m = CV.byId('settingsModal'); if (m) m.classList.add('hidden'); window.__convoNetCheck(); });
         row.append(left, b); dlg.before(row);
     }
+})();
+</script>
+
+
+<style id="convo-upgrades7-css">
+  .cv-sec { margin: 10px 0; padding: 10px 12px; border-radius: 12px; background: rgba(127,127,127,.12); font-size: .84rem; line-height: 1.4; }
+  .cv-sec strong { display: block; margin-bottom: 4px; }
+  .cv-sec label { display: flex; gap: 6px; align-items: flex-start; margin-top: 6px; cursor: pointer; }
+  .cv-sec select, .cv-sec input[type=color] { margin: 3px 6px 3px 0; }
+  .cv-fp7 { font-family: ui-monospace, Menlo, Consolas, monospace; word-break: break-all; }
+  #chatSearchBar .cv-filter { white-space: nowrap; }
+  #cvFind .cv-form { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0; }
+  #cvFind .cv-form input, #cvFind .cv-form select { width: 100%; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--input-text); min-width: 0; }
+  #cvFind .cv-form .wide { grid-column: 1 / -1; }
+  #cvFind .cv-list { max-height: 46vh; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+  #cvFind .cv-hit, #cvThread .cv-hit { text-align: left; border: 0; border-radius: 10px; padding: 8px 10px; background: rgba(127,127,127,.14); color: inherit; cursor: pointer; font-size: .82rem; }
+  #cvFind .cv-hit small, #cvThread .cv-hit small { display: block; opacity: .7; margin-bottom: 2px; }
+  .cv-flash { animation: cvFlash 1.6s ease; }
+  @keyframes cvFlash { 0%, 60% { outline: 3px solid var(--primary); outline-offset: 3px; border-radius: 14px; } 100% { outline-color: transparent; } }
+  .cv-thread-chip { display: inline-block; margin-top: 4px; padding: 1px 8px; border-radius: 99px; font-size: .68rem; font-weight: 700; cursor: pointer; background: rgba(127,127,127,.25); color: inherit; border: 0; }
+  .cv-lp { display: block; margin-top: 6px; padding: 7px 9px; border-left: 3px solid var(--primary); border-radius: 6px; background: rgba(127,127,127,.16); color: inherit !important; text-decoration: none !important; font-size: .78rem; line-height: 1.3; word-break: normal !important; }
+  .cv-lp small { display: block; opacity: .7; } .cv-lp b { display: block; } .cv-lp span { display: block; opacity: .85; }
+  .tile-q { position: absolute; top: 6px; left: 6px; z-index: 3; font-size: .64rem; padding: 2px 7px; border-radius: 99px; background: rgba(0,0,0,.6); color: #fff; }
+  .tile-q.good::before { content: '● '; color: #34c759; } .tile-q.ok::before { content: '● '; color: #ff9f0a; } .tile-q.poor::before { content: '● '; color: #ff3b30; }
+  #callQ { border: 0; border-radius: 99px; padding: 4px 9px; font-size: .72rem; font-weight: 800; cursor: pointer; background: rgba(255,255,255,.18); color: #fff; }
+  #callQ.good { background: #34c759; } #callQ.ok { background: #ff9f0a; } #callQ.poor { background: #ff3b30; }
+  #cvStore .cv-r { display: flex; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(127,127,127,.18); font-size: .85rem; }
+  #cvStore .cv-r span:first-child { flex: 1; min-width: 0; word-break: break-word; }
+</style>
+<script id="convo-upgrades7">
+/*
+ * Upgrades 7: end-to-end encryption for private chats, search filters, threads, link previews,
+ * call quality, storage by chat, per-chat looks.
+ */
+/* ================= 1. end-to-end encryption (private chats) ================= */
+(function () {
+    'use strict';
+    const subtle = window.crypto && window.crypto.subtle, net = window.__convoNet, U = CV.U;
+    if (!subtle || !net || !window.Peer || !Peer.prototype || typeof Peer.prototype._addConnection !== 'function') { window.__convoE2E = { available: false }; console.warn('End-to-end encryption unavailable'); return; }
+    const te = new TextEncoder(), td = new TextDecoder();
+    const b64u = {
+        enc: function (buf) { const b = new Uint8Array(buf); let s = ''; for (let i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); },
+        dec: function (str) { str = String(str).replace(/-/g, '+').replace(/_/g, '/'); while (str.length % 4) str += '='; const s = atob(str), b = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return b; }
+    };
+    const keyName = function (rid) { return 'xchat_rkey_' + U() + '_' + rid; }, modeName = function (rid) { return 'xchat_rkmode_' + U() + '_' + rid; };
+    const isPriv = function (rid) { const r = CV.roomOf(rid); return !!r && r.type === 'private'; };
+    const validSecret = function (s) { return typeof s === 'string' && /^[A-Za-z0-9_-]{43}$/.test(s); };
+    const secretOf = function (rid) { try { return localStorage.getItem(keyName(rid)) || ''; } catch (e) { return ''; } };
+    const modeOf = function (rid) { try { return localStorage.getItem(modeName(rid)) || 'open'; } catch (e) { return 'open'; } };
+    const keyCache = new Map();
+    function keyP(rid) {
+        const s = secretOf(rid); if (!s) return null;
+        let c = keyCache.get(rid);
+        if (!c || c.s !== s) { c = { s: s, p: subtle.importKey('raw', b64u.dec(s), 'AES-GCM', false, ['encrypt', 'decrypt']) }; keyCache.set(rid, c); }
+        return c.p;
+    }
+    function setSecret(rid, s) { try { localStorage.setItem(keyName(rid), s); } catch (e) {} keyCache.delete(rid); }
+    function ensureKey(room) {   // the device that created a private chat makes its key
+        if (!room || room.type !== 'private' || !room.creator || secretOf(room.id)) return;
+        setSecret(room.id, b64u.enc(crypto.getRandomValues(new Uint8Array(32))));
+        try { if (!localStorage.getItem(modeName(room.id))) localStorage.setItem(modeName(room.id), 'open'); } catch (e) {}
+    }
+    const ensureAll = function () { convoRooms.forEach(ensureKey); };
+
+    /* ---- packing: JSON plus any binary pieces (file chunks), then AES-GCM ---- */
+    function pack(obj) {
+        const blobs = [];
+        const json = JSON.stringify(obj, function (k, v) {
+            if (Object.prototype.toString.call(v) === '[object ArrayBuffer]') { blobs.push(new Uint8Array(v)); return { __b: blobs.length - 1 }; }
+            if (ArrayBuffer.isView(v)) { blobs.push(new Uint8Array(v.buffer, v.byteOffset, v.byteLength)); return { __b: blobs.length - 1 }; }
+            return v;
+        });
+        const head = te.encode(JSON.stringify({ j: json, l: blobs.map(function (b) { return b.length; }) }));
+        let total = 4 + head.length; blobs.forEach(function (b) { total += b.length; });
+        const out = new Uint8Array(total); new DataView(out.buffer).setUint32(0, head.length); out.set(head, 4);
+        let o = 4 + head.length; blobs.forEach(function (b) { out.set(b, o); o += b.length; });
+        return out;
+    }
+    function unpack(u8) {
+        const hl = new DataView(u8.buffer, u8.byteOffset, u8.byteLength).getUint32(0);
+        if (hl > u8.length - 4) throw new Error('bad frame');
+        const head = JSON.parse(td.decode(u8.subarray(4, 4 + hl)));
+        let o = 4 + hl;
+        const blobs = (head.l || []).map(function (n) { const b = u8.slice(o, o + n); o += n; return b; });
+        return JSON.parse(head.j, function (k, v) { return v && typeof v === 'object' && typeof v.__b === 'number' && Object.keys(v).length === 1 && blobs[v.__b] ? blobs[v.__b].buffer : v; });
+    }
+    const aad = function (rid) { return te.encode('convo-e2e-v1|' + rid); };
+    async function seal(rid, key, obj) {
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const ct = await subtle.encrypt({ name: 'AES-GCM', iv: iv, additionalData: aad(rid) }, key, pack(obj));
+        return { type: 'Z_E', v: 1, n: iv, c: new Uint8Array(ct) };
+    }
+    async function open(rid, key, env) {
+        const iv = new Uint8Array(env.n), ct = new Uint8Array(env.c);
+        if (iv.length !== 12) throw new Error('bad iv');
+        return unpack(new Uint8Array(await subtle.decrypt({ name: 'AES-GCM', iv: iv, additionalData: aad(rid) }, key, ct)));
+    }
+
+    /* ---- hooking every data connection ---- */
+    const noted = new Set();
+    function needKey(rid) {
+        if (noted.has(rid)) return; noted.add(rid);
+        const m = '🔒 This chat is end-to-end encrypted. Ask the person who invited you for the full invite (it includes the key).';
+        CV.toast(m, 9000); if (rid === visibleRoomId) { try { appendSystemMessage(m); } catch (e) {} }
+    }
+    function onKey(rid, k) {
+        const s = net.sess(rid);
+        if ((s && s.isHost) || secretOf(rid) || !validSecret(k) || !isPriv(rid)) return;
+        setSecret(rid, k);
+        CV.toast('🔒 Received the chat’s encryption key. Reconnecting securely…', 5000);
+        setTimeout(function () { try { net.reconnectNow(rid); } catch (e) {} }, 100);
+    }
+    function wrap(peerObj, conn) {
+        conn.__cvE = 1;
+        const rawSend = conn.send.bind(conn), rawEmit = conn.emit.bind(conn);
+        let sq = Promise.resolve(), rq = Promise.resolve();
+        conn.send = function (data, chunked) {
+            const rid = peerObj.__cvRoom;
+            if (chunked === true || !rid || !isPriv(rid) || !data || typeof data !== 'object') return rawSend(data, chunked);
+            ensureKey(CV.roomOf(rid));
+            const kp = keyP(rid); if (!kp) return rawSend(data, chunked);
+            sq = sq.then(async function () { const env = await seal(rid, await kp, data); if (conn.open !== false) rawSend(env); }).catch(function (e) { console.warn('e2e send', e); });
+        };
+        conn.emit = function (ev) {
+            if (ev !== 'data') return rawEmit.apply(null, arguments);
+            const data = arguments[1], rid = peerObj.__cvRoom;
+            if (!rid || !isPriv(rid)) return rawEmit.apply(null, arguments);
+            const kp = keyP(rid), t = data && data.type;
+            if (!kp) {   // we don't hold a key for this chat
+                if (t === 'Z_KEY') { onKey(rid, data.k); return true; }
+                if (t === 'Z_NEEDKEY' || t === 'Z_E') { needKey(rid); return true; }
+                return rawEmit.apply(null, arguments);
+            }
+            rq = rq.then(async function () {
+                if (t === 'Z_E') { let obj; try { obj = await open(rid, await kp, data); } catch (e) { return; } rawEmit('data', obj); return; }
+                if (t === 'Z_KEY' || t === 'Z_NEEDKEY') return;
+                // anything unencrypted in an encrypted chat is dropped; a newcomer with no key gets told how to get one
+                if (t === 'JOIN') {
+                    const room = CV.roomOf(rid), s = net.sess(rid);
+                    try { if (room && room.creator && s && s.isHost && modeOf(rid) === 'open') rawSend({ type: 'Z_KEY', k: secretOf(rid) }); else rawSend({ type: 'Z_NEEDKEY' }); } catch (e) {}
+                }
+            }).catch(function () {});
+            return true;
+        };
+    }
+    const origAdd = Peer.prototype._addConnection;
+    Peer.prototype._addConnection = function (id, conn) { try { if (conn && conn.type === 'data' && !conn.__cvE) wrap(this, conn); } catch (e) { console.warn(e); } return origAdd.apply(this, arguments); };
+    const baseCRP = createRoomPeer;
+    createRoomPeer = function () { const p = baseCRP.apply(this, arguments); try { p.__cvRoom = activeRoomId; } catch (e) {} return p; };
+    const baseEnter7 = enterLoggedInState;
+    enterLoggedInState = function () { try { ensureAll(); } catch (e) {} const r = baseEnter7.apply(this, arguments); try { ensureAll(); setTimeout(ensureAll, 300); } catch (e) {} return r; };
+
+    /* ---- invites carry the key: code.key ---- */
+    window.__convoInviteFor = function (room) { ensureKey(room); const s = room && room.type === 'private' ? secretOf(room.id) : ''; return s ? room.code + '.' + s : (room && room.code); };
+    const baseAdd = addPrivateConversation;
+    addPrivateConversation = function (code, creator, roomName) {
+        const m = String(code || '').trim().match(/^(.+?)\.([A-Za-z0-9_-]{43})$/);
+        const base = m ? m[1] : String(code || '').trim(), id = 'private_' + base, existed = convoRooms.some(function (r) { return r.id === id; });
+        if (!existed && creator) { try { localStorage.setItem(modeName(id), 'strict'); } catch (e) {} setSecret(id, b64u.enc(crypto.getRandomValues(new Uint8Array(32)))); }
+        if (m && !creator && secretOf(id) !== m[2]) { setSecret(id, m[2]); if (existed && net.sess(id) && net.sess(id).peer) setTimeout(function () { try { net.reconnectNow(id); } catch (e) {} }, 100); }
+        return baseAdd.call(this, base, creator, roomName);
+    };
+
+    /* ---- chat details: status, fingerprint, strict switch ---- */
+    async function fingerprint(rid) {
+        const s = secretOf(rid); if (!s) return '';
+        const h = new Uint8Array(await subtle.digest('SHA-256', b64u.dec(s)));
+        return Array.from(h.slice(0, 8)).map(function (v) { return v.toString(16).padStart(2, '0'); }).join('').toUpperCase().replace(/(.{4})(?=.)/g, '$1-');
+    }
+    function drawInfo() {
+        const anchor = CV.byId('pinnedMessagesContainer') && CV.byId('pinnedMessagesContainer').closest('.detail-section'); if (!anchor) return;
+        let sec = CV.byId('cvE2e'); if (!sec) { sec = document.createElement('div'); sec.id = 'cvE2e'; sec.className = 'cv-sec'; anchor.before(sec); }
+        const rid = activeRoomId, room = CV.roomOf(rid); sec.textContent = '';
+        const t = document.createElement('strong'), p = document.createElement('div'); sec.append(t, p);
+        if (!room || room.type !== 'private') { t.textContent = '🌐 Not end-to-end encrypted'; p.textContent = 'The public lobby is open to everyone, so it isn’t encrypted. Private chats are.'; return; }
+        if (!secretOf(rid)) { t.textContent = '⚠ Not encrypted yet'; p.textContent = 'You don’t have this chat’s key yet. It arrives when the person who created the chat is online, or when you join with the full invite.'; return; }
+        t.textContent = '🔒 End-to-end encrypted';
+        p.textContent = 'Messages, pictures and files are encrypted on your device with a key the chat server never sees. Only people with the key can read them. Key fingerprint: ';
+        const fp = document.createElement('span'); fp.className = 'cv-fp7'; p.appendChild(fp);
+        fingerprint(rid).then(function (v) { fp.textContent = v; });
+        p.appendChild(document.createTextNode('. Members can compare it to be sure they share the same key. Messages already saved on this device are not encrypted at rest.'));
+        if (room.creator) {
+            const l = document.createElement('label'), c = document.createElement('input'); c.type = 'checkbox'; c.checked = modeOf(rid) === 'open';
+            c.addEventListener('change', function () { try { localStorage.setItem(modeName(rid), c.checked ? 'open' : 'strict'); } catch (e) {} });
+            l.append(c, document.createTextNode(' Let people join with just the short code (the key is sent to them automatically). Turn this off so only people with the full invite can join.')); sec.appendChild(l);
+        }
+    }
+    const baseRPU7 = renderParticipantsUI;
+    renderParticipantsUI = function () { baseRPU7.apply(this, arguments); try { drawInfo(); } catch (e) { console.warn(e); } };
+    window.__convoE2E = { available: true, hasKey: function (rid) { return !!secretOf(rid); }, pack: pack, unpack: unpack };
+})();
+
+/* ================= 2. search filters ================= */
+(function () {
+    'use strict';
+    const sBar = CV.byId('chatSearchBar'), upg = window.__convoUpg; if (!sBar) return;
+    const E = function (tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    const btn = E('button', 'cv-filter', 'Filters'); btn.type = 'button'; btn.title = 'Search by person, date or type'; sBar.appendChild(btn);
+    const ov = E('div', 'modal-overlay hidden'); ov.id = 'cvFind';
+    const box = E('div', 'modal convo-dialog'); ov.appendChild(box); document.body.appendChild(ov);
+    ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.add('hidden'); });
+    box.appendChild(E('h3', '', 'Search this chat'));
+    const form = E('div', 'cv-form'), q = E('input', 'wide'), who = E('select'), kind = E('select'), from = E('input'), to = E('input'), res = E('div', 'cv-list'), cnt = E('div');
+    q.type = 'search'; q.placeholder = 'Words to find (optional)'; from.type = 'date'; to.type = 'date'; from.title = 'From'; to.title = 'To';
+    [['', 'Anyone'], ].forEach(function (o) { who.appendChild(new Option(o[1], o[0])); });
+    [['', 'Any type'], ['file', 'Has a file'], ['image', 'Pictures'], ['voice', 'Voice messages'], ['link', 'Links']].forEach(function (o) { kind.appendChild(new Option(o[1], o[0])); });
+    form.append(q, who, kind, from, to); box.append(form, cnt, res);
+    const close = E('button', 'ios-btn ios-btn-secondary', 'Close'); close.type = 'button'; close.addEventListener('click', function () { ov.classList.add('hidden'); }); box.appendChild(close);
+    let all = [], timer = 0;
+    const snippet = function (m) { return m.voice ? '🎤 Voice message' : m.fileName ? '📎 ' + m.fileName + (m.text ? ' · ' + m.text : '') : (m.text || ''); };
+    function match(m) {
+        const qq = q.value.trim().toLowerCase();
+        if (qq && (snippet(m) + ' ' + (m.replyTo || '')).toLowerCase().indexOf(qq) < 0) return false;
+        if (who.value && !(m.sender && m.sender.username === who.value)) return false;
+        const t = m.timestamp || 0;
+        if (from.value && t < new Date(from.value + 'T00:00:00').getTime()) return false;
+        if (to.value && t >= new Date(to.value + 'T00:00:00').getTime() + 86400000) return false;
+        const k = kind.value;
+        if (k === 'file' && !(m.fileId || m.fileName)) return false;
+        if (k === 'image' && !/^image\//.test(m.fileType || '')) return false;
+        if (k === 'voice' && !m.voice) return false;
+        if (k === 'link' && !/https?:\/\/|www\./i.test(m.text || '')) return false;
+        return true;
+    }
+    function draw() {
+        const hits = all.filter(match).slice(-150).reverse();
+        cnt.textContent = hits.length + (hits.length === 1 ? ' message' : ' messages') + ' found'; res.textContent = '';
+        hits.forEach(function (m) {
+            const b = E('button', 'cv-hit'); b.type = 'button';
+            b.appendChild(E('small', '', (m.sender && (m.sender.displayName || m.sender.username) || 'Someone') + ' · ' + new Date(m.timestamp || 0).toLocaleString()));
+            b.appendChild(document.createTextNode(snippet(m).slice(0, 160)));
+            b.addEventListener('click', function () { ov.classList.add('hidden'); window.__convoJumpTo(m.id); });
+            res.appendChild(b);
+        });
+    }
+    async function load() {
+        const rid = activeRoomId, map = new Map();
+        try { if (upg && upg.db) (await upg.db.scanAll(function (v) { return v.rid === rid; }, 20000)).forEach(function (v) { if (v.p && v.p.id) map.set(v.p.id, v.p); }); } catch (e) {}
+        (messageLog || []).forEach(function (m) { if (m && m.id && (m.type === 'CHAT' || m.type === 'FILE')) map.set(m.id, m); });
+        all = Array.from(map.values()).filter(function (m) { return !(window.__convoHidden && m.sender && window.__convoHidden(m.sender)); }).sort(function (a, b) { return (a.timestamp || 0) - (b.timestamp || 0); });
+        const people = new Map(); all.forEach(function (m) { if (m.sender && m.sender.username) people.set(m.sender.username, m.sender.displayName || m.sender.username); });
+        who.textContent = ''; who.appendChild(new Option('Anyone', ''));
+        people.forEach(function (n, u) { who.appendChild(new Option(n, u)); });
+        draw();
+    }
+    [q, who, kind, from, to].forEach(function (c) { c.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(draw, 160); }); c.addEventListener('change', draw); });
+    btn.addEventListener('click', function () { ov.classList.remove('hidden'); q.value = (sBar.querySelector('input') || {}).value || ''; load(); setTimeout(function () { q.focus(); }, 40); });
+    window.__convoJumpTo = function (id) {
+        const w = Array.from(messagesBox.querySelectorAll('.message-wrapper')).find(function (x) { return x.dataset.msgId === id; });
+        if (!w) { CV.toast('That message is older than what is loaded. Scroll up to load more history.', 4500); return; }
+        w.scrollIntoView({ block: 'center' }); w.classList.remove('cv-flash'); void w.offsetWidth; w.classList.add('cv-flash');
+    };
+})();
+
+/* ================= 3. threads ================= */
+(function () {
+    'use strict';
+    const E = function (tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    function parentOf(m, log, idx) {
+        if (m.replyId) return log.find(function (x) { return x && x.id === m.replyId; }) || null;
+        if (m.replyTo) for (let i = idx - 1; i >= 0; i--) if (log[i] && log[i].text === m.replyTo) return log[i];
+        return null;
+    }
+    function graph() {
+        const log = (messageLog || []).filter(function (m) { return m && (m.type === 'CHAT' || m.type === 'FILE') && m.id; }), kids = new Map(), par = new Map();
+        log.forEach(function (m, i) { const p = parentOf(m, log, i); if (p && p.id !== m.id) { par.set(m.id, p); if (!kids.has(p.id)) kids.set(p.id, []); kids.get(p.id).push(m); } });
+        return { kids: kids, par: par };
+    }
+    const ov = E('div', 'modal-overlay hidden'); ov.id = 'cvThread'; const box = E('div', 'modal convo-dialog'); ov.appendChild(box); document.body.appendChild(ov);
+    ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.add('hidden'); });
+    function openThread(m) {
+        const g = graph(); let root = m, guard = 0; while (g.par.get(root.id) && guard++ < 200) root = g.par.get(root.id);
+        const rows = []; (function walk(n, d) { rows.push([n, d]); (g.kids.get(n.id) || []).forEach(function (c) { if (rows.length < 200) walk(c, d + 1); }); })(root, 0);
+        box.textContent = ''; box.appendChild(E('h3', '', '🧵 Thread · ' + rows.length + (rows.length === 1 ? ' message' : ' messages')));
+        const list = E('div', 'cv-list'); list.style.cssText = 'display:flex;flex-direction:column;gap:4px;max-height:52vh;overflow-y:auto';
+        rows.forEach(function (r) {
+            const n = r[0], b = E('button', 'cv-hit'); b.type = 'button'; b.style.marginLeft = Math.min(r[1], 5) * 14 + 'px';
+            b.appendChild(E('small', '', (n.sender && (n.sender.displayName || n.sender.username) || 'Someone') + ' · ' + new Date(n.timestamp || 0).toLocaleString()));
+            b.appendChild(document.createTextNode((n.voice ? '🎤 Voice message' : n.fileName ? '📎 ' + n.fileName : (n.text || '')).slice(0, 220)));
+            b.addEventListener('click', function () { ov.classList.add('hidden'); window.__convoJumpTo(n.id); }); list.appendChild(b);
+        });
+        const c = E('button', 'ios-btn ios-btn-secondary', 'Close'); c.type = 'button'; c.addEventListener('click', function () { ov.classList.add('hidden'); });
+        box.append(list, c); ov.classList.remove('hidden');
+    }
+    const pin = CV.byId('ctxMenuPin');
+    if (pin) {
+        const item = E('div', 'context-menu-item', '🧵 View thread'); item.id = 'ctxMenuThread'; pin.after(item);
+        item.addEventListener('click', function () { const m = contextTargetPacket; bubbleContextMenu.classList.add('hidden'); if (m) openThread(m); });
+    }
+    let raf = 0;
+    function chips() {
+        raf = 0; const g = graph();
+        messagesBox.querySelectorAll('.message-wrapper').forEach(function (w) {
+            const id = w.dataset.msgId, n = (g.kids.get(id) || []).length, old = w.querySelector('.cv-thread-chip');
+            if (!n) { if (old) old.remove(); return; }
+            const m = (messageLog || []).find(function (x) { return x && x.id === id; }); if (!m) return;
+            const label = '🧵 ' + n + (n === 1 ? ' reply' : ' replies');
+            if (old) { old.textContent = label; return; }
+            const bubble = w.querySelector('.bubble'); if (!bubble) return;
+            const c = E('button', 'cv-thread-chip', label); c.type = 'button'; c.addEventListener('click', function (ev) { ev.stopPropagation(); openThread(m); }); bubble.appendChild(c);
+        });
+    }
+    ['appendMessage', 'appendFileMessage'].forEach(function (name) {
+        const base = window[name]; if (typeof base !== 'function') return;
+        window[name] = function (msg) { const r = base.apply(this, arguments); if (!raf) raf = requestAnimationFrame(chips); return r; };
+    });
+})();
+
+/* ================= 4. link previews (off until you turn them on) ================= */
+(function () {
+    'use strict';
+    const KEY = 'convo_linkprev', on = function () { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } };
+    const urlOf = function (t) { const m = String(t || '').match(/(?:https?:\/\/|www\.)[^\s<]+/i); if (!m) return ''; let u = m[0].replace(/[.,!?;:)\]'"]+$/, ''); if (/^www\./i.test(u)) u = 'https://' + u; return /^https?:\/\//i.test(u) ? u : ''; };
+    const clip = function (v, n) { return typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().slice(0, n) : ''; };
+    async function fetchPreview(url) {
+        const ctl = typeof AbortController === 'function' ? new AbortController() : null, to = setTimeout(function () { if (ctl) ctl.abort(); }, 1800);
+        try {
+            const r = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url), { signal: ctl ? ctl.signal : undefined }); const j = await r.json(); clearTimeout(to);
+            const d = j && j.data; if (!d || !(d.title || d.description)) return null;
+            return { t: clip(d.title, 120), d: clip(d.description, 200), p: clip(d.publisher, 60) };
+        } catch (e) { clearTimeout(to); return null; }
+    }
+    function paint(w, m) {
+        if (!w || !m || !m.pv || typeof m.pv !== 'object') return;
+        const url = urlOf(m.text), bubble = w.querySelector('.bubble'); if (!url || !bubble || bubble.querySelector('.cv-lp')) return;
+        let host = ''; try { host = new URL(url).hostname.replace(/^www\./, ''); } catch (e) { return; }
+        const a = document.createElement('a'); a.className = 'cv-lp'; a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        const s = document.createElement('small'); s.textContent = host + (m.pv.p ? ' · ' + clip(m.pv.p, 60) : ''); a.appendChild(s);
+        if (m.pv.t) { const b = document.createElement('b'); b.textContent = clip(m.pv.t, 120); a.appendChild(b); }
+        if (m.pv.d) { const d = document.createElement('span'); d.textContent = clip(m.pv.d, 200); a.appendChild(d); }
+        bubble.appendChild(a);
+    }
+    const wrapper = function (id) { const c = messagesBox.children; for (let i = c.length - 1; i >= 0; i--) if (c[i].dataset && c[i].dataset.msgId === id) return c[i]; return null; };
+    const baseST = window.__convoSignThen;
+    if (typeof baseST === 'function') window.__convoSignThen = function (packet, fn) {
+        const url = on() && packet && packet.type === 'CHAT' && !packet.pv ? urlOf(packet.text) : '';
+        if (!url) return baseST.call(this, packet, fn);
+        const rid = activeRoomId, self = this;
+        fetchPreview(url).then(function (pv) { if (pv) { packet.pv = pv; if (rid === visibleRoomId) paint(wrapper(packet.id), packet); } }).catch(function () {}).then(function () { runInRoomSession(rid, function () { baseST.call(self, packet, fn); }); });
+    };
+    ['appendMessage'].forEach(function (name) {
+        const base = window[name]; if (typeof base !== 'function') return;
+        window[name] = function (msg) { const r = base.apply(this, arguments); try { if (msg && msg.pv) paint(msg.id ? wrapper(msg.id) : messagesBox.lastElementChild, msg); } catch (e) {} return r; };
+    });
+    const dlg = CV.byId('settingsModal') && CV.byId('settingsModal').querySelector('.dialog-actions');
+    if (dlg) {
+        const row = document.createElement('div'); row.className = 'settings-option';
+        const left = document.createElement('div'), s = document.createElement('strong'), sp = document.createElement('span');
+        s.textContent = 'Link previews'; sp.textContent = 'When you send a link, ask a preview service (microlink.io) for its title. That service sees the link. Others never contact it.'; left.append(s, sp);
+        const c = document.createElement('input'); c.type = 'checkbox'; c.checked = on(); c.addEventListener('change', function () { try { localStorage.setItem(KEY, c.checked ? '1' : '0'); } catch (e) {} });
+        row.append(left, c); dlg.before(row);
+    }
+})();
+
+/* ================= 5. call quality ================= */
+(function () {
+    'use strict';
+    const grid = CV.byId('callGrid'), controls = CV.byId('callControls'); if (!grid || !controls) return;
+    const q = document.createElement('button'); q.type = 'button'; q.id = 'callQ'; q.textContent = '📶'; q.title = 'Call quality. Tap for a connection check.'; q.style.display = 'none';
+    q.addEventListener('click', function () { if (window.__convoNetCheck) window.__convoNetCheck(); });
+    const timer = CV.byId('callTimer'); if (timer) timer.after(q); else controls.prepend(q);
+    const prev = new Map(), RANK = { good: 0, ok: 1, poor: 2 }, NAME = { good: 'Good', ok: 'Fair', poor: 'Poor' };
+    async function sample() {
+        if (typeof callS === 'undefined' || !callS) { q.style.display = 'none'; prev.clear(); return; }
+        let worst = null, ms = null;
+        for (const entry of callS.calls) {
+            const pid = entry[0], mc = entry[1] && entry[1].mc, pc = mc && mc.peerConnection; if (!pc || pc.connectionState === 'closed') continue;
+            try {
+                const stats = await pc.getStats(); let rtt = null, lost = 0, recv = 0, jit = 0;
+                stats.forEach(function (r) {
+                    if (r.type === 'candidate-pair' && (r.nominated || r.state === 'succeeded') && r.currentRoundTripTime != null) rtt = r.currentRoundTripTime * 1000;
+                    if (r.type === 'inbound-rtp' && !r.isRemote) { lost += r.packetsLost || 0; recv += r.packetsReceived || 0; jit = Math.max(jit, (r.jitter || 0) * 1000); }
+                });
+                const p = prev.get(pid) || { lost: lost, recv: recv }, dl = Math.max(0, lost - p.lost), dr = Math.max(0, recv - p.recv); prev.set(pid, { lost: lost, recv: recv });
+                const loss = dl + dr ? dl / (dl + dr) * 100 : 0;
+                const lvl = (rtt != null && rtt > 400) || loss > 8 ? 'poor' : (rtt != null && rtt > 200) || loss > 3 || jit > 45 ? 'ok' : 'good';
+                const tile = grid.querySelector('[data-peer="' + CSS.escape(pid) + '"]');
+                if (tile) { let t = tile.querySelector('.tile-q'); if (!t) { t = document.createElement('span'); t.className = 'tile-q'; tile.appendChild(t); } t.className = 'tile-q ' + lvl; t.textContent = NAME[lvl] + (rtt != null ? ' · ' + Math.round(rtt) + ' ms' : '') + (loss >= 1 ? ' · ' + Math.round(loss) + '% lost' : ''); }
+                if (!worst || RANK[lvl] > RANK[worst]) { worst = lvl; ms = rtt; }
+            } catch (e) {}
+        }
+        if (!worst) { q.style.display = 'none'; return; }
+        q.style.display = ''; q.className = worst; q.textContent = '📶 ' + NAME[worst] + (ms != null ? ' · ' + Math.round(ms) + ' ms' : '');
+    }
+    setInterval(sample, 2500);
+})();
+
+/* ================= 6. storage by chat ================= */
+(function () {
+    'use strict';
+    const upg = window.__convoUpg; if (!upg || !upg.db) return;
+    const E = function (tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    const fmt = function (n) { return n < 1024 ? n + ' B' : n < 1048576 ? (n / 1024).toFixed(1) + ' KB' : (n / 1048576).toFixed(1) + ' MB'; };
+    const ov = E('div', 'modal-overlay hidden'); ov.id = 'cvStore'; const box = E('div', 'modal convo-dialog'); ov.appendChild(box); document.body.appendChild(ov);
+    ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.add('hidden'); });
+    async function usage() {
+        const recs = await upg.db.scanAll(function () { return true; }, 1e9), per = new Map();
+        convoRooms.forEach(function (r) { per.set(r.id, { msgs: 0, files: [], bytes: 0 }); });
+        recs.forEach(function (v) { const e = per.get(v.rid) || (per.set(v.rid, { msgs: 0, files: [], bytes: 0 }), per.get(v.rid)); e.msgs++; if (v.p && v.p.fileId) e.files.push(v.p.fileId); });
+        for (const e of per.values()) {
+            const live = [];
+            for (const fid of e.files) { try { const rec = await upg.db.getFile(fid); if (rec) { live.push(fid); e.bytes += (rec.blob && rec.blob.size) || rec.size || 0; } } catch (er) {} }
+            e.files = live;
+        }
+        return per;
+    }
+    async function wipe(fids) {
+        if (fids.length) await upg.db.tx('files', 'readwrite', function (s) { fids.forEach(function (f) { s.delete(f); }); });
+        fids.forEach(function (f) { upg.memFiles.delete(f); const u = upg.urls.get(f); if (u) { try { URL.revokeObjectURL(u); } catch (e) {} upg.urls.delete(f); } });
+    }
+    async function show(note) {
+        ov.classList.remove('hidden'); box.textContent = ''; box.appendChild(E('h3', '', 'Storage by chat')); box.appendChild(E('p', '', 'Measuring…'));
+        let per; try { per = await usage(); } catch (e) { box.textContent = 'Saved history is not available in this browser.'; return; }
+        box.textContent = ''; box.appendChild(E('h3', '', 'Storage by chat'));
+        let total = 0; per.forEach(function (e) { total += e.bytes; });
+        const sum = E('p', '', 'Files kept on this device: ' + fmt(total) + '. Deleting files keeps their messages.'); box.appendChild(sum);
+        if (navigator.storage && navigator.storage.estimate) navigator.storage.estimate().then(function (s) { if (s.quota) sum.textContent += ' Browser storage: ' + fmt(s.usage || 0) + ' of ' + fmt(s.quota) + '.'; }).catch(function () {});
+        if (note) box.appendChild(E('p', '', note));
+        convoRooms.forEach(function (r) {
+            const e = per.get(r.id) || { msgs: 0, files: [], bytes: 0 }, row = E('div', 'cv-r');
+            row.appendChild(E('span', '', (r.type === 'public' ? '🌐 ' : '🔒 ') + r.name + ' · ' + e.msgs + ' messages · ' + e.files.length + ' files · ' + fmt(e.bytes)));
+            const b = E('button', 'ios-btn ios-btn-secondary', 'Free up'); b.type = 'button'; b.disabled = !e.files.length; b.title = 'Delete this chat’s saved files';
+            b.addEventListener('click', async function () { if (!confirm('Delete ' + e.files.length + ' saved files (' + fmt(e.bytes) + ') from “' + r.name + '”? Their messages stay.')) return; b.disabled = true; await wipe(e.files); show('Freed ' + fmt(e.bytes) + ' from “' + r.name + '”.'); });
+            row.appendChild(b); box.appendChild(row);
+        });
+        const c = E('button', 'ios-btn ios-btn-secondary', 'Close'); c.type = 'button'; c.addEventListener('click', function () { ov.classList.add('hidden'); }); box.appendChild(c);
+    }
+    const dlg = CV.byId('settingsModal') && CV.byId('settingsModal').querySelector('.dialog-actions');
+    if (dlg) {
+        const row = E('div', 'settings-option'), left = E('div'), b = E('button', 'ios-btn ios-btn-secondary', 'Open'); b.type = 'button';
+        left.append(E('strong', '', 'Storage by chat'), E('span', '', 'See how much space each chat’s files use and free it up in one tap'));
+        b.addEventListener('click', function () { const m = CV.byId('settingsModal'); if (m) m.classList.add('hidden'); show(''); }); row.append(left, b); dlg.before(row);
+    }
+})();
+
+/* ================= 7. a look for each chat ================= */
+(function () {
+    'use strict';
+    const root = document.documentElement, E = function (tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    const key = function (rid) { return 'xchat_chattheme_' + CV.U() + '_' + rid; };
+    const get = function (rid) { try { return JSON.parse(localStorage.getItem(key(rid)) || '{}') || {}; } catch (e) { return {}; } };
+    const put = function (rid, o) { try { if (Object.keys(o).length) localStorage.setItem(key(rid), JSON.stringify(o)); else localStorage.removeItem(key(rid)); } catch (e) {} };
+    const WALLS = { aurora: 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)', sunset: 'linear-gradient(160deg,#ff9a8b,#ff6a88,#ff99ac)', forest: 'linear-gradient(160deg,#134e5e,#71b280)', dots: 'radial-gradient(circle at 1px 1px,rgba(127,127,127,.35) 1px,transparent 0) 0 0/22px 22px, var(--chat-bg,#fff)' };
+    const globalTheme = function () { try { const t = localStorage.getItem('xchat_theme'); return t === 'dark' || t === 'light' ? t : 'light'; } catch (e) { return 'light'; } };
+    function globalWall() {
+        let w = '', img = ''; try { w = localStorage.getItem('xchat_ui_wall') || ''; img = localStorage.getItem('xchat_ui_wallimg') || ''; } catch (e) {}
+        const val = w === 'custom' && img ? 'center/cover url(' + img + ')' : WALLS[w]; return { w: w, val: val };
+    }
+    function apply(rid) {
+        const o = get(rid);
+        root.setAttribute('data-theme', o.mode === 'dark' || o.mode === 'light' ? o.mode : globalTheme());
+        let accent = ''; try { accent = localStorage.getItem('xchat_accent_color') || ''; } catch (e) {}
+        if (o.accent && /^#[0-9a-f]{6}$/i.test(o.accent)) accent = o.accent;
+        ['--user-accent', '--primary', '--convo-accent'].forEach(function (v) { if (accent && /^#[0-9a-f]{6}$/i.test(accent)) root.style.setProperty(v, accent); else root.style.removeProperty(v); });
+        const g = globalWall(), w = o.wall === undefined ? g.w : o.wall, val = o.wall === undefined ? g.val : (o.wall === 'none' ? '' : WALLS[o.wall]);
+        if (val) { root.dataset.wall = w || 'x'; root.style.setProperty('--wall', val); } else { delete root.dataset.wall; root.style.removeProperty('--wall'); }
+    }
+    const baseAct = activateConversation;
+    activateConversation = function () { const r = baseAct.apply(this, arguments); try { apply(visibleRoomId || activeRoomId); } catch (e) { console.warn(e); } return r; };
+    // the sun/moon button changes only this chat when the chat has its own mode
+    const tb = CV.byId('themeToggleBtn');
+    if (tb) tb.addEventListener('click', function (e) { const rid = visibleRoomId, o = get(rid); if (o.mode !== 'dark' && o.mode !== 'light') return; e.stopImmediatePropagation(); o.mode = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; put(rid, o); apply(rid); }, true);
+    function draw() {
+        const anchor = CV.byId('pinnedMessagesContainer') && CV.byId('pinnedMessagesContainer').closest('.detail-section'); if (!anchor) return;
+        let sec = CV.byId('cvLook'); if (!sec) { sec = E('div', 'cv-sec'); sec.id = 'cvLook'; anchor.before(sec); }
+        const rid = activeRoomId, o = get(rid); sec.textContent = ''; sec.appendChild(E('strong', '', '🎨 Look for this chat'));
+        const mode = E('select'); [['', 'Same as app'], ['light', 'Light'], ['dark', 'Dark']].forEach(function (x) { mode.appendChild(new Option(x[1], x[0])); }); mode.value = o.mode || '';
+        const wall = E('select'); [['', 'Same as app'], ['none', 'No wallpaper'], ['aurora', 'Aurora'], ['sunset', 'Sunset'], ['forest', 'Forest'], ['dots', 'Dots']].forEach(function (x) { wall.appendChild(new Option(x[1], x[0])); }); wall.value = o.wall === undefined ? '' : o.wall;
+        const col = E('input'); col.type = 'color'; col.value = o.accent || '#007aff';
+        const reset = E('button', 'ios-btn ios-btn-secondary', 'Reset'); reset.type = 'button';
+        const save = function () { const n = {}; if (mode.value) n.mode = mode.value; if (wall.value) n.wall = wall.value; if (o.accent) n.accent = o.accent; Object.assign(o, n); if (!mode.value) delete o.mode; if (!wall.value) delete o.wall; put(rid, o); apply(rid); };
+        mode.addEventListener('change', save); wall.addEventListener('change', save);
+        col.addEventListener('input', function () { o.accent = col.value; put(rid, o); apply(rid); });
+        reset.addEventListener('click', function () { put(rid, {}); apply(rid); draw(); });
+        const l1 = E('label'), l2 = E('label'), l3 = E('label'); l1.append('Mode ', mode); l2.append('Wallpaper ', wall); l3.append('Accent ', col, reset);
+        sec.append(l1, l2, l3);
+    }
+    const baseRPU8 = renderParticipantsUI;
+    renderParticipantsUI = function () { baseRPU8.apply(this, arguments); try { draw(); } catch (e) { console.warn(e); } };
 })();
 </script>
 
