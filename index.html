@@ -10323,5 +10323,100 @@ const CV8 = {
 })();
 </script>
 
+
+<script id="convo-upgrades9">
+/*
+ * Upgrades 9: deletions follow people who were offline. Every device keeps a list of what was taken down
+ * (signed by the person who sent it), and hands that list to anyone who reconnects.
+ */
+(function () {
+    'use strict';
+    const upg = window.__convoUpg, ident = window.__convoIdentity; if (!upg) return;
+    const U = CV.U, lkey = function (rid) { return 'xchat_tl_' + U() + '_' + rid; }, cache = new Map();
+    const clip = function (s, n) { return typeof s === 'string' ? s.slice(0, n) : ''; };
+    const delStr = function (id, u) { return ['convo1', 'DEL', id, u].join('|'); };
+    function ledger(rid) {
+        const k = lkey(rid); let a = cache.get(k);
+        if (!a) { try { a = JSON.parse(localStorage.getItem(k) || '[]'); } catch (e) { a = []; } if (!Array.isArray(a)) a = []; cache.set(k, a); }
+        return a;
+    }
+    const persist = function (rid) { try { localStorage.setItem(lkey(rid), JSON.stringify(ledger(rid))); } catch (e) {} };
+    function add(rid, rec) {
+        if (!rec || !rec.id) return false;
+        const a = ledger(rid), i = a.findIndex(function (x) { return x.id === rec.id; });
+        if (i > -1) { if (!a[i].s && rec.s) a[i] = rec; else return false; } else a.push(rec);
+        if (a.length > 800) a.splice(0, a.length - 800);
+        persist(rid); return true;
+    }
+    function clean(r) {
+        if (!r || typeof r !== 'object') return null;
+        const id = clip(r.id, 64), by = clip(r.by, 80); if (!id || !by) return null;
+        const o = { id: id, by: by };
+        if (typeof r.k === 'string' && typeof r.s === 'string' && r.k.length <= 200 && r.s.length <= 200) { o.k = r.k; o.s = r.s; }
+        return o;
+    }
+    async function findMsg(rid, id) {
+        const m = (messageLog || []).find(function (x) { return x && x.id === id; }); if (m) return m;
+        try { const rows = await upg.db.scanAll(function (v) { return v.rid === rid && v.p && v.p.id === id; }, 3); return rows[0] && rows[0].p || null; } catch (e) { return null; }
+    }
+    // a deletion is believed only if it comes from whoever sent the message (and, for signed messages, with the same key)
+    async function proves(rec, m) {
+        const who = m.sender && m.sender.username; if (!who || rec.by !== who) return false;
+        if (m.auth && m.auth.k) return !!(ident && rec.k === m.auth.k && rec.s && await ident.verifyStr(delStr(rec.id, who), { k: rec.k, s: rec.s }));
+        return true;
+    }
+    async function applyRecs(rid, recs, src) {
+        for (const rec of recs) {
+            try {
+                if (ledger(rid).some(function (x) { return x.id === rec.id && (x.s || !rec.s); })) continue;
+                const m = await findMsg(rid, rec.id);
+                if (!m) {   // not here (yet): remember a signed one so it can't come back later
+                    if (rec.s && ident && await ident.verifyStr(delStr(rec.id, rec.by), { k: rec.k, s: rec.s })) { add(rid, rec); runInRoomSession(rid, function () { if (window.__convoTomb) window.__convoTomb(rec.id); }); }
+                    continue;
+                }
+                if (!(await proves(rec, m))) continue;
+                runInRoomSession(rid, function () {
+                    const pkt = { type: 'DELETE', id: rec.id, sender: { username: m.sender.username } };
+                    if (rec.s) pkt.auth = { k: rec.k, s: rec.s };
+                    handleIncomingPacket(pkt, null);
+                    add(rid, rec);
+                    if (isHost) { try { broadcastPacket(pkt, src || null); } catch (e) {} }
+                });
+            } catch (e) { console.warn('tomb sync', e); }
+        }
+    }
+    function sendLedger(rid, conn) { const a = ledger(rid); if (a.length && conn && conn.open) { try { conn.send({ type: 'Z_TOMBS', recs: a.slice(-800) }); } catch (e) {} } }
+
+    // my own take-downs are signed, so anyone can pass them on later
+    const baseOp = window.convoSendOp;
+    if (typeof baseOp === 'function') window.convoSendOp = function (packet) {
+        if (!(packet && packet.type === 'DELETE' && packet.id && !packet.auth)) return baseOp.apply(this, arguments);
+        const rid = activeRoomId, me = U(), self = this;
+        const done = function (a) { add(rid, clean({ id: packet.id, by: me, k: a && a.k, s: a && a.s })); runInRoomSession(rid, function () { baseOp.call(self, packet); }); };
+        if (!ident) { done(null); return; }
+        ident.signStr(delStr(packet.id, me)).then(function (a) { if (a) packet.auth = { k: a.k, s: a.s }; done(a); }, function () { done(null); });
+    };
+    const baseH = handleIncomingPacket;
+    handleIncomingPacket = function (packet, src) {
+        const t = packet && packet.type, rid = activeRoomId;
+        if (t === 'Z_TOMBS') { if (Array.isArray(packet.recs)) applyRecs(rid, packet.recs.slice(0, 800).map(clean).filter(Boolean), src); return; }
+        let before = null; if (t === 'DELETE' && packet.id) before = (messageLog || []).find(function (m) { return m && m.id === packet.id; });
+        const r = baseH.apply(this, arguments);
+        try {
+            if (t === 'DELETE' && packet.id && packet.sender && packet.sender.username && (!before || (before.sender && before.sender.username === packet.sender.username)))
+                add(rid, clean({ id: packet.id, by: packet.sender.username, k: packet.auth && packet.auth.k, s: packet.auth && packet.auth.s }));
+            else if (t === 'JOIN' && isHost && src) sendLedger(rid, src);   // someone (re)joined: tell them what was taken down while they were away
+        } catch (e) { console.warn(e); }
+        return r;
+    };
+    const prevLinked = window.__convoOnLinked;
+    window.__convoOnLinked = function (rid) {
+        if (prevLinked) prevLinked.apply(this, arguments);
+        try { runInRoomSession(rid, function () { if (!isHost && hostConnection && hostConnection.open) sendLedger(rid, hostConnection); }); } catch (e) {}   // and tell the host what I know
+    };
+    window.__convoTombLedger = { get: ledger, add: add };
+})();
+</script>
+
 </body>
 </html>
