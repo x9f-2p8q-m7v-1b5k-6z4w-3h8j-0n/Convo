@@ -1790,6 +1790,8 @@
 <symbol id="cvi-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.6" fill="url(#cvg-blue)" stroke="#1B55D6" stroke-width=".8"/><path d="M5.2 9.4A7.2 7.2 0 0 1 12 4.6" stroke="#fff" stroke-opacity=".45" stroke-width="1.3" stroke-linecap="round" fill="none"/><circle cx="12" cy="7.9" r="1.45" fill="#fff"/><rect x="10.75" y="10.7" width="2.5" height="6.9" rx="1.25" fill="#fff"/></symbol>
 <symbol id="cvi-bell" viewBox="0 0 24 24"><path d="M12 3.4c-3.3 0-5.8 2.5-5.8 5.8v3c0 .9-.4 1.8-1.1 2.5l-.7.8c-.5.6-.1 1.5.7 1.5h13.8c.8 0 1.2-.9.7-1.5l-.7-.8c-.7-.7-1.1-1.6-1.1-2.5v-3c0-3.3-2.5-5.8-5.8-5.8z" fill="url(#cvg-bell)" stroke="#D98200" stroke-width=".9" stroke-linejoin="round"/><circle cx="12" cy="3.1" r="1.2" fill="#F29B00"/><path d="M9.5 19.2a2.5 2.5 0 0 0 5 0z" fill="#F29B00"/><path d="M8.2 9.4c.2-1.7 1.3-2.9 2.8-3.3" stroke="#fff" stroke-opacity=".6" stroke-width="1.3" stroke-linecap="round" fill="none"/></symbol>
 <symbol id="cvi-bellOff" viewBox="0 0 24 24"><path d="M12 3.4c-3.3 0-5.8 2.5-5.8 5.8v3c0 .9-.4 1.8-1.1 2.5l-.7.8c-.5.6-.1 1.5.7 1.5h13.8c.8 0 1.2-.9.7-1.5l-.7-.8c-.7-.7-1.1-1.6-1.1-2.5v-3c0-3.3-2.5-5.8-5.8-5.8z" fill="url(#cvg-bell0)" stroke="#7B8496" stroke-width=".9" stroke-linejoin="round"/><circle cx="12" cy="3.1" r="1.2" fill="#8C95A6"/><path d="M9.5 19.2a2.5 2.5 0 0 0 5 0z" fill="#8C95A6"/><path d="M4.4 4.6l15.2 15.2" stroke="#fff" stroke-opacity=".9" stroke-width="4" stroke-linecap="round"/><path d="M4.4 4.6l15.2 15.2" stroke="#FF453A" stroke-width="2.2" stroke-linecap="round"/></symbol>
+<linearGradient id="cvg-gal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6BE8CC"/><stop offset="1" stop-color="#13966F"/></linearGradient>
+<symbol id="cvi-gallery" viewBox="0 0 24 24"><rect x="2.5" y="3.5" width="19" height="17" rx="4.6" fill="url(#cvg-gal)"/><circle cx="8.4" cy="9" r="2.1" fill="#FFF1A8"/><path d="M3 17.6l5.1-5.5a1.5 1.5 0 0 1 2.2 0l2.6 2.8 2.6-3.2a1.5 1.5 0 0 1 2.3 0l3.2 3.9v.9c0 1.7-1.3 3-3 3h-12c-1.7 0-3-1.3-3-3z" fill="#0A5C47" fill-opacity=".6"/><path d="M4.4 7.6c.4-1.7 1.5-2.6 3.3-2.6h5" stroke="#fff" stroke-opacity=".5" stroke-width="1.2" stroke-linecap="round" fill="none"/></symbol>
 </defs></svg>
 <style id="cvIconCss">.cvi{width:22px;height:22px;display:block;margin:auto;filter:drop-shadow(0 1px 1.4px rgba(0,0,0,.28));transition:transform .15s ease}.icon-button:hover .cvi,.chat-mute-btn:hover .cvi{transform:scale(1.1)}.icon-button:active .cvi{transform:scale(.94)}.chat-mute-btn .cvi{width:17px;height:17px}.context-menu-item .cvi,.chat-context-menu .cvi{display:inline-block;width:16px;height:16px;vertical-align:-3px}</style>
 <script>window.__cvIcon=function(n){return '<svg class="cvi" viewBox="0 0 24 24" aria-hidden="true"><use href="#cvi-'+n+'"/></svg>';};</script>
@@ -2323,7 +2325,7 @@
     </div>
 
     <div class="context-menu-item" id="ctxMenuCopy">▣ Copy message</div>
-    <div class="context-menu-item" id="ctxMenuDelete">⌫ Delete message</div>
+    <div class="context-menu-item" id="ctxMenuDelete">⌫ Take down for everyone</div>
     <div class="context-menu-item" id="ctxMenuEdit">✎ Edit message</div>
     <div class="context-menu-item" id="ctxMenuPin">📌 Pin / unpin message</div>
     <div
@@ -4811,10 +4813,10 @@
     ctxMenuDelete?.addEventListener('click', () => {
         const target=contextTargetPacket || messageLog.find(m=>m.id===contextTargetMessageId);
         if(!target || target.sender?.username!==currentUser.username){ bubbleContextMenu.classList.add('hidden'); return; }
-        if(!confirm('Delete this message for this conversation?')) return;
+        if(!confirm('Take this down for everyone, including you? It disappears from every device and can’t be brought back.')) return;
         messageLog=messageLog.filter(m=>m.id!==target.id);
         [...messagesBox.querySelectorAll('.message-wrapper')].find(el=>el.dataset.msgId===target.id)?.remove();
-        if(window.__convoTomb) window.__convoTomb(target.id); const packet={type:'DELETE',id:target.id,sender:currentUser};
+        if(window.__convoTomb) window.__convoTomb(target.id); if(window.__convoPurgeMsg) window.__convoPurgeMsg(target); const packet={type:'DELETE',id:target.id,sender:currentUser};
         if (window.convoSendOp) window.convoSendOp(packet); else if(isHost) broadcastPacket(packet,null); else if(hostConnection?.open) hostConnection.send(packet);
         persistRoomHistory(activeRoomId,isHost); bubbleContextMenu.classList.add('hidden');
     });
@@ -6219,7 +6221,7 @@
     }, true);
     setInterval(() => {
         const now = Date.now(), dead = messageLog.filter(m => m.expires && m.expires <= now); if (!dead.length) return;
-        messageLog = messageLog.filter(m => !dead.includes(m)); dead.forEach(m => wrapOf(m.id)?.remove()); persistRoomHistory(activeRoomId, isHost);
+        if (window.__convoExpire) window.__convoExpire(dead); messageLog = messageLog.filter(m => !dead.includes(m)); dead.forEach(m => wrapOf(m.id)?.remove()); persistRoomHistory(activeRoomId, isHost);
     }, 1000);
     const QK = 'xchat_sched', readQ = () => { try { return JSON.parse(localStorage.getItem(QK) || '[]'); } catch { return []; } };
     setInterval(() => {
@@ -6550,8 +6552,8 @@
         btn('Delete', () => {
             const mine = selMsgs().filter(m => m.sender?.username === currentUser.username);
             if (!mine.length) { alert('You can only delete your own messages.'); return; }
-            if (!confirm(`Delete ${mine.length} message(s) for everyone?`)) return;
-            mine.forEach(m => { messageLog = messageLog.filter(x => x.id !== m.id); wrapOf(m.id)?.remove(); if (window.__convoTomb) window.__convoTomb(m.id); const dp = { type: 'DELETE', id: m.id, sender: currentUser }; if (window.convoSendOp) window.convoSendOp(dp); else xsend(dp); });
+            if (!confirm(`Take down ${mine.length} message(s) for everyone, including you? They disappear from every device.`)) return;
+            mine.forEach(m => { messageLog = messageLog.filter(x => x.id !== m.id); wrapOf(m.id)?.remove(); if (window.__convoTomb) window.__convoTomb(m.id); if (window.__convoPurgeMsg) window.__convoPurgeMsg(m); const dp = { type: 'DELETE', id: m.id, sender: currentUser }; if (window.convoSendOp) window.convoSendOp(dp); else xsend(dp); });
             persistRoomHistory(activeRoomId, isHost); setSel(false);
         }, ''), btn('✕', () => setSel(false), ''));
     messagesBox.parentNode.appendChild(selBar);
@@ -8740,7 +8742,9 @@ const CV = { U: function () { return currentUser && currentUser.username; }, byI
             if (isImg(it.file) && it.url) { const im = document.createElement('img'); im.src = it.url; im.alt = ''; c.appendChild(im); } else c.appendChild(document.createTextNode('📄 ' + it.file.name.slice(0, 22)));
             const x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Remove');
             x.addEventListener('click', function () { if (busy) return; const a = list(); URL.revokeObjectURL(it.url || ''); a.splice(i, 1); render(); });
-            c.appendChild(x); chips.appendChild(c);
+            c.appendChild(x);
+            if (isImg(it.file) && window.__convoEditImage) { const ed = document.createElement('button'); ed.type = 'button'; ed.className = 'ed'; ed.textContent = it.caption ? 'Edit ✓' : 'Edit'; ed.setAttribute('aria-label', 'Edit picture'); ed.addEventListener('click', function () { if (!busy) window.__convoEditImage(it); }); c.appendChild(ed); }
+            chips.appendChild(c);
         });
         const total = l.reduce(function (n, it) { return n + it.file.size; }, 0);
         info.textContent = l.length ? l.length + (l.length === 1 ? ' file · ' : ' files · ') + size(total) : '';
@@ -8766,6 +8770,8 @@ const CV = { U: function () { return currentUser && currentUser.username; }, byI
         messageInput.focus();
     };
     window.__convoStagedCount = function () { return list().length; };
+    window.__convoTrayRefresh = render;
+    window.__convoSendText = function (text) { const d = messageInput.value; messageInput.value = text; if (chatForm.requestSubmit) chatForm.requestSubmit(); else chatForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true })); messageInput.value = d; };
 
     async function shrink(file) {
         if (!/^image\/(jpeg|png|webp|bmp)$/.test(file.type || '') || !window.createImageBitmap) return file;
@@ -8794,6 +8800,7 @@ const CV = { U: function () { return currentUser && currentUser.username; }, byI
                 if (shrinkOn && isImg(f)) { try { const n = await shrink(f); if (n !== f) { saved += f.size - n.size; shrunk++; f = n; } } catch (e) {} }
                 window.__convoFileHandler(f);
                 await CV.sleep(180);
+                if (l[i].caption) { await CV.sleep(250); window.__convoSendText(l[i].caption); await CV.sleep(120); }
             }
         } finally {
             l.forEach(function (it) { URL.revokeObjectURL(it.url || ''); });
@@ -9580,8 +9587,6 @@ const CV = { U: function () { return currentUser && currentUser.username; }, byI
   .tile-q.good::before { content: '● '; color: #34c759; } .tile-q.ok::before { content: '● '; color: #ff9f0a; } .tile-q.poor::before { content: '● '; color: #ff3b30; }
   #callQ { border: 0; border-radius: 99px; padding: 4px 9px; font-size: .72rem; font-weight: 800; cursor: pointer; background: rgba(255,255,255,.18); color: #fff; }
   #callQ.good { background: #34c759; } #callQ.ok { background: #ff9f0a; } #callQ.poor { background: #ff3b30; }
-  #cvStore .cv-r { display: flex; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(127,127,127,.18); font-size: .85rem; }
-  #cvStore .cv-r span:first-child { flex: 1; min-width: 0; word-break: break-word; }
 </style>
 
 <script id="convo-upgrades7">
@@ -9781,54 +9786,6 @@ const CV = { U: function () { return currentUser && currentUser.username; }, byI
     setInterval(sample, 2500);
 })();
 
-/* ================= 6. storage by chat ================= */
-(function () {
-    'use strict';
-    const upg = window.__convoUpg; if (!upg || !upg.db) return;
-    const E = function (tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-    const fmt = function (n) { return n < 1024 ? n + ' B' : n < 1048576 ? (n / 1024).toFixed(1) + ' KB' : (n / 1048576).toFixed(1) + ' MB'; };
-    const ov = E('div', 'modal-overlay hidden'); ov.id = 'cvStore'; const box = E('div', 'modal convo-dialog'); ov.appendChild(box); document.body.appendChild(ov);
-    ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.add('hidden'); });
-    async function usage() {
-        const recs = await upg.db.scanAll(function () { return true; }, 1e9), per = new Map();
-        convoRooms.forEach(function (r) { per.set(r.id, { msgs: 0, files: [], bytes: 0 }); });
-        recs.forEach(function (v) { const e = per.get(v.rid) || (per.set(v.rid, { msgs: 0, files: [], bytes: 0 }), per.get(v.rid)); e.msgs++; if (v.p && v.p.fileId) e.files.push(v.p.fileId); });
-        for (const e of per.values()) {
-            const live = [];
-            for (const fid of e.files) { try { const rec = await upg.db.getFile(fid); if (rec) { live.push(fid); e.bytes += (rec.blob && rec.blob.size) || rec.size || 0; } } catch (er) {} }
-            e.files = live;
-        }
-        return per;
-    }
-    async function wipe(fids) {
-        if (fids.length) await upg.db.tx('files', 'readwrite', function (s) { fids.forEach(function (f) { s.delete(f); }); });
-        fids.forEach(function (f) { upg.memFiles.delete(f); const u = upg.urls.get(f); if (u) { try { URL.revokeObjectURL(u); } catch (e) {} upg.urls.delete(f); } });
-    }
-    async function show(note) {
-        ov.classList.remove('hidden'); box.textContent = ''; box.appendChild(E('h3', '', 'Storage by chat')); box.appendChild(E('p', '', 'Measuring…'));
-        let per; try { per = await usage(); } catch (e) { box.textContent = 'Saved history is not available in this browser.'; return; }
-        box.textContent = ''; box.appendChild(E('h3', '', 'Storage by chat'));
-        let total = 0; per.forEach(function (e) { total += e.bytes; });
-        const sum = E('p', '', 'Files kept on this device: ' + fmt(total) + '. Deleting files keeps their messages.'); box.appendChild(sum);
-        if (navigator.storage && navigator.storage.estimate) navigator.storage.estimate().then(function (s) { if (s.quota) sum.textContent += ' Browser storage: ' + fmt(s.usage || 0) + ' of ' + fmt(s.quota) + '.'; }).catch(function () {});
-        if (note) box.appendChild(E('p', '', note));
-        convoRooms.forEach(function (r) {
-            const e = per.get(r.id) || { msgs: 0, files: [], bytes: 0 }, row = E('div', 'cv-r');
-            row.appendChild(E('span', '', (r.type === 'public' ? '🌐 ' : '🔒 ') + r.name + ' · ' + e.msgs + ' messages · ' + e.files.length + ' files · ' + fmt(e.bytes)));
-            const b = E('button', 'ios-btn ios-btn-secondary', 'Free up'); b.type = 'button'; b.disabled = !e.files.length; b.title = 'Delete this chat’s saved files';
-            b.addEventListener('click', async function () { if (!confirm('Delete ' + e.files.length + ' saved files (' + fmt(e.bytes) + ') from “' + r.name + '”? Their messages stay.')) return; b.disabled = true; await wipe(e.files); show('Freed ' + fmt(e.bytes) + ' from “' + r.name + '”.'); });
-            row.appendChild(b); box.appendChild(row);
-        });
-        const c = E('button', 'ios-btn ios-btn-secondary', 'Close'); c.type = 'button'; c.addEventListener('click', function () { ov.classList.add('hidden'); }); box.appendChild(c);
-    }
-    const dlg = CV.byId('settingsModal') && CV.byId('settingsModal').querySelector('.dialog-actions');
-    if (dlg) {
-        const row = E('div', 'settings-option'), left = E('div'), b = E('button', 'ios-btn ios-btn-secondary', 'Open'); b.type = 'button';
-        left.append(E('strong', '', 'Storage by chat'), E('span', '', 'See how much space each chat’s files use and free it up in one tap'));
-        b.addEventListener('click', function () { const m = CV.byId('settingsModal'); if (m) m.classList.add('hidden'); show(''); }); row.append(left, b); dlg.before(row);
-    }
-})();
-
 /* ================= 7. a look for each chat ================= */
 (function () {
     'use strict';
@@ -9873,6 +9830,496 @@ const CV = { U: function () { return currentUser && currentUser.username; }, byI
     }
     const baseRPU8 = renderParticipantsUI;
     renderParticipantsUI = function () { baseRPU8.apply(this, arguments); try { draw(); } catch (e) { console.warn(e); } };
+})();
+</script>
+
+
+<style id="convo-upgrades8-css">
+  /* take-down / undo */
+  #cvUndo { display: none; align-items: center; gap: 10px; margin: 6px 14px 0; padding: 8px 12px; border-radius: 14px; font-size: .84rem; background: rgba(30,30,40,.92); color: #fff; box-shadow: 0 6px 20px rgba(0,0,0,.25); position: relative; overflow: hidden; }
+  #cvUndo.show { display: flex; }
+  #cvUndo span { flex: 1; min-width: 0; }
+  #cvUndo button { border: 0; border-radius: 99px; padding: 5px 14px; font-weight: 800; font-size: .8rem; cursor: pointer; background: #fff; color: #111; }
+  #cvUndo i { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--primary); width: 100%; transform-origin: left; }
+  #cvUndo.show i { animation: cvUndoBar 7s linear forwards; }
+  @keyframes cvUndoBar { to { transform: scaleX(0); } }
+
+  /* gallery */
+  #cvGal .modal { max-width: 560px; width: 94vw; }
+  #cvGal .cv-tabs { display: flex; gap: 6px; margin: 8px 0; flex-wrap: wrap; }
+  #cvGal .cv-tabs button { border: 0; border-radius: 99px; padding: 5px 13px; font-size: .78rem; font-weight: 700; cursor: pointer; background: rgba(127,127,127,.18); color: inherit; }
+  #cvGal .cv-tabs button.on { background: var(--primary); color: #fff; }
+  #cvGal .cv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 5px; max-height: 56vh; overflow-y: auto; }
+  #cvGal .cv-grid button { padding: 0; border: 0; border-radius: 10px; overflow: hidden; aspect-ratio: 1; background: rgba(127,127,127,.2); cursor: pointer; }
+  #cvGal .cv-grid img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #cvGal .cv-files { max-height: 56vh; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+  #cvGal .cv-file { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 10px; background: rgba(127,127,127,.13); font-size: .82rem; }
+  #cvGal .cv-file b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #cvGal .cv-file small { opacity: .7; }
+  #cvGal .cv-file a, #cvGal .cv-more { border: 0; border-radius: 99px; padding: 5px 12px; font-size: .76rem; font-weight: 700; cursor: pointer; background: var(--primary); color: #fff; text-decoration: none; width: auto; }
+  #cvView { position: fixed; inset: 0; z-index: 100000; background: rgba(0,0,0,.94); display: none; flex-direction: column; color: #fff; touch-action: none; }
+  #cvView.show { display: flex; }
+  #cvView .cv-stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  #cvView img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform .18s ease; user-select: none; -webkit-user-drag: none; }
+  #cvView .cv-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); font-size: .8rem; }
+  #cvView .cv-bar span { flex: 1; min-width: 0; opacity: .85; }
+  #cvView button, #cvView a.cv-btn { border: 0; border-radius: 99px; padding: 7px 14px; font-weight: 700; font-size: .8rem; cursor: pointer; background: rgba(255,255,255,.18); color: #fff; text-decoration: none; }
+  #cvView button.danger { background: #ff3b30; }
+  #cvView .cv-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 42px; height: 60px; padding: 0; font-size: 1.6rem; background: rgba(255,255,255,.12); }
+  #cvView .cv-prev { left: 6px; } #cvView .cv-next { right: 6px; }
+
+  /* image editor */
+  #cvEd { position: fixed; inset: 0; z-index: 100001; background: #111; color: #fff; display: none; flex-direction: column; }
+  #cvEd.show { display: flex; }
+  #cvEd .cv-top, #cvEd .cv-tools { display: flex; align-items: center; gap: 8px; padding: 10px 12px; flex-wrap: wrap; }
+  #cvEd .cv-top b { flex: 1; text-align: center; }
+  #cvEd .cv-stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  #cvEd .cv-wrap { position: relative; line-height: 0; touch-action: none; }
+  #cvEd canvas { max-width: 96vw; max-height: 58vh; display: block; background: #222; }
+  #cvEd .cv-crop { position: absolute; border: 2px solid #fff; box-shadow: 0 0 0 9999px rgba(0,0,0,.5); display: none; pointer-events: none; }
+  #cvEd button { border: 0; border-radius: 99px; padding: 7px 14px; font-weight: 700; font-size: .8rem; cursor: pointer; background: rgba(255,255,255,.16); color: #fff; width: auto; }
+  #cvEd button.on { background: var(--primary); } #cvEd button.go { background: #34c759; }
+  #cvEd .sw { width: 24px; height: 24px; padding: 0; border-radius: 50%; border: 2px solid rgba(255,255,255,.5); }
+  #cvEd .sw.on { border-color: #fff; transform: scale(1.18); }
+  #cvEd input[type=text] { flex: 1; min-width: 140px; padding: 8px 12px; border-radius: 99px; border: 0; background: rgba(255,255,255,.14); color: #fff; }
+  #attachTray .cv-chip button.ed { top: auto; bottom: 2px; right: 2px; width: auto; padding: 0 6px; border-radius: 99px; font-size: .6rem; height: 17px; }
+
+  /* app lock */
+  #cvLock { position: fixed; inset: 0; z-index: 200000; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: linear-gradient(160deg, #1b2440, #0e1325); color: #fff; padding: 20px; }
+  #cvLock.show { display: flex; }
+  #cvLock h2 { font-size: 1.2rem; } #cvLock .msg { min-height: 1.2em; font-size: .85rem; opacity: .8; text-align: center; }
+  #cvLock .dots { display: flex; gap: 12px; height: 16px; } #cvLock .dots i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,.6); } #cvLock .dots i.on { background: #fff; }
+  #cvLock .pad { display: grid; grid-template-columns: repeat(3, 74px); gap: 12px; }
+  #cvLock .pad button { height: 74px; border-radius: 50%; border: 0; font-size: 1.5rem; font-weight: 600; background: rgba(255,255,255,.12); color: #fff; cursor: pointer; width: auto; padding: 0; box-shadow: none; }
+  #cvLock .pad button:active { background: rgba(255,255,255,.3); }
+  #cvLock .alt { border: 0; background: transparent; color: #8fb4ff; font-size: .9rem; cursor: pointer; width: auto; box-shadow: none; }
+  #cvLock.shake .dots { animation: cvShake .4s; }
+  @keyframes cvShake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+  body.cv-blurred > *:not(#cvLock):not(script):not(style) { filter: blur(22px); }
+  .cv-pin-dlg input { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--input-text); letter-spacing: .3em; text-align: center; font-size: 1.1rem; margin: 6px 0; }
+
+  /* storage by chat (rebuilt) */
+  #cvStore .modal { max-width: 520px; width: 94vw; }
+  #cvStore .cv-sum { padding: 12px; border-radius: 14px; background: rgba(127,127,127,.13); margin: 8px 0 10px; font-size: .84rem; line-height: 1.45; }
+  #cvStore .cv-sum b { font-size: 1.15rem; display: block; }
+  #cvStore .cv-bar { height: 7px; border-radius: 99px; background: rgba(127,127,127,.22); overflow: hidden; margin-top: 6px; }
+  #cvStore .cv-bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #5BB5FF, #7C5CFF); }
+  #cvStore .cv-tool { display: flex; align-items: center; gap: 8px; font-size: .82rem; margin-bottom: 8px; flex-wrap: wrap; }
+  #cvStore .cv-tool select { padding: 5px 8px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--input-text); }
+  #cvStore .cv-list { max-height: 48vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+  #cvStore .cv-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: rgba(127,127,127,.1); }
+  #cvStore .cv-card b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .92rem; }
+  #cvStore .cv-card small { grid-column: 1; opacity: .72; font-size: .76rem; line-height: 1.3; }
+  #cvStore .cv-card .cv-bar { grid-column: 1 / -1; margin-top: 2px; height: 5px; }
+  #cvStore .cv-card button { grid-column: 2; grid-row: 1 / span 2; width: auto; margin: 0; min-width: 0; padding: 7px 14px; font-size: .8rem; box-shadow: none; }
+  #cvStore .cv-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; flex-wrap: wrap; }
+  #cvStore .cv-btns button { width: auto; min-width: 0; margin: 0; }
+</style>
+
+<script id="convo-upgrades8">
+/*
+ * Upgrades 8: take-down that removes files everywhere, undo send, saved drafts, gallery, image editor,
+ * app lock, and a rebuilt storage screen.
+ */
+const CV8 = {
+    E: function (tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; },
+    fmt: function (n) { return n < 1024 ? n + ' B' : n < 1048576 ? (n / 1024).toFixed(1) + ' KB' : (n / 1048576).toFixed(1) + ' MB'; },
+    upg: window.__convoUpg
+};
+
+/* ================= 1. take down for everyone (messages, pictures, files) ================= */
+(function () {
+    'use strict';
+    const upg = CV8.upg; if (!upg || !upg.db) return;
+    async function purgeFile(fid) {   // the picture/file itself, not just the message that pointed at it
+        if (!fid) return;
+        try { await upg.db.tx('files', 'readwrite', function (s) { s.delete(fid); }); } catch (e) {}
+        upg.memFiles.delete(fid);
+        const u = upg.urls.get(fid); if (u) { try { URL.revokeObjectURL(u); } catch (e) {} upg.urls.delete(fid); }
+    }
+    window.__convoPurgeFile = purgeFile;
+    window.__convoPurgeMsg = function (m) { if (m && m.fileId) purgeFile(m.fileId); };
+    window.__convoTakeDown = function (m) {   // remove one of my own messages from every device, including this one
+        if (!m || !m.id) return;
+        messageLog = messageLog.filter(function (x) { return x.id !== m.id; });
+        const w = Array.from(messagesBox.querySelectorAll('.message-wrapper')).find(function (el) { return el.dataset.msgId === m.id; }); if (w) w.remove();
+        if (window.__convoTomb) window.__convoTomb(m.id);
+        window.__convoPurgeMsg(m);
+        const packet = { type: 'DELETE', id: m.id, sender: currentUser };
+        if (window.convoSendOp) window.convoSendOp(packet); else if (isHost) broadcastPacket(packet, null); else if (hostConnection && hostConnection.open) hostConnection.send(packet);
+        persistRoomHistory(activeRoomId, isHost);
+        try { renderConversationList(); } catch (e) {}
+    };
+    // when someone else takes a message down, their picture/file goes from this device too
+    const baseH = handleIncomingPacket;
+    handleIncomingPacket = function (packet) {
+        let before = null, rows = null;
+        if (packet && packet.type === 'DELETE' && packet.id) {
+            before = (messageLog || []).find(function (m) { return m && m.id === packet.id; });
+            if (!before) { const rid = activeRoomId; rows = upg.db.scanAll(function (v) { return v.rid === rid && v.p && v.p.id === packet.id; }, 5).catch(function () { return []; }); }
+        }
+        const r = baseH.apply(this, arguments);
+        try {
+            const who = packet && packet.sender && packet.sender.username;
+            if (before && before.sender && before.sender.username === who) window.__convoPurgeMsg(before);
+            else if (rows) rows.then(function (list) { list.forEach(function (v) { if (v.p && v.p.sender && v.p.sender.username === who) window.__convoPurgeMsg(v.p); }); });
+        } catch (e) {}
+        return r;
+    };
+    // disappearing messages: wipe the saved copy and the file as well
+    window.__convoExpire = function (dead) { dead.forEach(function (m) { if (window.__convoTomb) window.__convoTomb(m.id); window.__convoPurgeMsg(m); }); };
+})();
+
+/* ================= 2. undo send ================= */
+(function () {
+    'use strict';
+    const bar = CV8.E('div'); bar.id = 'cvUndo'; const label = CV8.E('span'), btn = CV8.E('button', '', 'Undo'), prog = CV8.E('i'); btn.type = 'button'; bar.append(label, btn, prog);
+    const tray = CV.byId('attachTray'); (tray || chatForm).parentNode.insertBefore(bar, tray || chatForm);
+    const seen = new Set(); let cur = null, timer = 0, room = '';
+    function hide() { bar.classList.remove('show'); clearTimeout(timer); cur = null; }
+    function show(m) {
+        cur = m; room = visibleRoomId; label.textContent = m.type === 'FILE' ? (m.voice ? 'Voice message sent' : 'File sent') : 'Message sent';
+        bar.classList.remove('show'); void bar.offsetWidth; bar.classList.add('show'); clearTimeout(timer); timer = setTimeout(hide, 7000);
+    }
+    function track() {
+        const me = CV.U(), log = messageLog || [];
+        for (let i = log.length - 1; i >= 0 && i > log.length - 6; i--) {
+            const m = log[i];
+            if (m && m.id && m.sender && m.sender.username === me && (m.type === 'CHAT' || m.type === 'FILE') && Date.now() - (m.timestamp || 0) < 5000 && !seen.has(m.id)) { seen.add(m.id); if (seen.size > 300) seen.clear(); show(m); return; }
+        }
+    }
+    new MutationObserver(function (muts) { for (const mu of muts) for (const n of mu.addedNodes) if (n.nodeType === 1 && n.classList && n.classList.contains('sent')) { track(); return; } }).observe(messagesBox, { childList: true });
+    btn.addEventListener('click', function () {
+        const m = cur; if (!m || room !== visibleRoomId) { hide(); return; }
+        const live = (messageLog || []).find(function (x) { return x.id === m.id; }) || m;
+        hide(); window.__convoTakeDown(live); CV.toast('Taken down for everyone.', 2500);
+    });
+    const baseAct = activateConversation; activateConversation = function () { hide(); return baseAct.apply(this, arguments); };
+})();
+
+/* ================= 3. drafts are kept per chat, even after closing the app ================= */
+(function () {
+    'use strict';
+    const key = function (rid) { return 'xchat_draft_' + CV.U() + '_' + rid; };
+    let t = 0;
+    const save = function () { const rid = visibleRoomId, v = messageInput.value; try { if (v) localStorage.setItem(key(rid), v); else localStorage.removeItem(key(rid)); } catch (e) {} };
+    messageInput.addEventListener('input', function () { clearTimeout(t); t = setTimeout(save, 250); });
+    chatForm.addEventListener('submit', function () { setTimeout(function () { if (!messageInput.value) { try { localStorage.removeItem(key(visibleRoomId)); } catch (e) {} } }, 80); });
+    window.addEventListener('beforeunload', save);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) save(); });
+    const baseAct = activateConversation;
+    activateConversation = function () {
+        const r = baseAct.apply(this, arguments);
+        try { if (!messageInput.value) { const d = localStorage.getItem(key(visibleRoomId)); if (d) messageInput.value = d; } } catch (e) {}
+        return r;
+    };
+})();
+
+/* ================= 4. photo & file gallery ================= */
+(function () {
+    'use strict';
+    const upg = CV8.upg, E = CV8.E, fmt = CV8.fmt; if (!upg || !upg.db) return;
+    const hdr = CV.byId('searchBtn'); if (!hdr) return;
+    const gb = document.createElement('button'); gb.type = 'button'; gb.id = 'galleryBtn'; gb.className = 'icon-button'; gb.title = 'Photos and files in this chat'; gb.setAttribute('aria-label', 'Photos and files'); gb.innerHTML = window.__cvIcon('gallery'); hdr.after(gb);
+    const ov = E('div', 'modal-overlay hidden'); ov.id = 'cvGal'; const box = E('div', 'modal convo-dialog'); ov.appendChild(box); document.body.appendChild(ov);
+    ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.add('hidden'); });
+    const view = E('div'); view.id = 'cvView';
+    view.innerHTML = '<div class="cv-stage"><img alt=""></div><button type="button" class="cv-nav cv-prev">‹</button><button type="button" class="cv-nav cv-next">›</button><div class="cv-bar"><span></span><a class="cv-btn" download>Save</a><button type="button" class="danger">Take down</button><button type="button" class="x">Close</button></div>';
+    document.body.appendChild(view);
+    const vImg = view.querySelector('img'), vInfo = view.querySelector('.cv-bar span'), vSave = view.querySelector('a.cv-btn'), vDel = view.querySelector('.danger');
+    let items = [], pics = [], idx = 0, tab = 'all', shown = 48, zoom = false;
+    const hiddenKeep = function (m) { return !(window.__convoHidden && m.sender && window.__convoHidden(m.sender)); };
+    async function blobUrl(fid) {
+        let u = upg.urls.get(fid); if (u) return u;
+        let b = upg.memFiles.get(fid);
+        if (!b) { try { const rec = await upg.db.getFile(fid); b = rec && rec.blob; if (b) upg.memFiles.set(fid, b); } catch (e) {} }
+        if (!b) return ''; u = URL.createObjectURL(b); upg.urls.set(fid, u); return u;
+    }
+    async function load() {
+        const rid = activeRoomId, map = new Map();
+        try { (await upg.db.scanAll(function (v) { return v.rid === rid && v.p && v.p.fileId; }, 20000)).forEach(function (v) { map.set(v.p.id, v.p); }); } catch (e) {}
+        (messageLog || []).forEach(function (m) { if (m && m.id && m.fileId) map.set(m.id, m); });
+        items = Array.from(map.values()).filter(hiddenKeep).sort(function (a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+    }
+    const kindOf = function (m) { return m.voice ? 'voice' : /^image\//.test(m.fileType || '') ? 'image' : 'file'; };
+    async function draw() {
+        box.textContent = ''; box.appendChild(E('h3', '', 'Photos and files'));
+        const tabs = E('div', 'cv-tabs'); [['all', 'All'], ['image', 'Pictures'], ['file', 'Files'], ['voice', 'Voice']].forEach(function (t) { const b = E('button', tab === t[0] ? 'on' : '', t[1]); b.type = 'button'; b.addEventListener('click', function () { tab = t[0]; shown = 48; draw(); }); tabs.appendChild(b); });
+        box.appendChild(tabs);
+        const list = items.filter(function (m) { return tab === 'all' || kindOf(m) === tab; });
+        if (!list.length) box.appendChild(E('p', '', 'Nothing shared here yet.'));
+        const pictures = list.filter(function (m) { return kindOf(m) === 'image'; }), others = list.filter(function (m) { return kindOf(m) !== 'image'; });
+        pics = pictures;
+        if (pictures.length) {
+            const grid = E('div', 'cv-grid');
+            pictures.slice(0, shown).forEach(function (m, i) {
+                const b = E('button'); b.type = 'button'; b.title = (m.sender && (m.sender.displayName || m.sender.username) || '') + ' · ' + new Date(m.timestamp || 0).toLocaleDateString();
+                const im = document.createElement('img'); im.loading = 'lazy'; im.alt = m.fileName || 'Picture'; b.appendChild(im);
+                blobUrl(m.fileId).then(function (u) { if (u) im.src = u; else { b.disabled = true; b.textContent = 'Removed'; } });
+                b.addEventListener('click', function () { openViewer(i); }); grid.appendChild(b);
+            });
+            box.appendChild(grid);
+            if (pictures.length > shown) { const more = E('button', 'cv-more', 'Show more'); more.type = 'button'; more.style.marginTop = '8px'; more.addEventListener('click', function () { shown += 48; draw(); }); box.appendChild(more); }
+        }
+        if (others.length) {
+            const fl = E('div', 'cv-files'); if (pictures.length) fl.style.marginTop = '10px';
+            for (const m of others.slice(0, 200)) {
+                const row = E('div', 'cv-file'), left = E('div'); left.appendChild(E('b', '', m.voice ? '🎤 Voice message' : (m.fileName || 'File')));
+                left.appendChild(E('small', '', (m.sender && (m.sender.displayName || m.sender.username) || 'Someone') + ' · ' + new Date(m.timestamp || 0).toLocaleDateString() + (m.fileSize ? ' · ' + fmt(m.fileSize) : '')));
+                row.appendChild(left); const a = E('a', '', 'Save'); a.download = m.fileName || 'file'; blobUrl(m.fileId).then(function (u) { if (u) a.href = u; else { a.textContent = 'Removed'; a.style.opacity = '.5'; } }); row.appendChild(a); fl.appendChild(row);
+            }
+            box.appendChild(fl);
+        }
+        const c = E('button', 'ios-btn ios-btn-secondary', 'Close'); c.type = 'button'; c.style.marginTop = '10px'; c.addEventListener('click', function () { ov.classList.add('hidden'); }); box.appendChild(c);
+    }
+    async function openViewer(i) {
+        idx = (i + pics.length) % pics.length; const m = pics[idx]; if (!m) return;
+        zoom = false; vImg.style.transform = ''; const u = await blobUrl(m.fileId); vImg.src = u || '';
+        vInfo.textContent = (m.sender && (m.sender.displayName || m.sender.username) || '') + ' · ' + new Date(m.timestamp || 0).toLocaleString() + (m.fileName ? ' · ' + m.fileName : '') + '  (' + (idx + 1) + '/' + pics.length + ')';
+        vSave.href = u || '#'; vSave.download = m.fileName || 'picture';
+        vDel.style.display = m.sender && m.sender.username === CV.U() ? '' : 'none';
+        view.classList.add('show');
+    }
+    const closeView = function () { view.classList.remove('show'); vImg.removeAttribute('src'); };
+    view.querySelector('.x').addEventListener('click', closeView);
+    view.querySelector('.cv-prev').addEventListener('click', function () { openViewer(idx - 1); });
+    view.querySelector('.cv-next').addEventListener('click', function () { openViewer(idx + 1); });
+    vDel.addEventListener('click', async function () {
+        const m = pics[idx]; if (!m || !confirm('Take this picture down for everyone, including you? It disappears from every device.')) return;
+        const live = (messageLog || []).find(function (x) { return x.id === m.id; }) || m;
+        window.__convoTakeDown(live); items = items.filter(function (x) { return x.id !== m.id; }); closeView(); draw();
+    });
+    document.addEventListener('keydown', function (e) { if (!view.classList.contains('show')) return; if (e.key === 'Escape') closeView(); else if (e.key === 'ArrowLeft') openViewer(idx - 1); else if (e.key === 'ArrowRight') openViewer(idx + 1); });
+    let sx = null;   // swipe to change picture, tap to zoom
+    view.addEventListener('pointerdown', function (e) { if (e.target === vImg) sx = [e.clientX, e.clientY, Date.now()]; });
+    view.addEventListener('pointerup', function (e) {
+        if (!sx) return; const dx = e.clientX - sx[0], dy = e.clientY - sx[1], dt = Date.now() - sx[2]; sx = null;
+        if (!zoom && Math.abs(dx) > 60 && Math.abs(dy) < 80) { openViewer(idx + (dx < 0 ? 1 : -1)); return; }
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8 && dt < 400) {
+            zoom = !zoom; const r = vImg.getBoundingClientRect(); vImg.style.transformOrigin = ((e.clientX - r.left) / r.width * 100) + '% ' + ((e.clientY - r.top) / r.height * 100) + '%'; vImg.style.transform = zoom ? 'scale(2.4)' : '';
+        }
+    });
+    gb.addEventListener('click', async function () { ov.classList.remove('hidden'); box.textContent = ''; box.appendChild(E('p', '', 'Loading…')); tab = 'all'; shown = 48; await load(); draw(); });
+})();
+
+/* ================= 5. image editor: crop, draw, blur, rotate, caption ================= */
+(function () {
+    'use strict';
+    const E = CV8.E; let item = null, W, ctx, pix = null, mode = 'draw', color = '#ff3b30', size = 8, hist = [], cropRect = null, drawing = false, last = null;
+    const ov = E('div'); ov.id = 'cvEd';
+    ov.innerHTML = '<div class="cv-top"><button type="button" class="cancel">Cancel</button><b>Edit picture</b><button type="button" class="go">Done</button></div><div class="cv-stage"><div class="cv-wrap"><canvas></canvas><div class="cv-crop"></div></div></div><div class="cv-tools"></div><div class="cv-tools cap"></div>';
+    document.body.appendChild(ov);
+    const stage = ov.querySelector('.cv-wrap'), tools = ov.querySelectorAll('.cv-tools')[0], capRow = ov.querySelector('.cap'), cropEl = ov.querySelector('.cv-crop'); W = ov.querySelector('canvas'); ctx = W.getContext('2d');
+    const cap = E('input'); cap.type = 'text'; cap.placeholder = 'Add a caption (sent right after the picture)'; capRow.appendChild(cap);
+    const modeBtns = {}, mk = function (parent, t, fn, cls) { const b = E('button', cls || '', t); b.type = 'button'; b.addEventListener('click', fn); parent.appendChild(b); return b; };
+    ['draw', 'blur', 'crop'].forEach(function (m) { modeBtns[m] = mk(tools, m === 'draw' ? 'Draw' : m === 'blur' ? 'Blur' : 'Crop', function () { setMode(m); }); });
+    mk(tools, 'Rotate', rotate); const undoB = mk(tools, 'Undo', undo); const applyB = mk(tools, 'Apply crop', applyCrop, 'go'); applyB.style.display = 'none';
+    const sw = E('span'); sw.style.cssText = 'display:flex;gap:6px;align-items:center'; ['#ff3b30', '#ffcc00', '#34c759', '#0a84ff', '#ffffff', '#000000'].forEach(function (c) { const b = E('button', 'sw'); b.type = 'button'; b.style.background = c; b.addEventListener('click', function () { color = c; sw.querySelectorAll('.sw').forEach(function (x) { x.classList.remove('on'); }); b.classList.add('on'); setMode('draw'); }); if (c === color) b.classList.add('on'); sw.appendChild(b); }); tools.appendChild(sw);
+    const sz = E('input'); sz.type = 'range'; sz.min = 2; sz.max = 40; sz.value = size; sz.style.width = '90px'; sz.addEventListener('input', function () { size = +sz.value; }); tools.appendChild(sz);
+    function snap() { const c = document.createElement('canvas'); c.width = W.width; c.height = W.height; c.getContext('2d').drawImage(W, 0, 0); hist.push(c); if (hist.length > 8) hist.shift(); }
+    function undo() { const c = hist.pop(); if (!c) return; W.width = c.width; W.height = c.height; ctx.drawImage(c, 0, 0); pix = null; }
+    function makePix() {
+        const w = W.width, h = W.height, blk = Math.max(10, Math.round(Math.max(w, h) / 48)), s = document.createElement('canvas'); s.width = Math.max(1, Math.ceil(w / blk)); s.height = Math.max(1, Math.ceil(h / blk));
+        s.getContext('2d').drawImage(W, 0, 0, s.width, s.height);
+        pix = document.createElement('canvas'); pix.width = w; pix.height = h; const p = pix.getContext('2d'); p.imageSmoothingEnabled = false; p.drawImage(s, 0, 0, s.width, s.height, 0, 0, s.width * blk, s.height * blk);
+    }
+    function setMode(m) { mode = m; Object.keys(modeBtns).forEach(function (k) { modeBtns[k].classList.toggle('on', k === m); }); cropRect = null; cropEl.style.display = 'none'; applyB.style.display = m === 'crop' ? '' : 'none'; if (m === 'blur') makePix(); }
+    function rotate() { snap(); const c = document.createElement('canvas'); c.width = W.height; c.height = W.width; const g = c.getContext('2d'); g.translate(c.width, 0); g.rotate(Math.PI / 2); g.drawImage(W, 0, 0); W.width = c.width; W.height = c.height; ctx.drawImage(c, 0, 0); pix = null; if (mode === 'blur') makePix(); }
+    function applyCrop() {
+        if (!cropRect || cropRect.w < 8 || cropRect.h < 8) return; snap(); const c = document.createElement('canvas'); c.width = Math.round(cropRect.w); c.height = Math.round(cropRect.h);
+        c.getContext('2d').drawImage(W, Math.round(cropRect.x), Math.round(cropRect.y), c.width, c.height, 0, 0, c.width, c.height);
+        W.width = c.width; W.height = c.height; ctx.drawImage(c, 0, 0); pix = null; setMode('draw');
+    }
+    const pos = function (e) { const r = W.getBoundingClientRect(); return { x: (e.clientX - r.left) * W.width / r.width, y: (e.clientY - r.top) * W.height / r.height, sx: r.width / W.width }; };
+    function stroke(a, b) {
+        const k = Math.max(1, W.width / 700), r = size * k;
+        if (mode === 'draw') { ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = color; ctx.lineWidth = r; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+        else if (mode === 'blur' && pix) {
+            const d = Math.hypot(b.x - a.x, b.y - a.y), n = Math.max(1, Math.ceil(d / Math.max(2, r / 3)));
+            for (let i = 0; i <= n; i++) { const x = a.x + (b.x - a.x) * i / n, y = a.y + (b.y - a.y) * i / n; ctx.save(); ctx.beginPath(); ctx.arc(x, y, r * 1.6, 0, Math.PI * 2); ctx.clip(); ctx.drawImage(pix, 0, 0); ctx.restore(); }
+        }
+    }
+    W.addEventListener('pointerdown', function (e) {
+        e.preventDefault(); try { W.setPointerCapture(e.pointerId); } catch (er) {}
+        const p = pos(e);
+        if (mode === 'crop') { cropRect = { x: p.x, y: p.y, w: 0, h: 0, ox: p.x, oy: p.y }; drawing = true; return; }
+        snap(); drawing = true; last = p; stroke(p, p);
+    });
+    W.addEventListener('pointermove', function (e) {
+        if (!drawing) return; const p = pos(e);
+        if (mode === 'crop' && cropRect) {
+            const x = Math.max(0, Math.min(p.x, cropRect.ox)), y = Math.max(0, Math.min(p.y, cropRect.oy)), w = Math.min(W.width, Math.max(p.x, cropRect.ox)) - x, h = Math.min(W.height, Math.max(p.y, cropRect.oy)) - y;
+            Object.assign(cropRect, { x: x, y: y, w: w, h: h }); const s = p.sx; cropEl.style.cssText = 'display:block;left:' + x * s + 'px;top:' + y * s + 'px;width:' + w * s + 'px;height:' + h * s + 'px'; return;
+        }
+        stroke(last, p); last = p;
+    });
+    ['pointerup', 'pointercancel'].forEach(function (n) { W.addEventListener(n, function () { drawing = false; }); });
+    const close = function () { ov.classList.remove('show'); item = null; hist = []; pix = null; };
+    ov.querySelector('.cancel').addEventListener('click', close);
+    ov.querySelector('.go').addEventListener('click', function () {
+        const it = item; if (!it) return;
+        W.toBlob(function (blob) {
+            if (!blob) { close(); return; }
+            const f = new File([blob], (it.file.name || 'picture').replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg', lastModified: Date.now() });
+            if (it.url) URL.revokeObjectURL(it.url); it.file = f; it.url = URL.createObjectURL(f); it.caption = cap.value.trim(); close(); if (window.__convoTrayRefresh) window.__convoTrayRefresh();
+        }, 'image/jpeg', 0.9);
+    });
+    window.__convoEditImage = async function (it) {
+        item = it; hist = []; cap.value = it.caption || ''; let bmp;
+        try { bmp = await createImageBitmap(it.file, { imageOrientation: 'from-image' }); } catch (e) { try { bmp = await createImageBitmap(it.file); } catch (e2) { CV.toast('This picture can’t be edited.', 3000); item = null; return; } }
+        const sc = Math.min(1, 2200 / Math.max(bmp.width, bmp.height)); W.width = Math.max(1, Math.round(bmp.width * sc)); W.height = Math.max(1, Math.round(bmp.height * sc));
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W.width, W.height); ctx.drawImage(bmp, 0, 0, W.width, W.height); if (bmp.close) bmp.close();
+        setMode('draw'); ov.classList.add('show');
+    };
+})();
+
+/* ================= 6. app lock ================= */
+(function () {
+    'use strict';
+    const E = CV8.E, te = new TextEncoder(), subtle = window.crypto && window.crypto.subtle, KEY = 'convo_lock';
+    const b64 = function (buf) { const b = new Uint8Array(buf); let s = ''; for (let i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return btoa(s); };
+    const unb64 = function (s) { const x = atob(s), b = new Uint8Array(x.length); for (let i = 0; i < x.length; i++) b[i] = x.charCodeAt(i); return b; };
+    let cfg = null; try { cfg = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+    const saveCfg = function () { try { if (cfg) localStorage.setItem(KEY, JSON.stringify(cfg)); else localStorage.removeItem(KEY); } catch (e) {} };
+    async function derive(pin, salt, iters) {
+        const k = await subtle.importKey('raw', te.encode(pin), 'PBKDF2', false, ['deriveBits']);
+        return b64(await subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: unb64(salt), iterations: iters }, k, 256));
+    }
+    const check = async function (pin) { return !!cfg && (await derive(pin, cfg.salt, cfg.iters)) === cfg.hash; };
+
+    const ov = E('div'); ov.id = 'cvLock';
+    ov.innerHTML = '<h2>Convo is locked</h2><div class="dots"></div><div class="msg"></div><div class="pad"></div><button type="button" class="alt bio" style="display:none">Use fingerprint or face</button>';
+    document.body.appendChild(ov);
+    const dots = ov.querySelector('.dots'), msg = ov.querySelector('.msg'), pad = ov.querySelector('.pad'), bioBtn = ov.querySelector('.bio');
+    let entry = '', locked = false, fails = 0, until = 0, hiddenAt = 0;
+    function drawDots() { dots.textContent = ''; const n = Math.max(4, entry.length); for (let i = 0; i < n; i++) dots.appendChild(E('i', i < entry.length ? 'on' : '')); }
+    async function submit() {
+        if (!entry) return; if (Date.now() < until) return;
+        const ok = await check(entry);
+        if (ok) { fails = 0; unlock(); return; }
+        entry = ''; drawDots(); fails++; ov.classList.remove('shake'); void ov.offsetWidth; ov.classList.add('shake');
+        if (fails >= 5) { until = Date.now() + Math.min(300000, 15000 * Math.pow(2, fails - 5)); tick(); } else msg.textContent = 'Wrong PIN';
+    }
+    function tick() { const s = Math.ceil((until - Date.now()) / 1000); if (s > 0) { msg.textContent = 'Too many tries. Wait ' + s + 's'; setTimeout(tick, 500); } else msg.textContent = ''; }
+    function press(d) { if (Date.now() < until) return; if (entry.length < 8) { entry += d; drawDots(); } if (entry.length >= (cfg && cfg.len || 4) && entry.length >= 4) { if (entry.length === (cfg && cfg.len)) submit(); } }
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0', '↵'].forEach(function (k) {
+        const b = E('button', '', k); b.type = 'button';
+        b.addEventListener('click', function () { if (k === '⌫') { entry = entry.slice(0, -1); drawDots(); } else if (k === '↵') submit(); else press(k); });
+        pad.appendChild(b);
+    });
+    document.addEventListener('keydown', function (e) { if (!locked) return; if (/^\d$/.test(e.key)) press(e.key); else if (e.key === 'Backspace') { entry = entry.slice(0, -1); drawDots(); } else if (e.key === 'Enter') submit(); });
+    function lock() { if (!cfg) return; locked = true; entry = ''; msg.textContent = ''; drawDots(); ov.classList.add('show'); document.body.classList.remove('cv-blurred'); bioReady(); }
+    function unlock() { locked = false; ov.classList.remove('show'); entry = ''; }
+    const bioOK = !!(window.PublicKeyCredential && window.isSecureContext && /^https?:$/.test(location.protocol));
+    function bioReady() { bioBtn.style.display = cfg && cfg.bio && bioOK ? '' : 'none'; }
+    async function bioUnlock() {
+        try { await navigator.credentials.get({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)), allowCredentials: [{ type: 'public-key', id: unb64(cfg.bio) }], userVerification: 'required', timeout: 60000 } }); unlock(); } catch (e) { msg.textContent = 'Fingerprint or face check did not work. Use your PIN.'; }
+    }
+    bioBtn.addEventListener('click', bioUnlock);
+    async function enrollBio() {
+        const c = await navigator.credentials.create({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)), rp: { name: 'Convo' }, user: { id: crypto.getRandomValues(new Uint8Array(16)), name: CV.U() || 'convo', displayName: CV.U() || 'Convo' }, pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }], authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required' }, timeout: 60000 } });
+        cfg.bio = b64(c.rawId); saveCfg();
+    }
+    // when you leave the app: blur what the app switcher would show, and lock after the chosen time
+    const hide = function () { if (cfg && cfg.blur !== false) document.body.classList.add('cv-blurred'); hiddenAt = Date.now(); };
+    const show = function () {
+        document.body.classList.remove('cv-blurred');
+        if (cfg && !locked && hiddenAt && Date.now() - hiddenAt >= (cfg.after || 0) * 60000) lock();
+        hiddenAt = 0;
+    };
+    document.addEventListener('visibilitychange', function () { if (document.hidden) hide(); else show(); });
+    window.addEventListener('blur', function () { if (cfg && cfg.blur !== false) document.body.classList.add('cv-blurred'); });
+    window.addEventListener('focus', function () { if (!document.hidden) document.body.classList.remove('cv-blurred'); });
+
+    /* ---- settings ---- */
+    function pinDialog(title, ask, done) {
+        const o = E('div', 'modal-overlay'), b = E('div', 'modal convo-dialog cv-pin-dlg'); o.appendChild(b);
+        b.appendChild(E('h3', '', title)); const inputs = ask.map(function (label) { b.appendChild(E('div', '', label)); const i = E('input'); i.type = 'password'; i.inputMode = 'numeric'; i.maxLength = 8; i.autocomplete = 'off'; b.appendChild(i); return i; });
+        const err = E('div', '', ''); err.style.color = '#ff453a'; b.appendChild(err);
+        const row = E('div', 'dialog-actions'), c = E('button', 'ios-btn ios-btn-secondary', 'Cancel'), ok = E('button', 'ios-btn', 'Save'); c.type = ok.type = 'button'; row.append(c, ok); b.appendChild(row);
+        c.addEventListener('click', function () { o.remove(); });
+        ok.addEventListener('click', async function () { const r = await done(inputs.map(function (i) { return i.value.trim(); })); if (r) err.textContent = r; else o.remove(); });
+        document.body.appendChild(o); inputs[0].focus();
+    }
+    async function setPin(pin) { const salt = b64(crypto.getRandomValues(new Uint8Array(16))), iters = 150000; cfg = Object.assign({}, cfg || {}, { salt: salt, iters: iters, hash: await derive(pin, salt, iters), len: pin.length, after: cfg && cfg.after != null ? cfg.after : 1, blur: cfg && cfg.blur !== undefined ? cfg.blur : true }); saveCfg(); }
+    function settings() {
+        const dlg = CV.byId('settingsModal') && CV.byId('settingsModal').querySelector('.dialog-actions'); if (!dlg || !subtle) return;
+        const row = E('div', 'settings-option'); row.id = 'cvLockRow'; const left = E('div');
+        left.append(E('strong', '', 'App lock'), E('span', '', 'Ask for a PIN to open Convo and blur it when you switch away. This keeps people who pick up your device out of the app. It does not encrypt chats saved on the device.'));
+        const col = E('div'); col.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px';
+        const mk = function (t, fn) { const b = E('button', 'ios-btn ios-btn-secondary', t); b.type = 'button'; b.style.cssText = 'width:auto;min-width:0'; b.addEventListener('click', fn); col.appendChild(b); return b; };
+        function draw() {
+            col.textContent = '';
+            if (!cfg) { mk('Set a PIN', function () { pinDialog('Set a PIN (4–8 digits)', ['New PIN', 'Repeat PIN'], async function (v) { if (!/^\d{4,8}$/.test(v[0])) return 'Use 4 to 8 digits.'; if (v[0] !== v[1]) return 'The PINs don’t match.'; await setPin(v[0]); draw(); }); }); return; }
+            mk('Lock now', lock);
+            mk('Change PIN', function () { pinDialog('Change PIN', ['Current PIN', 'New PIN', 'Repeat new PIN'], async function (v) { if (!(await check(v[0]))) return 'Current PIN is wrong.'; if (!/^\d{4,8}$/.test(v[1])) return 'Use 4 to 8 digits.'; if (v[1] !== v[2]) return 'The new PINs don’t match.'; await setPin(v[1]); }); });
+            mk('Turn off', function () { pinDialog('Turn off app lock', ['Current PIN'], async function (v) { if (!(await check(v[0]))) return 'Wrong PIN.'; cfg = null; saveCfg(); draw(); }); });
+            const sel = E('select'); [[0, 'Lock right away'], [1, 'After 1 minute'], [5, 'After 5 minutes'], [30, 'After 30 minutes']].forEach(function (o) { sel.appendChild(new Option(o[1], o[0])); }); sel.value = String(cfg.after != null ? cfg.after : 1);
+            sel.addEventListener('change', function () { cfg.after = +sel.value; saveCfg(); }); col.appendChild(sel);
+            const bl = E('label'); const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = cfg.blur !== false; cb.addEventListener('change', function () { cfg.blur = cb.checked; saveCfg(); }); bl.append(cb, document.createTextNode(' Blur when away')); bl.style.fontSize = '.8rem'; col.appendChild(bl);
+            if (bioOK) mk(cfg.bio ? 'Remove fingerprint / face' : 'Use fingerprint / face', async function () { try { if (cfg.bio) { delete cfg.bio; saveCfg(); } else await enrollBio(); } catch (e) { alert('Fingerprint or face unlock could not be set up on this device.'); } draw(); });
+        }
+        left.appendChild(col); row.appendChild(left); dlg.before(row); draw();
+    }
+    settings();
+    if (cfg) lock();
+})();
+
+/* ================= 7. storage by chat (rebuilt) ================= */
+(function () {
+    'use strict';
+    const upg = CV8.upg, E = CV8.E, fmt = CV8.fmt; if (!upg || !upg.db) return;
+    const ov = E('div', 'modal-overlay hidden'); ov.id = 'cvStore'; const box = E('div', 'modal convo-dialog'); ov.appendChild(box); document.body.appendChild(ov);
+    ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.add('hidden'); });
+    let age = 0;
+    async function usage() {
+        const recs = await upg.db.scanAll(function () { return true; }, 1e9), per = new Map();
+        const get = function (rid) { let e = per.get(rid); if (!e) { e = { msgs: 0, files: [], bytes: 0, pics: 0, voice: 0, other: 0 }; per.set(rid, e); } return e; };
+        convoRooms.forEach(function (r) { get(r.id); });
+        recs.forEach(function (v) { const e = get(v.rid); e.msgs++; if (v.p && v.p.fileId) e.files.push({ fid: v.p.fileId, ts: v.p.timestamp || v.ts || 0, kind: v.p.voice ? 'voice' : /^image\//.test(v.p.fileType || '') ? 'pics' : 'other' }); });
+        for (const e of per.values()) {
+            const live = [];
+            for (const f of e.files) { try { const rec = await upg.db.getFile(f.fid); if (rec) { f.size = (rec.blob && rec.blob.size) || rec.size || 0; live.push(f); e[f.kind] += f.size; e.bytes += f.size; } } catch (er) {} }
+            e.files = live;
+        }
+        return per;
+    }
+    const pick = function (e) { const cut = age ? Date.now() - age * 86400000 : Infinity; return e.files.filter(function (f) { return !age || f.ts < cut; }); };
+    async function wipe(list) { for (const f of list) await window.__convoPurgeFile(f.fid); }
+    async function show(note) {
+        ov.classList.remove('hidden'); box.textContent = ''; box.appendChild(E('h3', '', 'Storage')); box.appendChild(E('p', '', 'Measuring…'));
+        let per; try { per = await usage(); } catch (e) { box.textContent = 'Saved history is not available in this browser.'; return; }
+        box.textContent = ''; box.appendChild(E('h3', '', 'Storage'));
+        let total = 0; per.forEach(function (e) { total += e.bytes; });
+        const sum = E('div', 'cv-sum'); sum.appendChild(E('b', '', fmt(total))); sum.appendChild(document.createTextNode('of pictures, voice notes and files saved on this device'));
+        const q = E('div', 'cv-bar'), qi = E('i'); q.appendChild(qi); sum.appendChild(q); const qn = E('div'); qn.style.cssText = 'font-size:.74rem;opacity:.7;margin-top:4px'; sum.appendChild(qn); box.appendChild(sum);
+        if (navigator.storage && navigator.storage.estimate) navigator.storage.estimate().then(function (s) { if (s.quota) { qi.style.width = Math.max(1, Math.min(100, (s.usage || 0) / s.quota * 100)) + '%'; qn.textContent = 'Browser storage used by Convo: ' + fmt(s.usage || 0) + ' of ' + fmt(s.quota); } }).catch(function () {});
+        if (note) { const n = E('div', 'cv-sum', note); box.appendChild(n); }
+        const tool = E('div', 'cv-tool'); tool.appendChild(document.createTextNode('Free up'));
+        const sel = E('select'); [[0, 'all files'], [7, 'files older than 7 days'], [30, 'files older than 30 days'], [90, 'files older than 90 days']].forEach(function (o) { sel.appendChild(new Option(o[1], o[0])); }); sel.value = String(age); sel.addEventListener('change', function () { age = +sel.value; show(); }); tool.appendChild(sel); box.appendChild(tool);
+        const list = E('div', 'cv-list'), rooms = convoRooms.slice().sort(function (a, b) { return (per.get(b.id) ? per.get(b.id).bytes : 0) - (per.get(a.id) ? per.get(a.id).bytes : 0); });
+        const maxB = Math.max(1, ...rooms.map(function (r) { return per.get(r.id).bytes; }));
+        rooms.forEach(function (r) {
+            const e = per.get(r.id), sel = pick(e), selBytes = sel.reduce(function (n, f) { return n + f.size; }, 0), card = E('div', 'cv-card');
+            card.appendChild(E('b', '', (r.type === 'public' ? '🌐 ' : '🔒 ') + (r.name || 'Chat')));
+            const parts = []; if (e.pics) parts.push('pictures ' + fmt(e.pics)); if (e.voice) parts.push('voice ' + fmt(e.voice)); if (e.other) parts.push('files ' + fmt(e.other));
+            card.appendChild(E('small', '', e.msgs + ' messages · ' + e.files.length + (e.files.length === 1 ? ' file' : ' files') + ' · ' + fmt(e.bytes) + (parts.length ? '\n' + parts.join(' · ') : '')));
+            card.lastChild.style.whiteSpace = 'pre-line';
+            const b = E('button', 'ios-btn ios-btn-secondary', sel.length ? 'Free ' + fmt(selBytes) : 'Nothing'); b.type = 'button'; b.disabled = !sel.length;
+            b.addEventListener('click', async function () { if (!confirm('Delete ' + sel.length + ' saved file' + (sel.length === 1 ? '' : 's') + ' (' + fmt(selBytes) + ') from “' + r.name + '” on this device? The messages stay.')) return; b.disabled = true; await wipe(sel); show('Freed ' + fmt(selBytes) + ' from “' + r.name + '”.'); });
+            card.appendChild(b); const bar = E('div', 'cv-bar'), bi = E('i'); bi.style.width = (e.bytes / maxB * 100) + '%'; bar.appendChild(bi); card.appendChild(bar); list.appendChild(card);
+        });
+        box.appendChild(list);
+        const row = E('div', 'cv-btns'), all = E('button', 'ios-btn', 'Free up every chat'), c = E('button', 'ios-btn ios-btn-secondary', 'Close'); all.type = c.type = 'button';
+        all.addEventListener('click', async function () { let n = 0, bytes = 0; const jobs = []; per.forEach(function (e) { pick(e).forEach(function (f) { jobs.push(f); bytes += f.size; n++; }); }); if (!n) return; if (!confirm('Delete ' + n + ' saved files (' + fmt(bytes) + ') from every chat on this device? The messages stay.')) return; all.disabled = true; await wipe(jobs); show('Freed ' + fmt(bytes) + '.'); });
+        c.addEventListener('click', function () { ov.classList.add('hidden'); }); row.append(all, c); box.appendChild(row);
+    }
+    const dlg = CV.byId('settingsModal') && CV.byId('settingsModal').querySelector('.dialog-actions');
+    if (dlg) {
+        const row = E('div', 'settings-option'), left = E('div'), b = E('button', 'ios-btn ios-btn-secondary', 'Open'); b.type = 'button';
+        left.append(E('strong', '', 'Storage'), E('span', '', 'See what each chat is using and free up space in one tap'));
+        b.addEventListener('click', function () { const m = CV.byId('settingsModal'); if (m) m.classList.add('hidden'); age = 0; show(''); }); row.append(left, b); dlg.before(row);
+    }
 })();
 </script>
 
