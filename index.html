@@ -10493,5 +10493,112 @@ const CV8 = {
 })();
 </script>
 
+<script id="convo-all-messages-delete">
+/*
+ * Wipe the WHOLE main chat — every message and every cached file — off every device, the same way
+ * the "Take down" button's deletions survive a reconnect: every device remembers the last wipe it
+ * knows about and hands that on to whoever it talks to next, so a device that was offline when the
+ * wipe happened still gets wiped the moment it reconnects.
+ *
+ * The actual wiping has to run inside this Convo tab — it needs the live chat data, the saved
+ * files and the open connections to other devices, none of which a separate page can reach. There
+ * is no button for it anywhere in Convo's own UI, so other people in the chat have no way to find
+ * or trigger it.
+ *
+ * It is instead triggered by a companion page kept on your own device, "Convo wipe trigger.html",
+ * which has nothing in it but a button. Clicking that button writes a signal to this browser's
+ * local storage; this Convo tab, if open, picks it up immediately — otherwise it picks it up the
+ * next time Convo is opened. Either way it only does anything if you are the host of the main chat,
+ * and it always asks you to confirm before it wipes anything.
+ */
+(function () {
+    'use strict';
+    const RID = 'public';
+    const upg = window.__convoUpg;
+    const mkey = 'xchat_wipeall_' + RID;
+    function getMark() { try { return JSON.parse(localStorage.getItem(mkey) || 'null'); } catch (e) { return null; } }
+    function setMark(ts, by) { try { localStorage.setItem(mkey, JSON.stringify({ ts: ts, by: by })); } catch (e) {} }
+
+    let inflight = null;
+    function wipeLocal(ts, by) {
+        const mark = getMark(); if (mark && mark.ts >= ts) return Promise.resolve(false);
+        if (inflight && inflight.ts >= ts) return inflight.p;
+        const p = (async function () {
+            const memIds = runInRoomSession(RID, function () {
+                return (messageLog || []).filter(function (m) { return m && m.fileId; }).map(function (m) { return m.fileId; });
+            }) || [];
+            const ids = new Set(memIds);
+            if (upg && upg.db) {
+                try { (await upg.db.scanAll(function (v) { return v.rid === RID && v.p && v.p.fileId; }, 20000)).forEach(function (v) { ids.add(v.p.fileId); }); } catch (e) {}
+            }
+            for (const fid of ids) { if (window.__convoPurgeFile) { try { await window.__convoPurgeFile(fid); } catch (e) {} } }
+            runInRoomSession(RID, function () { try { clearChatLocal(RID, by !== (currentUser && currentUser.username)); } catch (e) {} });
+            setMark(ts, by);
+            return true;
+        })();
+        inflight = { ts: ts, p: p };
+        p.finally(function () { if (inflight && inflight.p === p) inflight = null; });
+        return p;
+    }
+    window.__convoWipeAllLocal = wipeLocal;
+
+    window.convoWipeMainChatForEveryone = async function () {
+        const amHost = !!runInRoomSession(RID, function () { return isHost; });
+        if (!amHost) { alert('Only the host of the main chat can wipe it for everyone.'); return; }
+        if (!confirm('Delete EVERY message and file in the main chat, on every device — including ones offline right now? This cannot be undone.')) return;
+        const ts = Date.now(), by = (currentUser && currentUser.username) || '';
+        await wipeLocal(ts, by);
+        runInRoomSession(RID, function () { try { broadcastPacket({ type: 'WIPE_ALL', ts: ts, by: by }, null); } catch (e) {} });
+        try { CV.toast('Main chat wiped for everyone online — offline devices catch up as soon as they reconnect.', 4000); } catch (e) {}
+    };
+
+    const baseHandle = handleIncomingPacket;
+    handleIncomingPacket = function (packet, src) {
+        const t = packet && packet.type;
+        if (t === 'WIPE_ALL' && packet.ts && packet.by) {
+            wipeLocal(packet.ts, packet.by).then(function (changed) { if (isHost && src && changed) { try { broadcastPacket(packet, src); } catch (e) {} } });
+            return;
+        }
+        const r = baseHandle.apply(this, arguments);
+        try {
+            if (t === 'JOIN' && isHost && src && activeRoomId === RID) {
+                const mark = getMark(); if (mark) { try { src.send({ type: 'WIPE_ALL', ts: mark.ts, by: mark.by }); } catch (e) {} }
+            }
+        } catch (e) {}
+        return r;
+    };
+
+    // tell the host what I know too, in case the host changed or missed the original wipe
+    const prevLinked = window.__convoOnLinked;
+    window.__convoOnLinked = function (rid) {
+        if (prevLinked) prevLinked.apply(this, arguments);
+        if (rid !== RID) return;
+        try {
+            runInRoomSession(rid, function () {
+                if (!isHost && hostConnection && hostConnection.open) {
+                    const mark = getMark(); if (mark) { try { hostConnection.send({ type: 'WIPE_ALL', ts: mark.ts, by: mark.by }); } catch (e) {} }
+                }
+            });
+        } catch (e) {}
+    };
+
+    // No button lives in Convo's own UI — this only fires when triggered from the separate
+    // "Convo wipe trigger.html" page, kept on your own device, via a shared-storage signal.
+    const TRIG_KEY = 'xchat_wipe_trigger', DONE_KEY = 'xchat_wipe_trigger_done';
+    function checkTrigger() {
+        let raw; try { raw = localStorage.getItem(TRIG_KEY); } catch (e) { return; }
+        if (!raw) return;
+        let req; try { req = JSON.parse(raw); } catch (e) { return; }
+        if (!req || !req.nonce) return;
+        let done; try { done = localStorage.getItem(DONE_KEY); } catch (e) { done = null; }
+        if (done === req.nonce) return;   // already handled this exact trigger
+        try { localStorage.setItem(DONE_KEY, req.nonce); } catch (e) {}
+        window.convoWipeMainChatForEveryone();
+    }
+    window.addEventListener('storage', function (e) { if (e.key === TRIG_KEY) checkTrigger(); });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', checkTrigger); else checkTrigger();
+})();
+</script>
+
 </body>
 </html>
