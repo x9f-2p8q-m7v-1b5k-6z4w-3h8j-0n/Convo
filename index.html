@@ -10507,9 +10507,16 @@ const CV8 = {
  *
  * It is instead triggered by a companion page kept on your own device, "Convo wipe trigger.html",
  * which has nothing in it but a button. Clicking that button writes a signal to this browser's
- * local storage; this Convo tab, if open, picks it up immediately — otherwise it picks it up the
- * next time Convo is opened. Either way it only does anything if you are the host of the main chat,
- * and it always asks you to confirm before it wipes anything.
+ * local storage, with no prompt in either page. This Convo tab, if open, picks the signal up
+ * immediately — otherwise it picks it up the next time Convo is opened.
+ *
+ * It works no matter who is hosting the main chat at the time: it wipes this device's own copy
+ * first, then, if this device IS the host, sends the wipe straight to everyone connected; if it
+ * is NOT the host, it sends the wipe to whoever the host currently is, and the host's own copy of
+ * this code then passes it on to everyone else. Either way every device ends up wiped, and a
+ * device that is offline at the time catches up — fully wiped, not just told about it — the next
+ * time it reconnects to anyone who already knows about the wipe, the same way the "Take down"
+ * button's deletions do.
  */
 (function () {
     'use strict';
@@ -10543,13 +10550,14 @@ const CV8 = {
     window.__convoWipeAllLocal = wipeLocal;
 
     window.convoWipeMainChatForEveryone = async function () {
-        const amHost = !!runInRoomSession(RID, function () { return isHost; });
-        if (!amHost) { alert('Only the host of the main chat can wipe it for everyone.'); return; }
-        if (!confirm('Delete EVERY message and file in the main chat, on every device — including ones offline right now? This cannot be undone.')) return;
         const ts = Date.now(), by = (currentUser && currentUser.username) || '';
         await wipeLocal(ts, by);
-        runInRoomSession(RID, function () { try { broadcastPacket({ type: 'WIPE_ALL', ts: ts, by: by }, null); } catch (e) {} });
-        try { CV.toast('Main chat wiped for everyone online — offline devices catch up as soon as they reconnect.', 4000); } catch (e) {}
+        runInRoomSession(RID, function () {
+            try {
+                if (isHost) broadcastPacket({ type: 'WIPE_ALL', ts: ts, by: by }, null);
+                else if (hostConnection && hostConnection.open) hostConnection.send({ type: 'WIPE_ALL', ts: ts, by: by });
+            } catch (e) {}
+        });
     };
 
     const baseHandle = handleIncomingPacket;
