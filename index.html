@@ -9394,7 +9394,7 @@ const CV = { U: function () { return currentUser && currentUser.username; }, byI
     document.addEventListener('visibilitychange', function () { if (!document.hidden) { connectAll(); keepAlive(); } });
 
     // optional: keep the screen awake so phones don't sleep the connection
-    let lock = null, wantLock = false; try { wantLock = localStorage.getItem('convo_wakelock') === '1'; } catch (e) {}
+    let lock = null, wantLock = true; try { const v = localStorage.getItem('convo_wakelock'); if (v !== null) wantLock = v === '1'; } catch (e) {}
     async function takeLock() { if (!wantLock || !navigator.wakeLock || lock || document.hidden) return; try { lock = await navigator.wakeLock.request('screen'); lock.addEventListener('release', function () { lock = null; }); } catch (e) {} }
     document.addEventListener('visibilitychange', takeLock);
     window.__convoSetWakeLock = function (on) { wantLock = !!on; try { localStorage.setItem('convo_wakelock', on ? '1' : '0'); } catch (e) {} if (on) takeLock(); else if (lock) { lock.release().catch(function () {}); lock = null; } };
