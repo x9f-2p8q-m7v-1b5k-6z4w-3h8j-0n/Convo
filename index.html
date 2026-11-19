@@ -10517,6 +10517,10 @@ const CV8 = {
  * even if device clocks disagree. A device that was offline catches up the next time it connects,
  * and old history it still carries can no longer bring deleted messages back.
  *
+ * The trigger page also talks to the main chat directly over the network (it joins like any other device), so it
+ * works even when Convo is not open on this computer. Every device that knows about a wipe hands it to anyone
+ * who connects afterwards.
+ *
  * It works no matter who is hosting the main chat at the time.
  */
 (function () {
@@ -10601,7 +10605,9 @@ const CV8 = {
         if (t === 'WIPE_ALL' && packet.ts && packet.by) {
             if (activeRoomId !== RID) return;   // a wipe only ever means the main chat
             const mark = getMark(), fresh = !mark || mark.ts < packet.ts;
-            if (fresh && isHost) { sendAll(packet, src); burst(packet); }   // pass it on right now, before our own clean-up
+            const rel = { type: 'WIPE_ALL', ts: packet.ts, by: packet.by };
+            if (fresh && isHost) { sendAll(rel, src); burst(rel); }   // pass it on right now, before our own clean-up
+            if (packet.ack && src && src.open) { try { src.send({ type: 'WIPE_ACK', ts: packet.ts, applied: fresh, markTs: mark ? mark.ts : 0 }); } catch (e) {} }   // lets the trigger page know it got through
             wipeLocal(packet.ts, packet.by);
             return;
         }
