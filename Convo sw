@@ -1,0 +1,21 @@
+/*
+ * Convo service worker — lets notifications work on phones and with Convo in a background tab,
+ * and brings Convo to the front when you click one. Keep this file in the same folder as the Convo page.
+ * (Service workers only run on https:// pages or http://localhost, never on a file opened from disk.)
+ */
+self.addEventListener('install', function () { self.skipWaiting(); });
+self.addEventListener('activate', function (e) { e.waitUntil(self.clients.claim()); });
+self.addEventListener('notificationclick', function (e) {
+    const data = e.notification.data || {};
+    e.notification.close();
+    e.waitUntil((async function () {
+        const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        const c = all.find(function (x) { return 'focus' in x; });
+        if (c) {
+            try { await c.focus(); } catch (err) {}
+            c.postMessage({ convo: 'open', data: data });
+        } else if (self.clients.openWindow) {
+            await self.clients.openWindow((data.url || self.registration.scope) + (data.rid ? '#convo-open=' + encodeURIComponent(data.rid) : ''));
+        }
+    })());
+});
