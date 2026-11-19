@@ -4176,9 +4176,9 @@
                     connection.open
                 ) {
 
-                    connection.send(
+                    try { connection.send(
                         packet
-                    );
+                    ); } catch (e) {}
 
                 }
 
@@ -4390,7 +4390,7 @@
         incomingCallScreen.classList.remove('hidden');
         playIncomingMessageSound(); ringIv = setInterval(playIncomingMessageSound, 2000);
         ringTo = setTimeout(dismissRing, 45000);
-        if (document.hidden && 'Notification' in window && Notification.permission === 'granted') { try { new Notification(`${nm} is calling`, { body: grp ? roomNameOf(activeRoomId) : 'Convo call' }); } catch {} }
+        if (document.hidden && 'Notification' in window && Notification.permission === 'granted') { try { const callOpts = { body: grp ? roomNameOf(activeRoomId) : 'Convo call', tag: 'convo-call', renotify: true, requireInteraction: true, data: { rid: activeRoomId } }; if (window.convoShowNotification) window.convoShowNotification(`${nm} is calling`, callOpts); else new Notification(`${nm} is calling`, callOpts); } catch {} }
     }
     function dismissRing() { clearInterval(ringIv); clearTimeout(ringTo); incomingCall = null; hideIncomingCallScreen(); }
     function hideIncomingCallScreen() {
@@ -8049,7 +8049,7 @@
     const U = function () { return currentUser && currentUser.username; };
     const roomOf = function (rid) { return convoRooms.find(function (r) { return r.id === rid; }); };
     const rand = function () { return Math.random().toString(36).slice(2, 9); };
-    const RESEND_MS = 6000;
+    const RESEND_MS = 2000;
     const byId = function (id) { return document.getElementById(id); };
 
     /* ================= toast ================= */
@@ -8090,7 +8090,7 @@
         convoRooms.forEach(function (room) {
             if (localStorage.getItem(opsKey(room.id)) && net.linkOk(room.id)) runInRoomSession(room.id, function () { flushOps(room.id); });
         });
-    }, 1500);
+    }, 700);
 
     function applyTombs(ids) {
         if (!Array.isArray(ids)) return;
@@ -10506,75 +10506,125 @@ const CV8 = {
  * or trigger it.
  *
  * It is instead triggered by a companion page kept on your own device, "Convo wipe trigger.html",
- * which has nothing in it but a button. Clicking that button writes a signal to this browser's
- * local storage, with no prompt in either page. This Convo tab, if open, picks the signal up
- * immediately — otherwise it picks it up the next time Convo is opened.
+ * which has nothing in it but a button. Clicking that button signals this Convo tab three ways at
+ * once (shared storage, a broadcast channel, and a once-a-second check as a safety net), so it is
+ * picked up immediately if Convo is open, or the next time Convo is opened. Convo answers back so
+ * the trigger page can show whether it really got through.
  *
- * It works no matter who is hosting the main chat at the time: it wipes this device's own copy
- * first, then, if this device IS the host, sends the wipe straight to everyone connected; if it
- * is NOT the host, it sends the wipe to whoever the host currently is, and the host's own copy of
- * this code then passes it on to everyone else. Either way every device ends up wiped, and a
- * device that is offline at the time catches up — fully wiped, not just told about it — the next
- * time it reconnects to anyone who already knows about the wipe, the same way the "Take down"
- * button's deletions do.
+ * Speed: the wipe is sent to everyone FIRST and repeated for a minute (so a hiccup can't lose it),
+ * and only then does this device tidy its own files. A host passes a wipe on the instant it hears
+ * it — it does not wait to finish its own clean-up — and a wipe always supersedes the previous one
+ * even if device clocks disagree. A device that was offline catches up the next time it connects,
+ * and old history it still carries can no longer bring deleted messages back.
+ *
+ * It works no matter who is hosting the main chat at the time.
  */
 (function () {
     'use strict';
     const RID = 'public';
     const upg = window.__convoUpg;
-    const mkey = 'xchat_wipeall_' + RID;
+    const mkey = 'xchat_wipeall_' + RID, todoKey = 'xchat_wipeall_todo_' + RID;
+    const TRIG_KEY = 'xchat_wipe_trigger', DONE_KEY = 'xchat_wipe_trigger_done', ACK_KEY = 'xchat_wipe_trigger_ack', BC_NAME = 'convo_wipe_trigger';
+    const me = function () { return (currentUser && currentUser.username) || ''; };
     function getMark() { try { return JSON.parse(localStorage.getItem(mkey) || 'null'); } catch (e) { return null; } }
     function setMark(ts, by) { try { localStorage.setItem(mkey, JSON.stringify({ ts: ts, by: by })); } catch (e) {} }
+
+    // run something inside the main chat's own connection state (never conjures an empty session out of nothing)
+    function inMain(fn) {
+        if (activeRoomId !== RID && !roomSessions.has(RID)) return undefined;
+        return runInRoomSession(RID, fn);
+    }
+    // send to every open connection of the main chat; one dead connection can never stop the rest
+    function sendAll(packet, exclude) {
+        const n = inMain(function () {
+            let c = 0;
+            try {
+                if (isHost) (connections || []).forEach(function (x) { if (x && x !== exclude && x.open) { try { x.send(packet); c++; } catch (e) {} } });
+                else if (hostConnection && hostConnection.open && hostConnection !== exclude) { try { hostConnection.send(packet); c++; } catch (e) {} }
+            } catch (e) {}
+            return c;
+        });
+        return n || 0;
+    }
+    // say it again a few times over the next minute, so a wobbly connection can't make anyone miss it
+    const bursting = new Set();
+    function burst(packet) {
+        if (!packet || bursting.has(packet.ts)) return;
+        bursting.add(packet.ts);
+        [400, 1500, 4000, 10000, 25000, 60000].forEach(function (d) { setTimeout(function () { sendAll(packet); }, d); });
+        setTimeout(function () { bursting.delete(packet.ts); }, 61000);
+    }
+
+    // chat first (it is what people see), then the saved files, many at a time
+    async function purgeMain(by, filesOnly) {
+        const ids = new Set(inMain(function () {
+            return (messageLog || []).filter(function (m) { return m && m.fileId; }).map(function (m) { return m.fileId; });
+        }) || []);
+        if (upg && upg.db) {
+            try { (await upg.db.scanAll(function (v) { return v.rid === RID && v.p && v.p.fileId; }, 20000)).forEach(function (v) { ids.add(v.p.fileId); }); } catch (e) {}
+        }
+        if (!filesOnly) { try { clearChatLocal(RID, by !== me()); } catch (e) {} }
+        const list = Array.from(ids);
+        for (let i = 0; i < list.length; i += 25) {
+            await Promise.all(list.slice(i, i + 25).map(function (fid) {
+                try { return window.__convoPurgeFile ? Promise.resolve(window.__convoPurgeFile(fid)).catch(function () {}) : null; } catch (e) { return null; }
+            }));
+        }
+    }
 
     let inflight = null;
     function wipeLocal(ts, by) {
         const mark = getMark(); if (mark && mark.ts >= ts) return Promise.resolve(false);
         if (inflight && inflight.ts >= ts) return inflight.p;
-        const p = (async function () {
-            const memIds = runInRoomSession(RID, function () {
-                return (messageLog || []).filter(function (m) { return m && m.fileId; }).map(function (m) { return m.fileId; });
-            }) || [];
-            const ids = new Set(memIds);
-            if (upg && upg.db) {
-                try { (await upg.db.scanAll(function (v) { return v.rid === RID && v.p && v.p.fileId; }, 20000)).forEach(function (v) { ids.add(v.p.fileId); }); } catch (e) {}
-            }
-            for (const fid of ids) { if (window.__convoPurgeFile) { try { await window.__convoPurgeFile(fid); } catch (e) {} } }
-            runInRoomSession(RID, function () { try { clearChatLocal(RID, by !== (currentUser && currentUser.username)); } catch (e) {} });
-            setMark(ts, by);
-            return true;
-        })();
+        setMark(ts, by);   // remembered at once, so old history can't sneak back in while the clean-up is still running
+        try { localStorage.setItem(todoKey, JSON.stringify({ ts: ts, by: by })); } catch (e) {}   // if the tab closes half-way, it finishes next time
+        const p = purgeMain(by, false).then(function () { try { localStorage.removeItem(todoKey); } catch (e) {} return true; }, function () { return true; });
         inflight = { ts: ts, p: p };
-        p.finally(function () { if (inflight && inflight.p === p) inflight = null; });
+        p.then(function () { if (inflight && inflight.p === p) inflight = null; });
         return p;
     }
     window.__convoWipeAllLocal = wipeLocal;
 
     window.convoWipeMainChatForEveryone = async function () {
-        const ts = Date.now(), by = (currentUser && currentUser.username) || '';
+        const prev = getMark();
+        const ts = Math.max(Date.now(), (prev && prev.ts || 0) + 1), by = me() || 'owner';   // always newer than any wipe we already know about
+        const pkt = { type: 'WIPE_ALL', ts: ts, by: by };
+        const sent = sendAll(pkt);   // everyone else first — nobody waits for this device to finish tidying up
+        burst(pkt);
         await wipeLocal(ts, by);
-        runInRoomSession(RID, function () {
-            try {
-                if (isHost) broadcastPacket({ type: 'WIPE_ALL', ts: ts, by: by }, null);
-                else if (hostConnection && hostConnection.open) hostConnection.send({ type: 'WIPE_ALL', ts: ts, by: by });
-            } catch (e) {}
-        });
+        return { sent: sent, ts: ts };
     };
 
     const baseHandle = handleIncomingPacket;
     handleIncomingPacket = function (packet, src) {
         const t = packet && packet.type;
         if (t === 'WIPE_ALL' && packet.ts && packet.by) {
-            wipeLocal(packet.ts, packet.by).then(function (changed) { if (isHost && src && changed) { try { broadcastPacket(packet, src); } catch (e) {} } });
+            if (activeRoomId !== RID) return;   // a wipe only ever means the main chat
+            const mark = getMark(), fresh = !mark || mark.ts < packet.ts;
+            if (fresh && isHost) { sendAll(packet, src); burst(packet); }   // pass it on right now, before our own clean-up
+            wipeLocal(packet.ts, packet.by);
             return;
         }
         const r = baseHandle.apply(this, arguments);
         try {
-            if (t === 'JOIN' && isHost && src && activeRoomId === RID) {
+            if ((t === 'JOIN' || t === 'Z_HIST') && isHost && src && activeRoomId === RID) {
                 const mark = getMark(); if (mark) { try { src.send({ type: 'WIPE_ALL', ts: mark.ts, by: mark.by }); } catch (e) {} }
             }
         } catch (e) {}
         return r;
     };
+
+    // history another device still carries from before the wipe is dropped on arrival
+    if (typeof mergeHistoryPackets === 'function') {
+        const baseMerge = mergeHistoryPackets;
+        mergeHistoryPackets = function (packets) {
+            if (activeRoomId === RID && Array.isArray(packets)) {
+                const mark = getMark();
+                if (mark) packets = packets.filter(function (p) { return !(p && (p.type === 'CHAT' || p.type === 'FILE') && (p.timestamp || 0) <= mark.ts); });
+            }
+            return baseMerge.call(this, packets);
+        };
+    }
 
     // tell the host what I know too, in case the host changed or missed the original wipe
     const prevLinked = window.__convoOnLinked;
@@ -10590,21 +10640,313 @@ const CV8 = {
         } catch (e) {}
     };
 
-    // No button lives in Convo's own UI — this only fires when triggered from the separate
-    // "Convo wipe trigger.html" page, kept on your own device, via a shared-storage signal.
-    const TRIG_KEY = 'xchat_wipe_trigger', DONE_KEY = 'xchat_wipe_trigger_done';
-    function checkTrigger() {
-        let raw; try { raw = localStorage.getItem(TRIG_KEY); } catch (e) { return; }
-        if (!raw) return;
-        let req; try { req = JSON.parse(raw); } catch (e) { return; }
-        if (!req || !req.nonce) return;
-        let done; try { done = localStorage.getItem(DONE_KEY); } catch (e) { done = null; }
-        if (done === req.nonce) return;   // already handled this exact trigger
-        try { localStorage.setItem(DONE_KEY, req.nonce); } catch (e) {}
-        window.convoWipeMainChatForEveryone();
+    /* ---- the trigger: no button lives in Convo's own UI ---- */
+    let bc = null; try { if ('BroadcastChannel' in window) bc = new BroadcastChannel(BC_NAME); } catch (e) {}
+    function ack(nonce, state, extra) {
+        const rec = { nonce: nonce, state: state, at: Date.now() };
+        if (extra) Object.keys(extra).forEach(function (k) { rec[k] = extra[k]; });
+        try { localStorage.setItem(ACK_KEY, JSON.stringify(rec)); } catch (e) {}
+        try { if (bc) bc.postMessage({ kind: 'ack', rec: rec }); } catch (e) {}
     }
+    let running = false;
+    function runTrigger(req) {
+        if (!req || !req.nonce || running) return;
+        let done = null; try { done = localStorage.getItem(DONE_KEY); } catch (e) {}
+        if (done === req.nonce) return;   // already handled this exact trigger
+        if (!me()) return;                // not signed in yet: it waits, and runs the moment you are
+        running = true;
+        try { localStorage.setItem(DONE_KEY, req.nonce); } catch (e) {}
+        ack(req.nonce, 'received');
+        window.convoWipeMainChatForEveryone().then(
+            function (res) { ack(req.nonce, 'done', { sent: (res && res.sent) || 0 }); },
+            function (e) { ack(req.nonce, 'error', { msg: String((e && e.message) || e) }); }
+        ).then(function () { running = false; });
+    }
+    function readTrigger() {
+        let raw; try { raw = localStorage.getItem(TRIG_KEY); } catch (e) { return null; }
+        if (!raw) return null;
+        try { const req = JSON.parse(raw); return req && req.nonce ? req : null; } catch (e) { return null; }
+    }
+    function checkTrigger() { runTrigger(readTrigger()); }
+
+    // a wipe link (used when the trigger page lives at a different address from Convo) always asks first
+    let linkAsked = false;
+    function checkLink() {
+        if (linkAsked || document.hidden || !me()) return;
+        const m = /[#&]convo-wipe=([A-Za-z0-9_.\-]{6,80})/.exec(location.hash || ''); if (!m) return;
+        linkAsked = true;
+        try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+        let done = null; try { done = localStorage.getItem(DONE_KEY); } catch (e) {}
+        if (done === m[1]) return;
+        if (confirm('A wipe link was opened.\n\nDelete the ENTIRE main chat — every message and file — for everyone, on every device?\n\nThis cannot be undone.')) runTrigger({ nonce: m[1], sentAt: Date.now() });
+    }
+
+    function resumeTodo() {
+        if (!me() || inflight) return;
+        let t; try { t = JSON.parse(localStorage.getItem(todoKey) || 'null'); } catch (e) { t = null; }
+        if (!t) return;
+        try { localStorage.removeItem(todoKey); } catch (e) {}
+        purgeMain(t.by, true).catch(function () {});
+    }
+
+    function tick() { checkTrigger(); checkLink(); resumeTodo(); }
     window.addEventListener('storage', function (e) { if (e.key === TRIG_KEY) checkTrigger(); });
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', checkTrigger); else checkTrigger();
+    if (bc) bc.onmessage = function (e) { const d = e && e.data; if (d && d.kind === 'wipe' && d.nonce) runTrigger(d); };
+    setInterval(tick, 1000);
+    ['focus', 'pageshow'].forEach(function (ev) { window.addEventListener(ev, tick); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tick); else tick();
+})();
+</script>
+
+<script id="convo-reliability">
+/*
+ * Reliability: deletes and notifications.
+ *
+ * Deletes — every delete a host makes (or passes on) is repeated to every open connection over the next
+ * minute, and every device quietly hands its most recent signed take-downs to the others every 20 seconds,
+ * so one dropped packet or a half-dead connection can't leave a deleted message sitting on someone's screen.
+ *
+ * Notifications — one place decides whether a notification shows and how: it uses the service worker
+ * (needed on Android and for background tabs) when Convo is served over http(s) with convo-sw.js next to it,
+ * and a plain notification otherwise; it no longer switches itself off for good if you once dismissed the
+ * permission prompt; it tells you when something is blocked and has a "Send test" button; messages that
+ * arrived while you were disconnected notify you when you reconnect; incoming-call alerts use the same path.
+ */
+(function () {
+    'use strict';
+    const U = function () { return (currentUser && currentUser.username) || ''; };
+    const net = window.__convoNet;
+    const inRoom = function (rid, fn) { if (rid !== activeRoomId && !roomSessions.has(rid)) return undefined; return runInRoomSession(rid, fn); };
+
+    /* ================= 1. deletes ================= */
+    function fanOut(rid, packet, exclude) {   // to every open connection of that chat; one bad connection never stops the others
+        return inRoom(rid, function () {
+            let n = 0;
+            const send = function (c) { if (c && c !== exclude && c.open) { try { c.send(packet); n++; } catch (e) {} } };
+            try { if (isHost) (connections || []).forEach(send); else send(hostConnection); } catch (e) {}
+            return n;
+        }) || 0;
+    }
+    function repeat(rid, packet, exclude) {
+        [350, 1200, 3000, 7000, 15000, 40000].forEach(function (d) { setTimeout(function () { fanOut(rid, packet, exclude); }, d); });
+    }
+    const baseOp = window.convoSendOp;
+    if (typeof baseOp === 'function') window.convoSendOp = function (packet) {
+        const rid = activeRoomId, host = isHost, r = baseOp.apply(this, arguments);
+        try { if (host && packet && packet.type === 'DELETE' && packet.id) repeat(rid, packet, null); } catch (e) {}   // a guest's own delete is already retried until the host confirms it
+        return r;
+    };
+    const relayed = new Set();
+    const baseH = handleIncomingPacket;
+    handleIncomingPacket = function (packet, src) {
+        const t = packet && packet.type, rid = activeRoomId, host = isHost;
+        const r = baseH.apply(this, arguments);
+        try {
+            if (host && src && t === 'DELETE' && packet.id) {   // the host passes a guest's delete on again and again, not just once
+                const k = rid + ':' + packet.id;
+                if (!relayed.has(k)) { relayed.add(k); if (relayed.size > 500) relayed.clear(); repeat(rid, packet, src); }
+            }
+            if (t === 'CHAT' || t === 'FILE') bumpSeen(rid);
+        } catch (e) {}
+        return r;
+    };
+    function gossip() {   // my newest signed take-downs, to whoever I'm connected to; anyone who already has them ignores them
+        const L = window.__convoTombLedger; if (!L || !net) return;
+        convoRooms.forEach(function (room) {
+            try {
+                const rid = room.id; if (!net.linkOk(rid)) return;
+                const recs = L.get(rid).slice(-25); if (!recs.length) return;
+                fanOut(rid, { type: 'Z_TOMBS', recs: recs }, null);
+            } catch (e) {}
+        });
+    }
+    setInterval(gossip, 20000);
+    ['online', 'focus', 'pageshow'].forEach(function (ev) { window.addEventListener(ev, function () { setTimeout(gossip, 1500); }); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) setTimeout(gossip, 1500); });
+
+    /* ================= 2. notifications ================= */
+    const NKEY = 'xchat_desktop_notifications', OFF_KEY = 'xchat_notif_user_off';
+    const supported = 'Notification' in window;
+    // migrate once: the old setting also flipped to "off" whenever the permission prompt was merely dismissed
+    try {
+        if (localStorage.getItem(OFF_KEY) === null) localStorage.setItem(OFF_KEY, (localStorage.getItem(NKEY) === 'false' && supported && Notification.permission === 'granted') ? 'true' : 'false');
+    } catch (e) {}
+    const userOff = function () { try { return localStorage.getItem(OFF_KEY) === 'true'; } catch (e) { return false; } };
+    const perm = function () { return supported ? Notification.permission : 'unsupported'; };
+    const canNotify = function () { return supported && Notification.permission === 'granted' && !userOff(); };
+    const toast = function (t) { try { if (window.__convoToast) window.__convoToast(t, 4000); } catch (e) {} };
+    const ICON = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="3" y="3" width="58" height="58" rx="17" fill="#087cff"/><path d="M17 19h30v21H31l-9 7v-7h-5z" fill="white"/></svg>');
+
+    let regP = null, regFailAt = 0;
+    function getReg() {   // the service worker, when this page can have one (http/https + convo-sw.js next to it)
+        if (regP) return regP;
+        if (Date.now() - regFailAt < 60000) return Promise.resolve(null);
+        regP = (async function () {
+            if (!('serviceWorker' in navigator) || !/^https?:$/.test(location.protocol)) return null;
+            try {
+                let reg = await navigator.serviceWorker.getRegistration();
+                if (!reg) reg = await navigator.serviceWorker.register('convo-sw.js');
+                if (!reg.active) await Promise.race([navigator.serviceWorker.ready, new Promise(function (res) { setTimeout(res, 2500); })]);
+                return reg.active ? reg : null;
+            } catch (e) { return null; }
+        })().then(function (reg) { if (!reg) { regP = null; regFailAt = Date.now(); } return reg; });
+        return regP;
+    }
+    window.convoShowNotification = async function (title, opts, force) {
+        if (!supported || Notification.permission !== 'granted' || (!force && userOff())) return false;
+        opts = Object.assign({ icon: ICON, vibrate: [120, 60, 120] }, opts || {});
+        opts.data = Object.assign({ url: location.href.split('#')[0] }, opts.data || {});
+        const reg = await getReg();
+        if (reg && reg.showNotification) { try { await reg.showNotification(title, opts); return true; } catch (e) {} }
+        try {
+            const n = new Notification(title, opts);
+            n.onclick = function () { try { n.close(); } catch (e) {} openFromNotification(opts.data); };
+            return true;
+        } catch (e) { return false; }
+    };
+
+    function openFromNotification(data) {   // a click on a notification: jump to that chat, ready to reply
+        try { window.focus(); } catch (e) {}
+        const room = data && convoRooms.find(function (r) { return r.id === data.rid; });
+        if (room) { try { activateConversation(room); } catch (e) {} }
+        setTimeout(function () {
+            try {
+                const p = data && data.id && (messageLog || []).find(function (m) { return m && m.id === data.id; });
+                if (p) { activeReplyingMessage = p; replyBannerText.innerText = `Replying to: "${p.text || p.fileName || 'Attachment'}"`; replyBanner.style.display = 'flex'; messageInput.focus(); }
+            } catch (e) {}
+        }, 250);
+    }
+    if ('serviceWorker' in navigator) {
+        try { navigator.serviceWorker.addEventListener('message', function (e) { if (e.data && e.data.convo === 'open') openFromNotification(e.data.data); }); } catch (e) {}
+    }
+    function checkOpenHash() {   // the service worker opens Convo with #convo-open=<chat> when it wasn't running
+        const m = /[#&]convo-open=([^&]+)/.exec(location.hash || ''); if (!m || !U()) return;
+        try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+        openFromNotification({ rid: decodeURIComponent(m[1]) });
+    }
+
+    window.desktopNotify = function (packet, room) {
+        if (!canNotify() || !packet) return;
+        if (room && room.id === visibleRoomId && document.hasFocus() && !document.hidden) return;   // you're already looking at it
+        const body = packet.voice ? '🎤 Voice message' : (packet.text || ('📎 ' + (packet.fileName || 'Attachment')));
+        window.convoShowNotification((packet.sender && packet.sender.displayName || 'New message') + (room ? ' · ' + room.name : ''), {
+            body: body + '\n↩ Click to reply', tag: 'convo-' + (room && room.id || 'chat'), renotify: true,
+            data: { rid: room && room.id, id: packet.id }, timestamp: packet.timestamp || Date.now()
+        });
+    };
+
+    /* messages that arrived while this device was disconnected: notify when the history catches up */
+    const seenKey = function (rid) { return 'xchat_nseen_' + rid; };
+    function seenTs(rid) {
+        let v = 0; try { v = +localStorage.getItem(seenKey(rid)) || 0; if (!v) { v = Date.now(); localStorage.setItem(seenKey(rid), String(v)); } } catch (e) { v = Date.now(); }
+        return v;
+    }
+    function bumpSeen(rid, ts) { try { localStorage.setItem(seenKey(rid), String(Math.max(+localStorage.getItem(seenKey(rid)) || 0, ts || Date.now()))); } catch (e) {} }
+    setInterval(function () { if (!document.hidden && document.hasFocus() && U()) bumpSeen(visibleRoomId); }, 4000);
+    ['focus', 'pageshow'].forEach(function (ev) { window.addEventListener(ev, function () { if (U()) bumpSeen(visibleRoomId); }); });
+    if (typeof mergeHistoryPackets === 'function') {
+        const baseMerge = mergeHistoryPackets;
+        mergeHistoryPackets = function (packets) {
+            const rid = activeRoomId; let before = null;
+            try { before = new Set((messageLog || []).map(function (m) { return m && m.id; }).filter(Boolean)); } catch (e) {}
+            const r = baseMerge.apply(this, arguments);
+            try { if (before) notifyMissed(rid, before); } catch (e) {}
+            return r;
+        };
+    }
+    function notifyMissed(rid, before) {
+        if (!U()) return;
+        const room = convoRooms.find(function (x) { return x.id === rid; }); if (!room) return;
+        const since = seenTs(rid);
+        const fresh = (messageLog || []).filter(function (m) {
+            return m && m.id && !before.has(m.id) && (m.type === 'CHAT' || m.type === 'FILE') && m.sender && m.sender.username !== U() && (m.timestamp || 0) > since
+                && !(window.__convoHiddenFor && window.__convoHiddenFor(rid, m.sender));
+        });
+        if (!fresh.length) return;
+        bumpSeen(rid, Math.max.apply(null, fresh.map(function (m) { return m.timestamp || 0; })));
+        if (rid === visibleRoomId && document.hasFocus() && !document.hidden) return;
+        if (document.hidden) { try { convoTabUnreadCount += fresh.length; updateConvoTabBadge(); } catch (e) {} }
+        if (room.muted || !canNotify()) return;
+        const last = fresh[fresh.length - 1];
+        if (fresh.length === 1) { window.desktopNotify(last, room); return; }
+        window.convoShowNotification(room.name || 'Convo', {
+            body: fresh.length + ' new messages\n' + (last.voice ? '🎤 Voice message' : (last.text || ('📎 ' + (last.fileName || 'Attachment')))),
+            tag: 'convo-' + rid, renotify: true, data: { rid: rid, id: last.id }
+        });
+    }
+
+    /* asking for permission, and saying what's going on */
+    let asked = false;
+    function askPermission() {
+        if (!supported || !U() || Notification.permission !== 'default' || userOff()) return Promise.resolve(perm());
+        asked = true;
+        let p; try { p = Notification.requestPermission(); } catch (e) { p = null; }
+        return Promise.resolve(p).then(function () { afterPermission(); return perm(); }, function () { return perm(); });
+    }
+    function afterPermission() {
+        try { if (Notification.permission === 'granted' && !userOff()) localStorage.setItem(NKEY, 'true'); } catch (e) {}
+        const tg = document.getElementById('desktopNotificationsToggle'); if (tg) tg.checked = canNotify();
+        refreshStatus(); refreshBar();
+    }
+    ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) {
+        window.addEventListener(ev, function () { if (!asked && U() && perm() === 'default' && !userOff()) askPermission(); }, { passive: true, capture: true });
+    });
+    try { if (supported && navigator.permissions && navigator.permissions.query) navigator.permissions.query({ name: 'notifications' }).then(function (st) { st.onchange = afterPermission; }).catch(function () {}); } catch (e) {}
+
+    const bar = document.createElement('div'); bar.id = 'cvNotifBar';
+    bar.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 8px);z-index:99999;display:none;align-items:center;gap:10px;background:#087cff;color:#fff;border-radius:99px;padding:7px 8px 7px 16px;font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 16px)';
+    const barText = document.createElement('span'); barText.textContent = 'Turn on notifications so you never miss a message';
+    const barOn = document.createElement('button'), barX = document.createElement('button');
+    barOn.type = barX.type = 'button'; barOn.textContent = 'Turn on'; barX.textContent = '✕'; barX.setAttribute('aria-label', 'Dismiss');
+    barOn.style.cssText = 'border:0;border-radius:99px;padding:6px 12px;font:inherit;background:#fff;color:#087cff;cursor:pointer';
+    barX.style.cssText = 'border:0;border-radius:99px;padding:6px 9px;font:inherit;background:transparent;color:#fff;cursor:pointer';
+    bar.append(barText, barOn, barX); document.body.appendChild(bar);
+    let barDismissed = false;
+    barOn.addEventListener('click', function () { askPermission(); });
+    barX.addEventListener('click', function () { barDismissed = true; refreshBar(); });
+    function refreshBar() { bar.style.display = (supported && U() && perm() === 'default' && !userOff() && !barDismissed) ? 'flex' : 'none'; }
+    setInterval(refreshBar, 2000);
+
+    const tg = document.getElementById('desktopNotificationsToggle');
+    let statusEl = null;
+    if (tg) {
+        const lab = tg.closest('label'), row = document.createElement('div'); row.className = 'settings-option';
+        const left = document.createElement('div'), strong = document.createElement('strong'); statusEl = document.createElement('span');
+        strong.textContent = 'Notification check'; left.append(strong, statusEl);
+        const test = document.createElement('button'); test.type = 'button'; test.className = 'ios-btn ios-btn-secondary'; test.textContent = 'Send test';
+        row.append(left, test); (lab || tg).after(row);
+        test.addEventListener('click', async function () {
+            if (!supported) { refreshStatus(); return; }
+            if (Notification.permission === 'default') { try { await Notification.requestPermission(); } catch (e) {} }
+            if (Notification.permission === 'granted') {
+                try { localStorage.setItem(OFF_KEY, 'false'); localStorage.setItem(NKEY, 'true'); } catch (e) {}
+                tg.checked = true;
+                const ok = await window.convoShowNotification('Convo', { body: 'Notifications are working.', tag: 'convo-test' }, true);
+                if (!ok) toast('The browser refused to show it — check your system notification settings.');
+            }
+            afterPermission();
+        });
+        tg.addEventListener('change', function () {
+            try { localStorage.setItem(OFF_KEY, tg.checked ? 'false' : 'true'); } catch (e) {}
+            if (tg.checked && perm() === 'default') askPermission();
+            setTimeout(function () { refreshStatus(); }, 300);
+        });
+        const sb = document.getElementById('sidebarSettingsBtn');
+        if (sb) sb.addEventListener('click', function () { tg.checked = canNotify(); refreshStatus(); });
+    }
+    function refreshStatus() {
+        if (!statusEl) return;
+        const sw = !!(regP && 'serviceWorker' in navigator && navigator.serviceWorker.controller !== undefined);
+        statusEl.textContent = !supported ? 'This browser can’t show notifications.'
+            : perm() === 'denied' ? 'Blocked — allow notifications for this site in your browser’s site settings.'
+            : perm() === 'default' ? 'Not allowed yet — tap “Send test” to allow them.'
+            : userOff() ? 'Turned off above.'
+            : (sw ? 'On — works even with Convo in a background tab.' : 'On — shows while Convo is open in a tab or window.');
+    }
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) { refreshStatus(); refreshBar(); } });
+    setTimeout(function () { if (canNotify()) getReg().then(refreshStatus); refreshStatus(); refreshBar(); }, 1500);
+    setInterval(checkOpenHash, 1500);
 })();
 </script>
 
